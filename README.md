@@ -27,4 +27,8 @@ Or manually clone this repo and run hcm in the root directory.
 
 Simply run `hcm install` in your [managed configs directory](ADVANCED.md#managed-configs-directory-mcd).
 
-Check `hcm help` for more details.
+for more information
+
+   * check `hcm help`
+   * [Advanced Topics](ADVANCED.md)
+   * [FAQ](FAQ.md)
