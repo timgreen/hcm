@@ -8,17 +8,17 @@ shift
 set -e
 case "$cmd" in
   install)
-    sh $BASE/lib/install.sh "$@"
+    sh $BASE/lib/cmd_install.sh "$@"
   ;;
   help)
-    sh $BASE/lib/help.sh "$@"
+    sh $BASE/lib/cmd_help.sh "$@"
   ;;
   "")
-    sh $BASE/lib/help.sh
+    sh $BASE/lib/cmd_help.sh
   ;;
   *)
     echo "Unknown command $(tput setaf 13)$cmd$(tput op)"
     echo
-    sh $BASE/lib/help.sh
+    sh $BASE/lib/cmd_help.sh
     exit 1
 esac
