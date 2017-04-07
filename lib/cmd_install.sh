@@ -83,7 +83,7 @@ main() {
     while (( $# > 0 )); do
       local dir="$1"
       shift
-      process_root_or_cm "$dir"
+      process_root_or_cm "$(readlink -f $dir)"
     done
   fi
 }
