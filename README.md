@@ -2,7 +2,7 @@
 
 ## What's hcm
 
-hcm is a set of bash scripts that manages your home configs. Two main goals:
+hcm is a set of bash scripts that manages your home configs. I create it solve two main problems:
 
    * Easy the setup process on a brand new machine.
    * Keep syncing the configs between multiple machines.
