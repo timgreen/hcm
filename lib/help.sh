@@ -15,7 +15,7 @@ EOF
 
 usage_install() {
   cat << EOF
-usage: hcm install [<dir>] [--[no-]fast-scan]
+usage: hcm install [<dir>...] [--[no-]fast-scan]
 
 Current PWD will be used if <dir> is omitted.
 
