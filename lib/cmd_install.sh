@@ -2,6 +2,7 @@
 
 BASE=$(dirname $(readlink -f "$0"))
 
+HCM_ROOT="$HOME/.hcm"
 MODULE_FILE="HCM_MODULE"
 ROOT_FILE="HCM_MCD_ROOT"
 
@@ -59,8 +60,39 @@ process_root() {
   done
 }
 
+link_configs() {
+  local source_dir="$1"
+  local tracking_dir="$2"
+  local target_dir="$3"
+
+  # <source> <tracking> <target>
+  #    x         s               link tracking -> target
+  #    x         s         s     no-op
+  #    x         s         c     error
+  #    x                   s     link source -> tracking
+  #    x                         link source -> tracking -> target
+  #    x         c               link (force) source -> tracking -> target
+  #    x         c         c     link (force) source -> tracking -> target
+  #    x         c1        c2    error
+  #              m               rm tracking
+  #              m         m     rm tracking; rm target
+  #              m         c     rm tracking; error
+  #                        m     rm target (skipped if target is $HOME for performance reason)
+  echo "link_configs: $1 $2 $3"
+}
+
 process_cm() {
-  echo "cm: $1"
+  local dir="$1"
+  local name="$(basename "$dir")"
+
+  echo "cm: $dir"
+
+  local tracking_dir="$HCM_ROOT/$name"
+  mkdir -p "$tracking_dir/config"
+
+  ln -sf "$dir" "$tracking_dir/source"
+
+  link_configs "$dir" "$tracking_dir/config" "$HOME"
 }
 
 process_root_or_cm() {
