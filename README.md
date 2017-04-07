@@ -10,25 +10,31 @@ hcm is a set of bash scripts that manages your home configs. Two main goals:
 ## Install
 
 ### Install Script
-Easiest way is to use the [installer](TODO(timgreen): insert source link) (recommended).
+Easiest way is to use the [installer][installer_bin] (recommended).
 
     $ curl -sLo- installer_bin_url | bash
 
-If you want to see what’s inside it, [access it directly](TODO(timgreen): link) or [check it out on the repository](TODO(timgreen): link).
+If you want to see what’s inside it, [access it directly][installer_bin] or
+[check it out on the repository][installer_source].
 
 ### Source Code
 Or manually clone this repo and run hcm in the root directory.
 
     $ git clone https://github.com/timgreen/hcm.git
     $ cd hcm
-    $ ./hcm install <dir>
+    $ ./install.sh
 
 ## How to use
 
-Simply run `hcm install` in your [managed configs directory](ADVANCED.md#managed-configs-directory-mcd).
+Simply run `hcm install` in your [managed configs directory][MCD].
 
 for more information
 
    * check `hcm help`
    * [Advanced Topics](ADVANCED.md)
    * [FAQ](FAQ.md)
+
+
+[installer_bin]: https://raw.githubusercontent.com/timgreen/hcm/master/install.sh
+[installer_source]: https://github.com/timgreen/hcm/blob/master/install.sh
+[MCD]: ADVANCED.md#managed-configs-directory-mcd
