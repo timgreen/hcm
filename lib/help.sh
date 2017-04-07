@@ -33,7 +33,7 @@ EOF
 }
 
 print_usage() {
-  cmd="$1"
+  local cmd="$1"
   if [[ "$cmd" == "" ]]; then
     usage
   elif [[ "$(type -t usage_$cmd)" == "function" ]]; then
