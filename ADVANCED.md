@@ -32,7 +32,7 @@ TBD: use directory last modified timestamp to reduce the num of files need scan.
 
 ### Managed Configs Directory (MCD)
 
-A MCD is a directory contains a [*HCM\_MCD\_ROOT*](#hcm_mcd_root) file and [CM][CM]s.
+A MCD is a directory contains a [HCM\_MCD\_ROOT](#hcm_mcd_root) file and [CM][CM]s.
 
     <Managed Configs Directory>/
     |- HCM_MCD_ROOT
@@ -102,4 +102,4 @@ Otherwise `hcm` will refuse to continue.
 
 NOTE: currently `hcm` ignore the content inside HCM\_MODULE.
 
-[CM]: ADVANCED.md#configs-module-cm
+[CM]: ADVANCED.md#config-module-cm
