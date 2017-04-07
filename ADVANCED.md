@@ -24,7 +24,7 @@ WHY?
       * So when scanning the files in HOME dir, we could tell whether a file is managed by `hcm` by
         checking its source path.
 
-### Option `--fast`
+### Option `--fast-scan`
 
 TBD: use directory last modified timestamp to reduce the num of files need scan.
 
