@@ -12,7 +12,7 @@ hcm is a set of bash scripts that manages your home configs. Two main goals:
 ### Install Script
 Easiest way is to use the [installer][installer_bin] (recommended).
 
-    $ curl -sLo- installer_bin_url | bash
+    $ curl -sLo- https://raw.githubusercontent.com/timgreen/hcm/master/install.sh | bash
 
 If you want to see what’s inside it, [access it directly][installer_bin] or
 [check it out on the repository][installer_source].
