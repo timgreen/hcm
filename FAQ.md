@@ -15,14 +15,14 @@ WHY?
     <Managed Configs Directory>/
     |- HCM_MCD_ROOT
     |- vim/
-    |   |- MODULE
+    |   |- HCM_MODULE
     |   `- .vimrc
     |- shells/
     |   |- zsh/
-    |   |   |- MODULE
+    |   |   |- HCM_MODULE
     |   |   `- .zshrc
     |   `- bash/
-    |       |- MODULE
+    |       |- HCN_MODULE
     |       `- .bashrc
     `...
 
@@ -39,14 +39,14 @@ Example:
     <root>
     | cm_pool/
     | |- vim/
-    | |   |- MODULE
+    | |   |- HCM_MODULE
     | |   `- .vimrc
     | |- shells/
     | |   |- zsh/
-    | |   |   |- MODULE
+    | |   |   |- HCM_MODULE
     | |   |   `- .zshrc
     | |   `- bash/
-    | |       |- MODULE
+    | |       |- HCM_MODULE
     | |       `- .bashrc
     | `...
     |-for_machine_a/
