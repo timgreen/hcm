@@ -45,11 +45,13 @@ link_configs() {
   local source_dir="$1"
   local tracking_dir="$2"
   local target_dir="$3"
+  local ignore_module_file="$4"
 
   echo "link_configs: $1 $2 $3"
 
   # we link all new files in the source dir.
   for file in $(find -P "$source_dir" -maxdepth 1 -mindepth 1 -type f); do
+    is_same_path "$ignore_module_file" "$file" && continue
     local file_basename="$(basename "$file")"
     maybe_link_new_config "$file" "$tracking_dir/$file_basename" "$target_dir/$file_basename"
   done
@@ -108,7 +110,7 @@ process_cm() {
 
   ln -sf "$dir" "$tracking_dir/source"
 
-  link_configs "$dir" "$tracking_dir/config" "$HCM_TARGET_DIR"
+  link_configs "$dir" "$tracking_dir/config" "$HCM_TARGET_DIR" "$dir/$MODULE_FILE"
 }
 
 process_root_or_cm() {
