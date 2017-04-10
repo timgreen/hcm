@@ -105,12 +105,12 @@ process_cm() {
 
   echo "cm: $dir"
 
-  local tracking_dir="$HCM_ROOT/$name"
-  mkdir -p "$tracking_dir/config"
+  local tracking_dir="$(tracking_dir_for "$name")"
+  mkdir -p "$(tracking_files_root_for "$name")"
 
-  ln -sf "$dir" "$tracking_dir/source"
+  ln -sf "$dir" "$(tracking_source_for "$name")"
 
-  link_configs "$dir" "$tracking_dir/config" "$HCM_TARGET_DIR" "$dir/$MODULE_FILE"
+  link_configs "$dir" "$(tracking_files_root_for "$name")" "$HCM_TARGET_DIR" "$dir/$MODULE_FILE"
 }
 
 process_root_or_cm() {

@@ -4,6 +4,20 @@ HCM_ROOT="$HCM_TARGET_DIR/.hcm"
 MODULE_FILE="HCM_MODULE"
 ROOT_FILE="HCM_MCD_ROOT"
 
+#
+tracking_dir_for() {
+  echo "$HCM_ROOT/modules/$1"
+}
+
+tracking_files_root_for() {
+  echo "$HCM_ROOT/modules/$1/config/$2"
+}
+
+tracking_source_for() {
+  echo "$HCM_ROOT/modules/$1/source"
+}
+
+# Test functions
 is_cm() {
   local dir="$1"
   # cm dir should contains a regular file: $MODULE_FILE
