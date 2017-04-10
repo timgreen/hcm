@@ -11,14 +11,19 @@ maybe_remove_legacy_file() {
   # only care about the link from tracking dir
   [[ "${linked_path:0:${#HCM_ROOT}}" != "$HCM_ROOT" ]] && return 1
 
-  if [ -r "$linked_path" ]; then
-    # TODO: also check the relative path
-    return 1
-  else
+  # unlink if tracking file not exist
+  if [ !-r "$linked_path" ]; then
     unlink "$file"
+    return 0
   fi
 
-  return 0
+  # unlink if relative path not match
+  if [[ "${file:${#HCM_TARGET_DIR}}:${#file}" != "${linked_path:${#HCM_ROOT}:${#linked_path}}" ]]; then
+    unlink "$file"
+    return 0
+  fi
+
+  return 1
 }
 
 # returns true if any legacy file(s) removed
