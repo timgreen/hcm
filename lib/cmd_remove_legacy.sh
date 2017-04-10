@@ -9,7 +9,7 @@ maybe_remove_legacy_file() {
   local linked_path="$(readlink "$file")"
 
   # only care about the link from tracking dir
-  [[ "${linked_path:0:${#HCM_ROOT}}" != "$HCM_ROOT" ]] || return 1
+  [[ "${linked_path:0:${#HCM_ROOT}}" != "$HCM_ROOT" ]] && return 1
 
   if [ -r "$linked_path" ]; then
     # TODO: also check the relative path
