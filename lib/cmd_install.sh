@@ -179,7 +179,8 @@ process_root_or_cm() {
 main() {
   # Do a fast scan to remove legacy files in the $HCM_TARGET_DIR
   "$BASE/cmd_remove_legacy.sh" --fast-scan
-  #
+  # And remove legacy files in the $HCM_ROOT
+  "$BASE/internal_remove_legacy_tracking.sh"
 
   if (( $# == 0 )); then
     # use CWD if <dir>
