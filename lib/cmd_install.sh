@@ -76,7 +76,7 @@ maybe_link_new_config() {
   #    x                   s     link source -> tracking
   #              m               rm tracking
   #              m         m     rm tracking; rm target
-  #                        m     rm target (skipped if target is $HOME for performance reason)
+  #                        m     rm target (skipped if target is $HCM_TARGET_DIR for performance reason)
   #    x         s         c     error
   #    x         c               link (force) source -> tracking -> target
   #    x         c         c     link (force) source -> tracking -> target
@@ -108,7 +108,7 @@ process_cm() {
 
   ln -sf "$dir" "$tracking_dir/source"
 
-  link_configs "$dir" "$tracking_dir/config" "$HOME"
+  link_configs "$dir" "$tracking_dir/config" "$HCM_TARGET_DIR"
 }
 
 process_root_or_cm() {
@@ -142,4 +142,5 @@ main() {
   fi
 }
 
+[[ "$DEBUG" != "" ]] && set -x
 main "$@"

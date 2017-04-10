@@ -62,4 +62,5 @@ main() {
   do_full_scan
 }
 
+[[ "$DEBUG" != "" ]] && set -x
 main "$@"
