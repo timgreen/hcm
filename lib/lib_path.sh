@@ -19,3 +19,7 @@ is_root() {
 is_same_path() {
   [[ "$(readlink -f "$1")" == "$(readlink -f "$2")" ]]
 }
+
+is_in_hcm_root() {
+  [[ "${1:0:${#HCM_ROOT}}" == "$HCM_ROOT" ]]
+}

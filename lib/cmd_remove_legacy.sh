@@ -9,16 +9,16 @@ maybe_remove_legacy_file() {
   local linked_path="$(readlink "$file")"
 
   # only care about the link from tracking dir
-  [[ "${linked_path:0:${#HCM_ROOT}}" != "$HCM_ROOT" ]] && return 1
+  is_in_hcm_root "$linked_path" || return 1
 
   # unlink if tracking file not exist
-  if [ !-r "$linked_path" ]; then
+  if [ ! -r "$linked_path" ]; then
     unlink "$file"
     return 0
   fi
 
   # unlink if relative path not match
-  if [[ "${file:${#HCM_TARGET_DIR}}:${#file}" != "${linked_path:${#HCM_ROOT}:${#linked_path}}" ]]; then
+  if [[ "${file:${#HCM_TARGET_DIR}}" != "${linked_path:${#HCM_ROOT}" ]]; then
     unlink "$file"
     return 0
   fi
