@@ -1,10 +1,7 @@
 #!/bin/bash
 
 BASE=$(dirname $(readlink -f "$0"))
-
-HCM_ROOT="$HOME/.hcm"
-MODULE_FILE="HCM_MODULE"
-ROOT_FILE="HCM_MCD_ROOT"
+source "$BASE/lib_path.sh"
 
 is_cm() {
   local dir="$1"
