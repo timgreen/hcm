@@ -165,6 +165,8 @@ maybe_link_new_config() {
   local tracking_file="$2"
   local target_file="$3"
 
+  # NOTE: we already handled the file type conflicts in the <tracking_dir>
+  [ -L "$tracking_file" ] && [ "$(readlink "$tracking_file")" == "$source_file" ] && return
 }
 
 process_cm() {
@@ -194,9 +196,12 @@ process_root_or_cm() {
 }
 
 main() {
+  # Do a fast scan to remove legacy files in the <target_dir>
+  "$BASE/cmd_remove_legacy.sh" --fast-scan
+
   if (( $# == 0 )); then
     # use CWD if <dir>
-    main "$PWD"
+    process_root_or_cm "$PWD"
   else
     while (( $# > 0 )); do
       local dir="$1"

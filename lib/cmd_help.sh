@@ -6,8 +6,10 @@ usage: hcm <command> [<args>]
 
 Available commands:
 
-   install    Install config module(s) in HOME directory
-   help       Show this doc
+   install        Install config module(s) in HOME directory
+   remove-legacy  Remove the legacy files that hcm installed in the HOME
+                  directory
+   help           Show this doc
 
 See 'hcm help <command>' to read about a specific subcommand.
 EOF
@@ -32,12 +34,28 @@ OPTIONS
 EOF
 }
 
+usage_remove_legacy() {
+  cat << EOF
+usage: hcm remove-legacy [--[no-]fast-scan]
+
+
+OPTIONS
+       --fast-scan
+           only scan the files and directories mentioned in the tracking directory.
+
+       --no-fast-scan (DEFAULT)
+           scan the whole HOME directory.
+
+EOF
+}
+
 print_usage() {
   local cmd="$1"
+  local cmd_name="$(echo $cmd | tr - _)"
   if [[ "$cmd" == "" ]]; then
     usage
-  elif [[ "$(type -t usage_$cmd)" == "function" ]]; then
-    usage_$cmd
+  elif echo "$cmd" | grep -qsv "_" && [[ "$(type -t usage_$cmd_name)" == "function" ]]; then
+    usage_$cmd_name
   else
     echo "Unknown command $(tput setaf 13)$cmd$(tput op)"
     echo
