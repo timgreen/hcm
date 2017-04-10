@@ -66,19 +66,110 @@ link_configs() {
   local target_dir="$3"
 
   # <source> <tracking> <target>
+  ##############################################################################
   #    x         s               link tracking -> target
   #    x         s         s     no-op
-  #    x         s         c     error
   #    x                   s     link source -> tracking
   #    x                         link source -> tracking -> target
+  #              m               rm tracking
+  #              m         m     rm tracking; rm target
+  #                        m     rm target (skipped if target is $HOME for performance reason)
+  ##############################################################################
+  #    x         s         c     error
   #    x         c               link (force) source -> tracking -> target
   #    x         c         c     link (force) source -> tracking -> target
   #    x         c1        c2    error
-  #              m               rm tracking
-  #              m         m     rm tracking; rm target
   #              m         c     rm tracking; error
-  #                        m     rm target (skipped if target is $HOME for performance reason)
+
   echo "link_configs: $1 $2 $3"
+
+  # first, check if their are directories
+  # TODO
+
+  # second, we remove all files/dirs no longer exist in the source dir.
+  # By going though the items in the <tracking_dir>, for most of the cases
+  # <tracking_dir> should represent the current states in the <target_dir>,
+  # otherwise we need a cleanup.
+  for item in $(find -P "$target_dir" -maxdepth 1 -mindepth 1); do
+    maybe_remove_legacy_config "$source_dir/$item" "$tracking_dir/$item" "$target_dir/$item"
+  done
+
+  # last, we link all new files in the source dir.
+  for file in $(find -P "$source_dir" -maxdepth 1 -mindepth 1 -type f); do
+    maybe_link_new_config "$source_dir/$file" "$tracking_dir/$file" "$target_dir/$file"
+  done
+
+  # last, handle the subdirectories recusively.
+  for sub in $(find -P "$source_dir" -maxdepth 1 -mindepth 1 -type d); do
+    link_configs "$1/$sub" "$2/$sub" "$3/$sub"
+  done
+}
+
+maybe_remove_legacy_config() {
+  local source_item="$1"
+  local tracking_item="$2"
+  local target_item="$3"
+
+  if [ -d "$target_item" ]; then
+    if [ !-d "$source_item" ]; then
+      # TODO: error or move all the conflict check to one place.
+      return 1
+    fi
+
+    [ -e "$source_item" ] && return
+
+    remove_legacy_config_dir "$tracking_item" "$target_item"
+  else
+    if [ -d "$source_item" ]; then
+      # TODO: error or move all the conflict check to one place.
+      return 1
+    fi
+
+    [ -e "$source_item" ] && return
+
+    remove_legacy_config_file "$tracking_item" "$target_item"
+  fi
+}
+
+remove_legacy_config_dir() {
+  local tracking_dir="$1"
+  local target_dir="$2"
+
+  [ !-e "$target_dir" ] && return
+  if [ !-d "$target_dir" ]; then
+    # TODO: error
+      return 1
+  fi
+
+  for item in $(find -P "$target_dir" -maxdepth 1 -mindepth 1); do
+    if [ -d "$tracking_dir/$item" ]; then
+      remove_legacy_config_dir "$tracking_dir/$item" "$target_dir/$item"
+    else
+      remove_legacy_config_file "$tracking_dir/$item" "$target_dir/$item"
+    fi
+  done
+
+  rmdir --ignore-fail-on-non-empty "$tracking_dir"
+  rmdir --ignore-fail-on-non-empty "$target_dir"
+}
+
+remove_legacy_config_file() {
+  local tracking_item="$1"
+  local target_item="$2"
+
+  [ !-e "$target_item" ] && return
+  if [ !-L "$target_item" ]; then
+    # TODO: error
+    return 1
+  fi
+
+  if [[ "$(readlink $target_item)" != "$tracking_item" ]]; then
+    # TODO: error
+    return 1
+  fi
+
+  unlink "$tracking_item"
+  unlink "$target_item"
 }
 
 process_cm() {
