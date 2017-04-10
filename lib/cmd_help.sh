@@ -52,6 +52,12 @@ OPTIONS
 EOF
 }
 
+usage_uninstall() {
+  cat << EOF
+usage: hcm uninstall
+EOF
+}
+
 print_usage() {
   local cmd="${1:-help}"
   local cmd_filename="$(cmd_to_filename $cmd)"
