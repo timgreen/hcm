@@ -18,7 +18,7 @@ maybe_remove_legacy_file() {
   fi
 
   # unlink if relative path not match
-  if [[ "${file:${#HCM_TARGET_DIR}}" != "${linked_path:${#HCM_ROOT}" ]]; then
+  if [[ "$(relative_path_for_tracking_file "$linked_path")" != "$(relative_path_for_target_file "$file")" ]]; then
     unlink "$file"
     return 0
   fi

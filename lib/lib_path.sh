@@ -23,3 +23,11 @@ is_same_path() {
 is_in_hcm_root() {
   [[ "${1:0:${#HCM_ROOT}}" == "$HCM_ROOT" ]]
 }
+
+relative_path_for_tracking_file() {
+  echo "${1:${#HCM_ROOT}}" | sed 's|^/[^/]\+/config/||'
+}
+
+relative_path_for_target_file() {
+  echo "${1:${#HCM_TARGET_DIR}}" | sed 's|^/||'
+}
