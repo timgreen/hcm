@@ -3,22 +3,6 @@
 BASE=$(dirname $(readlink -f "$0"))
 source "$BASE/lib_path.sh"
 
-is_cm() {
-  local dir="$1"
-  # cm dir should contains a regular file: $MODULE_FILE
-  [ -f "$dir/$MODULE_FILE" ] && [ ! -L "$dir/$MODULE_FILE" ]
-}
-
-is_root() {
-  local dir="$1"
-  # root dir should contains a regular file: $ROOT_FILE
-  [ -f "$dir/$ROOT_FILE" ] && [ ! -L "$dir/$ROOT_FILE" ]
-}
-
-is_same_file() {
-  [[ "$(readlink -f "$1")" == "$(readlink -f "$2")" ]]
-}
-
 process_sub_dir() {
   local dir="$1"
   echo "sub_dir: $1"
@@ -51,7 +35,7 @@ process_root() {
   done
 
   for file in $(find -H "$dir" -maxdepth 1 -mindepth 1 -xtype f); do
-    is_same_file "$dir/$ROOT_FILE" "$file" && continue
+    is_same_path "$dir/$ROOT_FILE" "$file" && continue
 
     echo "Unmanaged file: $file"
   done
@@ -193,8 +177,9 @@ process_root_or_cm() {
 }
 
 main() {
-  # Do a fast scan to remove legacy files in the <target_dir>
+  # Do a fast scan to remove legacy files in the $HCM_TARGET_DIR
   "$BASE/cmd_remove_legacy.sh" --fast-scan
+  #
 
   if (( $# == 0 )); then
     # use CWD if <dir>
