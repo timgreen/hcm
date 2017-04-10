@@ -37,4 +37,4 @@ for more information
 
 [installer_bin]: https://raw.githubusercontent.com/timgreen/hcm/master/install.sh
 [installer_source]: https://github.com/timgreen/hcm/blob/master/install.sh
-[MCD]: ADVANCED.md#managed-configs-directory-mcd
+[MCD]: docs/ADVANCED.md#managed-configs-directory-mcd
