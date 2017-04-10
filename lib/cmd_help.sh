@@ -1,6 +1,9 @@
 #!/bin/bash
 
-usage() {
+BASE=$(dirname $(readlink -f "$0"))
+source "$BASE/lib_cmd.sh"
+
+usage_help() {
   cat << EOF
 usage: hcm <command> [<args>]
 
@@ -50,16 +53,15 @@ EOF
 }
 
 print_usage() {
-  local cmd="$1"
-  local cmd_name="$(echo $cmd | tr - _)"
-  if [[ "$cmd" == "" ]]; then
-    usage
-  elif echo "$cmd" | grep -qsv "_" && [[ "$(type -t usage_$cmd_name)" == "function" ]]; then
-    usage_$cmd_name
+  local cmd="${1:-help}"
+  local cmd_filename="$(cmd_to_filename $cmd)"
+
+  if is_valid_cmd_name "$cmd" && [[ "$(type -t usage_$cmd_filename)" == "function" ]]; then
+    usage_$cmd_filename
   else
     echo "Unknown command $(tput setaf 13)$cmd$(tput op)"
     echo
-    usage
+    usage_help
   fi
 }
 
