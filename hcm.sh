@@ -1,24 +1,17 @@
 #!/bin/bash
 
 BASE=$(dirname $(readlink -f "$0"))
+source "$BASE/lib/lib_cmd.sh"
 
 cmd="$1"
 shift
 
 set -e
-case "$cmd" in
-  install)
-    sh $BASE/lib/cmd_install.sh "$@"
-  ;;
-  help)
-    sh $BASE/lib/cmd_help.sh "$@"
-  ;;
-  "")
-    sh $BASE/lib/cmd_help.sh
-  ;;
-  *)
-    echo "Unknown command $(tput setaf 13)$cmd$(tput op)"
-    echo
-    sh $BASE/lib/cmd_help.sh
-    exit 1
-esac
+[[ "$DEBUG" != "" ]] && set -x
+
+if is_valid_cmd_name "$cmd" && [ -f "$BASE/lib/cmd_$(cmd_to_filename "$cmd").sh" ]; then
+  sh "$BASE/lib/cmd_$(cmd_to_filename "$cmd").sh" "$@"
+else
+  sh "$BASE/lib/cmd_help.sh" "$cmd"
+  exit 1
+fi
