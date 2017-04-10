@@ -111,22 +111,10 @@ maybe_remove_legacy_config() {
   local target_item="$3"
 
   if [ -d "$target_item" ]; then
-    if [ !-d "$source_item" ]; then
-      # TODO: error or move all the conflict check to one place.
-      return 1
-    fi
-
-    [ -e "$source_item" ] && return
-
+    [ -d "$source_item" ] && return
     remove_legacy_config_dir "$tracking_item" "$target_item"
   else
-    if [ -d "$source_item" ]; then
-      # TODO: error or move all the conflict check to one place.
-      return 1
-    fi
-
-    [ -e "$source_item" ] && return
-
+    [ !-d "$source_item" ] && return
     remove_legacy_config_file "$tracking_item" "$target_item"
   fi
 }
@@ -170,6 +158,13 @@ remove_legacy_config_file() {
 
   unlink "$tracking_item"
   unlink "$target_item"
+}
+
+maybe_link_new_config() {
+  local source_file="$1"
+  local tracking_file="$2"
+  local target_file="$3"
+
 }
 
 process_cm() {
