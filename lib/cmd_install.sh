@@ -93,7 +93,7 @@ maybe_link_new_config() {
     mkdir -p "$(dirname "$tracking_file")"
     ln -s "$source_file" "$tracking_file"
   }
-  [ -r "$target_file" || {
+  [ -r "$target_file" ] || {
     mkdir -p "$(dirname "$target_file")"
     ln -s "$tracking_file" "$target_file"
   }
