@@ -10,7 +10,7 @@ tracking_dir_for() {
 }
 
 tracking_files_root_for() {
-  echo "$HCM_ROOT/modules/$1/config/$2"
+  echo "$HCM_ROOT/modules/$1/config"
 }
 
 tracking_source_for() {
