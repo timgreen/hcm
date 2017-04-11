@@ -14,16 +14,13 @@ teardown() {
 
 @test "remove-legacy: ignore regular files" {
   echo a > target/a
-  echo a > expected_target/a
-  mkdir target/b expected_target/b
+  mkdir target/b
   echo b > target/b/b1
-  echo b > expected_target/b/b1
-  mkdir target/c expected_target/c
+  mkdir target/c
   touch target/c/c1
-  touch expected_target/c/c1
+  cp -r target/* expected_target/
 
   hcm remove-legacy
 
   diff -rq --no-dereference expected_target target
 }
-
