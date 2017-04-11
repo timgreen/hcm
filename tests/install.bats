@@ -20,7 +20,10 @@ teardown() {
 }
 
 @test "install: fail when <dir> doesn't contains HCM_MODULE or HCM_MCD_ROOT" {
-  run hcm install sources/invalid_dir
+  unzip fixtures/invalid_dir.zip -d source
+
+  run hcm install source/invalid_dir
+
   [ "$status" -eq 1 ]
 }
 
@@ -35,7 +38,9 @@ teardown() {
 }
 
 @test "install: empty managed config directory (MCD)" {
-  hcm install sources/empty_mcd
+  unzip fixtures/empty_mcd.zip -d source
+
+  hcm install source/empty_mcd
 
   diff -rq --no-dereference expected_target target
 }
