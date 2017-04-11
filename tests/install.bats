@@ -1,17 +1,15 @@
 #!/usr/bin/env bats
 
+load test_helper
+
 setup() {
-  mkdir -p "$BATS_TEST_DIRNAME/target"
-  mkdir -p "$BATS_TEST_DIRNAME/expected_target"
+  mkdir -p "target"
+  mkdir -p "expected_target"
 }
 
 teardown() {
-  rm -fr "$BATS_TEST_DIRNAME/target"
-  rm -fr "$BATS_TEST_DIRNAME/expected_target"
-}
-
-hcm() {
-  HCM_TARGET_DIR="$BATS_TEST_DIRNAME/target" ../hcm "$@"
+  rm -fr "target"
+  rm -fr "expected_target"
 }
 
 @test "Fail when install non exist <dir>" {
