@@ -127,9 +127,9 @@ process_root_or_cm() {
 
 main() {
   # Do a fast scan to remove legacy files in the $HCM_TARGET_DIR
-  sh "$BASE/cmd_remove_legacy.sh" --fast-scan
+  bash "$BASE/cmd_remove_legacy.sh" --fast-scan
   # And remove legacy files in the $HCM_ROOT
-  sh "$BASE/internal_remove_legacy_tracking.sh"
+  bash "$BASE/internal_remove_legacy_tracking.sh"
 
   # Finally, install the new files
   if (( $# == 0 )); then
