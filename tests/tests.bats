@@ -1,11 +1,18 @@
 #!/usr/bin/env bats
 
-@test "addition using bc" {
-  result="$(echo 2+2 | bc)"
-  [ "$result" -eq 4 ]
+setup() {
+  mkdir -p "$BATS_TEST_DIRNAME/target"
 }
 
-@test "addition using dc" {
-  result="$(echo 2 2+p | dc)"
-  [ "$result" -eq 4 ]
+teardown() {
+  rm -fr "$BATS_TEST_DIRNAME/target"
+}
+
+hcm() {
+  HCM_TARGET_DIR="$BATS_TEST_DIRNAME/target" ../hcm "$@"
+}
+
+@test "Fail when install non exist <dir>" {
+  run hcm install nonexistent_dir
+  [ "$status" -eq 1 ]
 }
