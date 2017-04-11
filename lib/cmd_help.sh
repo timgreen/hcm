@@ -68,6 +68,7 @@ print_usage() {
     echo "Unknown command $(tput setaf 13)$cmd$(tput op)"
     echo
     usage_help
+    exit 1
   fi
 }
 

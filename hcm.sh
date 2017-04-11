@@ -13,5 +13,4 @@ if is_valid_cmd_name "$cmd" && [ -f "$BASE/lib/cmd_$(cmd_to_filename "$cmd").sh"
   sh "$BASE/lib/cmd_$(cmd_to_filename "$cmd").sh" "$@"
 else
   sh "$BASE/lib/cmd_help.sh" "$cmd"
-  exit 1
 fi
