@@ -5,11 +5,13 @@ load test_helper
 setup() {
   mkdir -p "target"
   mkdir -p "expected_target"
+  mkdir -p "source"
 }
 
 teardown() {
   rm -fr "target"
   rm -fr "expected_target"
+  rm -fr "source"
 }
 
 @test "install: fail when <dir> not exist" {
@@ -23,10 +25,11 @@ teardown() {
 }
 
 @test "install: empty config module (CM)" {
-  hcm install sources/empty_cm
+  unzip fixtures/empty_cm.zip -d source
+  hcm install source/empty_cm
 
   mkdir -p expected_target/.hcm/modules/empty_cm/config
-  ln -s $(readlink -f sources/empty_cm) expected_target/.hcm/modules/empty_cm/source
+  ln -s $(readlink -f source/empty_cm) expected_target/.hcm/modules/empty_cm/source
 
   diff -rq --no-dereference expected_target target
 }

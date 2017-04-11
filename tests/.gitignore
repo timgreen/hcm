@@ -1,3 +1,4 @@
 bats/
-target/
 expected_target/
+source/
+target/
