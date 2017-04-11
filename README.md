@@ -1,5 +1,7 @@
 # Home Config Manager (hcm)
 
+[![Build Status](https://travis-ci.org/timgreen/hcm.svg?branch=master)](https://travis-ci.org/timgreen/hcm)
+
 ## What's hcm
 
 hcm is a set of bash scripts that manages your home configs. I create it solve two main problems:
