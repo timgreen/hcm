@@ -24,3 +24,25 @@ teardown() {
 
   diff -rq --no-dereference expected_target target
 }
+
+@test "remove-legacy: rm softlink points to the tracking dir" {
+  ln -s $(readlink -m target/.hcm/modules/a/config/a) target/a
+  mkdir target/b
+  ln -s $(readlink -m target/.hcm/modules/a/config/b/b1) target/b/b1
+
+  hcm remove-legacy
+
+  diff -rq --no-dereference expected_target target
+}
+
+@test "remove-legacy: ignore softlink not points to the tracking dir" {
+  ln -s $(readlink -m target/a1) target/a
+  mkdir target/b
+  ln -s $(readlink -m target/b1) target/b/b1
+
+  cp -r target/* expected_target
+
+  hcm remove-legacy
+
+  diff -rq --no-dereference expected_target target
+}
