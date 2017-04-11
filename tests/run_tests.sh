@@ -10,4 +10,4 @@ BATS_PATH=bats/bats-$BATS_VERSION
   rm -f v${BATS_VERSION}.zip
 }
 
-"$BATS_PATH"/bin/bats tests.bats
+"$BATS_PATH"/bin/bats install.bats
