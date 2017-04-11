@@ -9,6 +9,12 @@ setup() {
 }
 
 teardown() {
+  (( $DEBUG_TEST )) && {
+    rm -fr "/dev/shm/bats_debug/$BATS_TEST_NAME"
+    mkdir -p "/dev/shm/bats_debug/$BATS_TEST_NAME"
+    cp -r "target" "expected_target" "source" "/dev/shm/bats_debug/$BATS_TEST_NAME"
+  }
+
   rm -fr "target"
   rm -fr "expected_target"
   rm -fr "source"
