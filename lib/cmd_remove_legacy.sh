@@ -11,8 +11,8 @@ maybe_remove_legacy_file() {
   # only care about the link from tracking dir
   is_in_hcm_root "$linked_path" || return 1
 
-  # unlink if tracking file not exist
-  if [ ! -r "$linked_path" ]; then
+  # unlink if tracking file is not a softlink
+  if [ ! -L "$linked_path" ]; then
     unlink "$file"
     return 0
   fi

@@ -39,7 +39,7 @@ is_in_hcm_root() {
 }
 
 relative_path_for_tracking_file() {
-  echo "${1:${#HCM_ROOT}}" | sed 's|^/[^/]\+/config/||'
+  echo "${1:${#HCM_ROOT}}" | sed 's|^/modules/[^/]\+/config/||'
 }
 
 relative_path_for_target_file() {
