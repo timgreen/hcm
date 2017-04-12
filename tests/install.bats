@@ -97,3 +97,30 @@ teardown() {
 
   [ "$status" -eq 1 ]
 }
+
+@test "install: simple MCD" {
+  unzip fixtures/simple_mcd.zip -d source
+
+  mkdir -p expected_target/.hcm/modules/cm1/config
+  ln -s $(readlink -f source/simple_mcd/cm1) expected_target/.hcm/modules/cm1/source
+  ln -s $(readlink -f source/simple_mcd/cm1/a) expected_target/.hcm/modules/cm1/config/a
+  mkdir -p expected_target/.hcm/modules/cm1/config/common_dir
+  ln -s $(readlink -f source/simple_mcd/cm1/common_dir/common_file_1) expected_target/.hcm/modules/cm1/config/common_dir/common_file_1
+  mkdir -p expected_target/.hcm/modules/cm2/config
+  ln -s $(readlink -f source/simple_mcd/group1/cm2) expected_target/.hcm/modules/cm2/source
+  mkdir -p expected_target/.hcm/modules/cm2/config/common_dir
+  ln -s $(readlink -f source/simple_mcd/group1/cm2/common_dir/common_file_2) expected_target/.hcm/modules/cm2/config/common_dir/common_file_2
+  mkdir -p expected_target/.hcm/modules/cm3/config
+  ln -s $(readlink -f source/simple_mcd/group1/cm3) expected_target/.hcm/modules/cm3/source
+  ln -s $(readlink -f source/simple_mcd/group1/cm3/b) expected_target/.hcm/modules/cm3/config/b
+
+  ln -s $(readlink -m target/.hcm/modules/cm1/config/a) expected_target/a
+  mkdir -p expected_target/common_dir
+  ln -s $(readlink -m target/.hcm/modules/cm1/config/common_dir/common_file_1) expected_target/common_dir/common_file_1
+  ln -s $(readlink -m target/.hcm/modules/cm2/config/common_dir/common_file_2) expected_target/common_dir/common_file_2
+  ln -s $(readlink -m target/.hcm/modules/cm3/config/b) expected_target/b
+
+  hcm install source/simple_mcd
+
+  diff -rq --no-dereference expected_target target
+}

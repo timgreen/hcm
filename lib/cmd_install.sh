@@ -10,18 +10,18 @@ process_sub_dir() {
   if is_cm "$dir"; then
     process_cm "$dir"
   else
-    local empty_dir=true
+    local is_empty_dir=true
     for sub_dir in $(find -H "$dir" -maxdepth 1 -mindepth 1 -xtype d); do
       process_sub_dir "$sub_dir"
-      empty_dir=false
+      is_empty_dir=false
     done
 
     for file in $(find -H "$dir" -maxdepth 1 -mindepth 1 -xtype f); do
       error "Unmanaged file: $file"
-      empty_dir=false
+      is_empty_dir=false
     done
 
-    error "Empty dir: $dir"
+    $is_empty_dir && error "Empty dir: $dir"
   fi
 }
 
