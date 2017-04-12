@@ -11,6 +11,7 @@ run_hook() {
   set -a
   CM_DIR="$1"
   HOOK_CWD="$(hook_work_dir_for "$(basename "$CM_DIR")")"
+  source "$BASE/lib_hook_exit_status.sh"
   source "$BASE/hook_help.sh"
   set +a
 

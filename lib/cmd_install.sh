@@ -4,6 +4,7 @@ BASE=$(dirname $(readlink -f "$0"))
 source "$BASE/lib_path.sh"
 source "$BASE/lib_msg.sh"
 source "$BASE/lib_ignore.sh"
+source "$BASE/lib_hook_exit_status.sh"
 
 process_sub_dir() {
   local dir="$1"
@@ -123,7 +124,7 @@ process_cm() {
   fi
 
   $(bash "$BASE/hook.sh" "$dir" pre_link) # preserve the exit status when set -e is on
-  (( $? == 3 )) && return 0
+  (( $? == $HOOK_EXIT_SKIP )) && return 0
 
   link_configs "" "$dir" "$(tracking_files_root_for "$name")" "$HCM_TARGET_DIR"
   bash "$BASE/hook.sh" "$dir" post_link || IGNORE_ERROR=x
