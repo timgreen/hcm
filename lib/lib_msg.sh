@@ -1,12 +1,17 @@
 
 color() {
   if $USE_COLORS; then
-    echo -n "$(tput setaf $1)$2$(tput op)"
+    echo -e "$(tput setaf $1)$2$(tput op)"
   else
-    echo -n "$2"
+    echo -e "$2"
   fi
 }
 
 highlight() {
   color 13 "$1" # Purple
+}
+
+error() {
+  color 1 "$1" >&2
+  exit 1
 }

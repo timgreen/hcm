@@ -2,6 +2,7 @@
 
 BASE=$(dirname $(readlink -f "$0"))
 source "$BASE/lib_path.sh"
+source "$BASE/lib_msg.sh"
 
 process_sub_dir() {
   local dir="$1"
@@ -101,7 +102,17 @@ process_cm() {
   local tracking_dir="$(tracking_dir_for "$name")"
   mkdir -p "$(tracking_files_root_for "$name")"
 
-  ln -sf "$dir" "$(tracking_source_for "$name")"
+  if [ ! -e "$(tracking_source_for "$name")" ]; then
+    ln -s "$dir" "$(tracking_source_for "$name")"
+  fi
+
+  if [ ! -L "$(tracking_source_for "$name")" ]; then
+    error "Internal error: $(tracking_source_for "$name") is not softlink"
+  fi
+
+  if ! is_same_path "$(tracking_source_for "$name")" "$dir"; then
+    error "CM conflict: $name\ncan not install $dir, already installed $(readlink -m "$(tracking_source_for "$name")")"
+  fi
 
   link_configs "$dir" "$(tracking_files_root_for "$name")" "$HCM_TARGET_DIR" "$dir/$MODULE_FILE"
 }

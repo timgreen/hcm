@@ -89,3 +89,11 @@ teardown() {
 
   diff -rq --no-dereference expected_target target
 }
+
+@test "install: error on CM name crash" {
+  unzip fixtures/cm_names_crash.zip -d source
+
+  run hcm install source/a/cm_name source/b/cm_name
+
+  [ "$status" -eq 1 ]
+}
