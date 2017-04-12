@@ -17,11 +17,11 @@ process_sub_dir() {
     done
 
     for file in $(find -H "$dir" -maxdepth 1 -mindepth 1 -xtype f); do
-      echo "Unmanaged file: $file"
+      error "Unmanaged file: $file"
       empty_dir=false
     done
 
-    echo "Empty dir: $dir"
+    error "Empty dir: $dir"
   fi
 }
 
@@ -35,7 +35,7 @@ process_root() {
   for file in $(find -H "$dir" -maxdepth 1 -mindepth 1 -xtype f); do
     is_same_path "$dir/$ROOT_FILE" "$file" && continue
 
-    echo "Unmanaged file: $file"
+    error "Unmanaged file: $file"
   done
 }
 
@@ -82,8 +82,7 @@ maybe_link_new_config() {
   #              m         c     rm tracking; error
 
   if [ -d "$target_file" ]; then
-    echo "error: link new config $1 $2 $3"
-    exit 1
+    error "link new config $1 $2 $3"
   fi
   [ -r "$tracking_file" ] || {
     mkdir -p "$(dirname "$tracking_file")"
@@ -124,8 +123,7 @@ process_root_or_cm() {
   elif is_cm "$dir"; then
     process_cm "$dir"
   else
-    echo "Invalid dir: $dir"
-    exit 1
+    error "Invalid dir: $dir"
   fi
 }
 

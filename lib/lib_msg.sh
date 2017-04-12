@@ -12,6 +12,6 @@ highlight() {
 }
 
 error() {
-  color 1 "$1" >&2
+  color 1 "Error: $1" >&2
   exit 1
 }
