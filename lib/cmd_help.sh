@@ -2,6 +2,7 @@
 
 BASE=$(dirname $(readlink -f "$0"))
 source "$BASE/lib_cmd.sh"
+source "$BASE/lib_msg.sh"
 
 usage_help() {
   cat << EOF
@@ -65,7 +66,7 @@ print_usage() {
   if is_valid_cmd_name "$cmd" && [[ "$(type -t usage_$cmd_filename)" == "function" ]]; then
     usage_$cmd_filename
   else
-    echo "Unknown command $(tput setaf 13)$cmd$(tput op)"
+    echo "Unknown command $(highlight "$cmd")"
     echo
     usage_help
     exit 1
