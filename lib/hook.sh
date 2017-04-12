@@ -11,6 +11,7 @@ run_hook() {
   set -a
   CM_DIR="$1"
   HOOK_CWD="$(hook_work_dir_for "$(basename "$CM_DIR")")"
+  source "$BASE/hook_help.sh"
   set +a
 
   (
@@ -21,7 +22,7 @@ run_hook() {
       cd "$HOOK_CWD"
       $action
     else
-      exit 2
+      exit $HOOK_EXIT_ACTION_NOT_FOUND
     fi
   )
 }
