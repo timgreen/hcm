@@ -71,3 +71,21 @@ teardown() {
 
   diff -rq --no-dereference expected_target target
 }
+
+@test "install: multiple CMs" {
+  unzip fixtures/multiple_cms.zip -d source
+
+  mkdir -p expected_target/.hcm/modules/cm1/config
+  ln -s $(readlink -f source/cm1) expected_target/.hcm/modules/cm1/source
+  ln -s $(readlink -f source/cm1/a) expected_target/.hcm/modules/cm1/config/a
+  mkdir -p expected_target/.hcm/modules/cm2/config
+  ln -s $(readlink -f source/cm2) expected_target/.hcm/modules/cm2/source
+  ln -s $(readlink -f source/cm2/b) expected_target/.hcm/modules/cm2/config/b
+
+  ln -s $(readlink -m target/.hcm/modules/cm1/config/a) expected_target/a
+  ln -s $(readlink -m target/.hcm/modules/cm2/config/b) expected_target/b
+
+  hcm install source/cm1 source/cm2
+
+  diff -rq --no-dereference expected_target target
+}
