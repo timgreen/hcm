@@ -181,10 +181,29 @@ teardown() {
   unzip fixtures/simple_hook_function.zip -d source
 
   mkdir -p expected_target/.hcm/modules/simple_hook_function/config
+  mkdir -p expected_target/.hcm/modules/simple_hook_function/hook
   ln -s $(readlink -f source/simple_hook_function) expected_target/.hcm/modules/simple_hook_function/source
   echo "created by hook function" > expected_target/a
 
   hcm install source/simple_hook_function
+
+  diff -rq --no-dereference expected_target target
+}
+
+@test "install: use variables in hook" {
+  unzip fixtures/use_variable_in_hook.zip -d source
+
+  mkdir -p expected_target/.hcm/modules/use_variable_in_hook/config
+  mkdir -p expected_target/.hcm/modules/use_variable_in_hook/hook
+  ln -s $(readlink -f source/use_variable_in_hook) expected_target/.hcm/modules/use_variable_in_hook/source
+  cat << EOF > expected_target/variables
+PWD: $(readlink -m target/.hcm/modules/use_variable_in_hook/hook)
+HOOK_CWD: $(readlink -m target/.hcm/modules/use_variable_in_hook/hook)
+CM_DIR: $(readlink -f source/use_variable_in_hook)
+HCM_TARGET_DIR: $(readlink -f target)
+EOF
+
+  hcm install source/use_variable_in_hook
 
   diff -rq --no-dereference expected_target target
 }

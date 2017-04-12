@@ -4,7 +4,7 @@ HCM_ROOT="$HCM_TARGET_DIR/.hcm"
 MODULE_FILE="HCM_MODULE"
 ROOT_FILE="HCM_MCD_ROOT"
 
-#
+# tracking
 tracking_dir_for() {
   echo "$HCM_ROOT/modules/$1"
 }
@@ -15,6 +15,10 @@ tracking_files_root_for() {
 
 tracking_source_for() {
   echo "$HCM_ROOT/modules/$1/source"
+}
+
+hook_work_dir_for() {
+  echo "$HCM_ROOT/modules/$1/hook"
 }
 
 #
