@@ -207,3 +207,15 @@ EOF
 
   diff -rq --no-dereference expected_target target
 }
+
+@test "install: skip CM if pre_link hook exit 3" {
+  unzip fixtures/skip_cm_if_pre_link_hook_exit_3.zip -d source
+
+  mkdir -p expected_target/.hcm/modules/skip_cm_if_pre_link_hook_exit_3/config
+  mkdir -p expected_target/.hcm/modules/skip_cm_if_pre_link_hook_exit_3/hook
+  ln -s $(readlink -f source/skip_cm_if_pre_link_hook_exit_3) expected_target/.hcm/modules/skip_cm_if_pre_link_hook_exit_3/source
+
+  hcm install source/skip_cm_if_pre_link_hook_exit_3
+
+  diff -rq --no-dereference expected_target target
+}

@@ -122,6 +122,9 @@ process_cm() {
     error "CM conflict: $name\ncan not install $dir, already installed $(readlink -m "$(tracking_source_for "$name")")"
   fi
 
+  $(bash "$BASE/hook.sh" "$dir" pre_link) # preserve the exit status when set -e is on
+  (( $? == 3 )) && return 0
+
   link_configs "" "$dir" "$(tracking_files_root_for "$name")" "$HCM_TARGET_DIR"
   bash "$BASE/hook.sh" "$dir" post_link || IGNORE_ERROR=x
 }
