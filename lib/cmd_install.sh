@@ -122,7 +122,7 @@ process_cm() {
     error "CM conflict: $name\ncan not install $dir, already installed $(readlink -m "$(tracking_source_for "$name")")"
   fi
 
-  link_configs "" "$dir" "$(tracking_files_root_for "$name")" "$HCM_TARGET_DIR" "$dir/$MODULE_FILE"
+  link_configs "" "$dir" "$(tracking_files_root_for "$name")" "$HCM_TARGET_DIR"
 }
 
 process_root_or_cm() {
