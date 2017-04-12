@@ -20,6 +20,8 @@ run_hook() {
       mkdir -p "$HOOK_CWD"
       cd "$HOOK_CWD"
       $action
+    else
+      exit 2
     fi
   )
 }

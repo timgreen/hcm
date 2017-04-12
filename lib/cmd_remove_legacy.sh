@@ -33,11 +33,11 @@ scan_and_remove_legacy_dir() {
 
   IFS=$'\n'
   for file in $(find -P "$target_dir" -maxdepth 1 -mindepth 1 -type l); do
-    maybe_remove_legacy_file "$file" && removed_something=true || IGNORE=x
+    maybe_remove_legacy_file "$file" && removed_something=true || IGNORE_ERROR=x
   done
 
   for dir in $(find -P "$target_dir" -maxdepth 1 -mindepth 1 -type d); do
-    scan_and_remove_legacy_dir "$dir" && removed_something=true || IGNORE=x
+    scan_and_remove_legacy_dir "$dir" && removed_something=true || IGNORE_ERROR=x
   done
 
   $removed_something || return 1
@@ -53,12 +53,12 @@ do_fast_scan() {
 do_full_scan() {
   IFS=$'\n'
   for file in $(find -P "$HCM_TARGET_DIR" -maxdepth 1 -mindepth 1 -type l); do
-    maybe_remove_legacy_file "$file" || IGNORE=x
+    maybe_remove_legacy_file "$file" || IGNORE_ERROR=x
   done
 
   for dir in $(find -P "$HCM_TARGET_DIR" -maxdepth 1 -mindepth 1 -type d); do
     is_same_path "$dir" "$HCM_ROOT" && continue
-    scan_and_remove_legacy_dir "$dir" || IGNORE=x
+    scan_and_remove_legacy_dir "$dir" || IGNORE_ERROR=x
   done
 }
 
