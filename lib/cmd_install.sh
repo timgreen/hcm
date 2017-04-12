@@ -84,13 +84,21 @@ maybe_link_new_config() {
   if [ -d "$target_file" ]; then
     error "link new config $1 $2 $3"
   fi
-  [ -r "$tracking_file" ] || {
+
+  if [ ! -e "$tracking_file" ]; then
     mkdir -p "$(dirname "$tracking_file")"
     ln -s "$source_file" "$tracking_file"
+  fi
+  is_same_path "$source_file" "$tracking_file" || {
+    error "internal error, can not install '$source_file'"
   }
-  [ -r "$target_file" ] || {
+
+  if [ ! -e "$target_file" ]; then
     mkdir -p "$(dirname "$target_file")"
     ln -s "$tracking_file" "$target_file"
+  fi
+  is_same_path "$tracking_file" "$target_file" || {
+    error "can not install '$source_file':\nconflict with target file '$target_file'"
   }
 }
 

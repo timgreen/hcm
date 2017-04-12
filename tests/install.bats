@@ -124,3 +124,12 @@ teardown() {
 
   diff -rq --no-dereference expected_target target
 }
+
+@test "install: error on config crash" {
+  unzip fixtures/config_crash.zip -d source
+
+  run hcm install source/config_crash
+
+  [ "$status" -eq 1 ]
+}
+
