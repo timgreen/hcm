@@ -162,3 +162,17 @@ teardown() {
 
   diff -rq --no-dereference expected_target target
 }
+
+@test "install: ignore README and README.*" {
+  unzip fixtures/ignore_readme.zip -d source
+
+  mkdir -p expected_target/.hcm/modules/ignore_readme/config
+  ln -s $(readlink -f source/ignore_readme) expected_target/.hcm/modules/ignore_readme/source
+  ln -s $(readlink -f source/ignore_readme/a) expected_target/.hcm/modules/ignore_readme/config/a
+
+  ln -s $(readlink -m target/.hcm/modules/ignore_readme/config/a) expected_target/a
+
+  hcm install source/ignore_readme
+
+  diff -rq --no-dereference expected_target target
+}

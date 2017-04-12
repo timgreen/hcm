@@ -3,6 +3,7 @@
 BASE=$(dirname $(readlink -f "$0"))
 source "$BASE/lib_path.sh"
 source "$BASE/lib_msg.sh"
+source "$BASE/lib_ignore.sh"
 
 process_sub_dir() {
   local dir="$1"
@@ -40,22 +41,22 @@ process_root() {
 }
 
 link_configs() {
-  local source_dir="$1"
-  local tracking_dir="$2"
-  local target_dir="$3"
-  local ignore_module_file="$4"
+  local relative_path="$1"
+  local source_dir="$2"
+  local tracking_dir="$3"
+  local target_dir="$4"
 
   # we link all new files in the source dir.
   for file in $(find -P "$source_dir" -maxdepth 1 -mindepth 1 -type f); do
-    is_same_path "$ignore_module_file" "$file" && continue
     local file_basename="$(basename "$file")"
+    should_ignore_file "$relative_path/$file_basename" && continue
     maybe_link_new_config "$file" "$tracking_dir/$file_basename" "$target_dir/$file_basename"
   done
 
   # last, handle the subdirectories recusively.
   for sub in $(find -P "$source_dir" -maxdepth 1 -mindepth 1 -type d); do
     local sub_basename="$(basename "$sub")"
-    link_configs "$sub" "$tracking_dir/$sub_basename" "$target_dir/$sub_basename"
+    link_configs "$relative_path/$sub_basename" "$sub" "$tracking_dir/$sub_basename" "$target_dir/$sub_basename"
   done
 }
 
@@ -121,7 +122,7 @@ process_cm() {
     error "CM conflict: $name\ncan not install $dir, already installed $(readlink -m "$(tracking_source_for "$name")")"
   fi
 
-  link_configs "$dir" "$(tracking_files_root_for "$name")" "$HCM_TARGET_DIR" "$dir/$MODULE_FILE"
+  link_configs "" "$dir" "$(tracking_files_root_for "$name")" "$HCM_TARGET_DIR" "$dir/$MODULE_FILE"
 }
 
 process_root_or_cm() {
