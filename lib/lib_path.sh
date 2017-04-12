@@ -17,6 +17,11 @@ tracking_source_for() {
   echo "$HCM_ROOT/modules/$1/source"
 }
 
+#
+module_file_for() {
+  echo "$1/$MODULE_FILE"
+}
+
 # Test functions
 is_cm() {
   local dir="$1"

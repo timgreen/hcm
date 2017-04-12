@@ -123,6 +123,7 @@ process_cm() {
   fi
 
   link_configs "" "$dir" "$(tracking_files_root_for "$name")" "$HCM_TARGET_DIR"
+  bash "$BASE/hook.sh" "$dir" post_link
 }
 
 process_root_or_cm() {

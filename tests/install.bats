@@ -186,6 +186,5 @@ teardown() {
 
   hcm install source/simple_hook_function
 
-  skip
   diff -rq --no-dereference expected_target target
 }
