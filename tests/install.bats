@@ -176,3 +176,16 @@ teardown() {
 
   diff -rq --no-dereference expected_target target
 }
+
+@test "install: post_link hook" {
+  unzip fixtures/simple_hook_function.zip -d source
+
+  mkdir -p expected_target/.hcm/modules/simple_hook_function/config
+  ln -s $(readlink -f source/simple_hook_function) expected_target/.hcm/modules/simple_hook_function/source
+  echo "created by hook function" > expected_target/a
+
+  hcm install source/simple_hook_function
+
+  skip
+  diff -rq --no-dereference expected_target target
+}
