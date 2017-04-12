@@ -5,7 +5,6 @@ source "$BASE/lib_path.sh"
 
 process_sub_dir() {
   local dir="$1"
-  echo "sub_dir: $1"
 
   if is_cm "$dir"; then
     process_cm "$dir"
@@ -28,8 +27,6 @@ process_sub_dir() {
 process_root() {
   local dir="$1"
 
-  echo "root: $dir"
-
   for sub_dir in $(find -H "$dir" -maxdepth 1 -mindepth 1 -xtype d); do
     process_sub_dir "$sub_dir"
   done
@@ -46,8 +43,6 @@ link_configs() {
   local tracking_dir="$2"
   local target_dir="$3"
   local ignore_module_file="$4"
-
-  echo "link_configs: $1 $2 $3"
 
   # we link all new files in the source dir.
   for file in $(find -P "$source_dir" -maxdepth 1 -mindepth 1 -type f); do
@@ -102,8 +97,6 @@ maybe_link_new_config() {
 process_cm() {
   local dir="$1"
   local name="$(basename "$dir")"
-
-  echo "cm: $dir"
 
   local tracking_dir="$(tracking_dir_for "$name")"
   mkdir -p "$(tracking_files_root_for "$name")"
