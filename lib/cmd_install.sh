@@ -19,11 +19,14 @@ process_sub_dir() {
     done
 
     for file in $(find -H "$dir" -maxdepth 1 -mindepth 1 -xtype f); do
-      error "Unmanaged file: $file"
-      is_empty_dir=false
+      error_msg "unmanaged file: $file"
+      exit 1
     done
 
-    $is_empty_dir && error "Empty dir: $dir"
+    $is_empty_dir && {
+      error_msg "empty dir: $dir"
+      exit 1
+    }
   fi
 }
 
@@ -37,7 +40,8 @@ process_root() {
   for file in $(find -H "$dir" -maxdepth 1 -mindepth 1 -xtype f); do
     is_same_path "$dir/$ROOT_FILE" "$file" && continue
 
-    error "Unmanaged file: $file"
+    error_msg "unmanaged file: $file"
+    exit 1
   done
 }
 
@@ -84,7 +88,8 @@ maybe_link_new_config() {
   #              m         c     rm tracking; error
 
   if [ ! -L "$target_file" ] && [ -d "$target_file" ]; then
-    error "can not install '$source_file' as '$target_file', target is a directory"
+    error_msg "can not install '$source_file' as '$target_file', target is a directory"
+    exit 1
   fi
 
   if [ ! -e "$tracking_file" ]; then
@@ -92,7 +97,8 @@ maybe_link_new_config() {
     ln -s "$source_file" "$tracking_file"
   fi
   is_same_path "$source_file" "$tracking_file" || {
-    error "internal error, can not install '$source_file'"
+    error_msg "internal error, can not install '$source_file'"
+    exit 1
   }
 
   if [ ! -e "$target_file" ]; then
@@ -100,7 +106,8 @@ maybe_link_new_config() {
     ln -s "$tracking_file" "$target_file"
   fi
   is_same_path "$tracking_file" "$target_file" || {
-    error "can not install '$source_file':\nconflict with target file '$target_file'"
+    error_msg "can not install '$source_file':\nconflict with target file '$target_file'"
+    exit 1
   }
 }
 
@@ -118,11 +125,13 @@ process_cm() {
   fi
 
   if [ ! -L "$(tracking_source_for "$name")" ]; then
-    error "Internal error: $(tracking_source_for "$name") is not softlink"
+    internal_error_msg "$(tracking_source_for "$name") is not softlink"
+    exit 2
   fi
 
   if ! is_same_path "$(tracking_source_for "$name")" "$dir"; then
-    error "CM conflict: $name\ncan not install $dir, already installed $(readlink -m "$(tracking_source_for "$name")")"
+    error_msg "CM conflict: $name\ncan not install $dir, already installed $(readlink -m "$(tracking_source_for "$name")")"
+    exit 1
   fi
 
   $(bash "$BASE/hook.sh" "$dir" pre_link) # preserve the exit status when set -e is on
@@ -141,7 +150,8 @@ process_root_or_cm() {
   elif is_cm "$dir"; then
     process_cm "$dir"
   else
-    error "Invalid dir: $dir"
+    error_msg "invalid dir: $dir"
+    exit 1
   fi
 }
 

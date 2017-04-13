@@ -11,9 +11,12 @@ highlight() {
   color 13 "$1" # Purple
 }
 
-error() {
+error_msg() {
   color 1 "Error: $1" >&2
-  exit 1
+}
+
+internal_error_msg() {
+  color 1 "Internal error: $1" >&2
 }
 
 info() {
