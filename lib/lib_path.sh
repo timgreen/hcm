@@ -1,9 +1,4 @@
 
-HCM_TARGET_DIR="${HCM_TARGET_DIR:-$HOME}"
-HCM_ROOT="$HCM_TARGET_DIR/.hcm"
-MODULE_FILE="HCM_MODULE"
-ROOT_FILE="HCM_MCD_ROOT"
-
 # tracking
 tracking_dir_for() {
   echo "$HCM_ROOT/modules/$1"
