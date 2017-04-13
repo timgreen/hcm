@@ -234,6 +234,20 @@ EOF
   diff -rq --no-dereference expected_target target
 }
 
+@test "install: softlinked group" {
+  unzip fixtures/softlinked_group.zip -d source
+
+  mkdir -p expected_target/.hcm/modules/cm/config
+  ln -s $(readlink -f source)/softlinked_group/mcd/group/cm expected_target/.hcm/modules/cm/source
+  ln -s $(readlink -f source)/softlinked_group/mcd/group/cm/file expected_target/.hcm/modules/cm/config/file
+
+  ln -s $(readlink -f target)/.hcm/modules/cm/config/file expected_target/file
+
+  hcm install source/softlinked_group/mcd
+
+  diff -rq --no-dereference expected_target target
+}
+
 @test "install: treat softlink as regular file" {
   unzip fixtures/softlinks.zip -d source
 
