@@ -83,8 +83,8 @@ maybe_link_new_config() {
   #    x         c1        c2    error
   #              m         c     rm tracking; error
 
-  if [ -d "$target_file" ]; then
-    error "link new config $1 $2 $3"
+  if [ ! -L "$target_file" ] && [ -d "$target_file" ]; then
+    error "can not install '$source_file' as '$target_file', target is a directory"
   fi
 
   if [ ! -e "$tracking_file" ]; then
