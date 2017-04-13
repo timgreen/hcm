@@ -15,3 +15,7 @@ error() {
   color 1 "Error: $1" >&2
   exit 1
 }
+
+info() {
+  echo "$1"
+}

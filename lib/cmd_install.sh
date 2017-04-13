@@ -111,6 +111,8 @@ process_cm() {
   local tracking_dir="$(tracking_dir_for "$name")"
   mkdir -p "$(tracking_files_root_for "$name")"
 
+  info "Install CM: '$dir' ..."
+
   if [ ! -e "$(tracking_source_for "$name")" ]; then
     ln -s "$dir" "$(tracking_source_for "$name")"
   fi
@@ -128,6 +130,8 @@ process_cm() {
 
   link_configs "" "$dir" "$(tracking_files_root_for "$name")" "$HCM_TARGET_DIR"
   bash "$BASE/hook.sh" "$dir" post_link || IGNORE_ERROR=x
+
+  info "Install CM: '$dir' Done"
 }
 
 process_root_or_cm() {
