@@ -19,6 +19,16 @@ internal_error_msg() {
   color 1 "Internal error: $1" >&2
 }
 
+hook_error_msg() {
+  local action="$1"
+  local dir="$2"
+  local result="$3"
+  local status="$4"
+
+  color 1 "Hook error: $action $dir"
+  echo $result
+}
+
 info() {
   echo "$1"
 }

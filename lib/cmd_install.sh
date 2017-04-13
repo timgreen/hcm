@@ -134,8 +134,19 @@ process_cm() {
     exit 1
   fi
 
-  $(bash "$BASE/hook.sh" "$dir" pre_link) # preserve the exit status when set -e is on
-  (( $? == $HOOK_EXIT_SKIP )) && return 0
+  pre_link_hook_result=$(bash "$BASE/hook.sh" "$dir" pre_link)
+  pre_link_hook_status=$?
+  case $pre_link_hook_status in
+    $HOOK_EXIT_SKIP)
+      return 0
+      ;;
+    $HOOK_EXIT_ACTION_NOT_FOUND|0)
+      ;;
+    *)
+      hook_error_msg "pre_link" "$dir" "$pre_link_hook_result" "$pre_link_hook_status"
+      exit 1
+      ;;
+  esac
 
   link_configs "" "$dir" "$(tracking_files_root_for "$name")" "$HCM_TARGET_DIR"
   bash "$BASE/hook.sh" "$dir" post_link || IGNORE_ERROR=x

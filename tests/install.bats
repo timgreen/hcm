@@ -263,3 +263,19 @@ EOF
 
   diff -rq --no-dereference expected_target target
 }
+
+@test "install: raise the hook error (pre_link exit 1)" {
+  unzip fixtures/hook_error.zip -d source
+
+  run hcm install source/hook_error/pre_link_exit_1
+
+  [ "$status" -eq 1 ]
+}
+
+@test "install: raise the hook error (pre_link exit 4)" {
+  unzip fixtures/hook_error.zip -d source
+
+  run hcm install source/hook_error/pre_link_exit_4
+
+  [ "$status" -eq 1 ]
+}
