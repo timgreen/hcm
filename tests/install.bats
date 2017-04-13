@@ -233,3 +233,19 @@ EOF
 
   diff -rq --no-dereference expected_target target
 }
+
+@test "install: treat softlink as regular file" {
+  unzip fixtures/softlinks.zip -d source
+
+  mkdir -p expected_target/.hcm/modules/cm/config
+  ln -s $(readlink -f source)/softlinks/cm expected_target/.hcm/modules/cm/source
+  ln -s $(readlink -f source)/softlinks/cm/file_outside_cm expected_target/.hcm/modules/cm/config/file_outside_cm
+  ln -s $(readlink -f source)/softlinks/cm/dir_outside_cm expected_target/.hcm/modules/cm/config/dir_outside_cm
+
+  ln -s $(readlink -f target)/.hcm/modules/cm/config/file_outside_cm expected_target/file_outside_cm
+  ln -s $(readlink -f target)/.hcm/modules/cm/config/dir_outside_cm expected_target/dir_outside_cm
+
+  hcm install source/softlinks/cm
+
+  diff -rq --no-dereference expected_target target
+}
