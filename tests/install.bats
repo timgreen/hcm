@@ -219,3 +219,17 @@ EOF
 
   diff -rq --no-dereference expected_target target
 }
+
+@test "install: softlinked CM" {
+  unzip fixtures/softlinked_cm.zip -d source
+
+  mkdir -p expected_target/.hcm/modules/cm/config
+  ln -s $(readlink -f source/softlinked_cm/mcd/cm) expected_target/.hcm/modules/cm/source
+  ln -s $(readlink -f source/softlinked_cm/mcd/cm/file) expected_target/.hcm/modules/cm/config/file
+
+  ln -s $(readlink -m target/.hcm/modules/cm/config/file) expected_target/file
+
+  hcm install source/softlinked_cm/mcd
+
+  diff -rq --no-dereference expected_target target
+}

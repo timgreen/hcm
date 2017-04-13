@@ -48,14 +48,14 @@ link_configs() {
   local target_dir="$4"
 
   # we link all new files in the source dir.
-  for file in $(find -P "$source_dir" -maxdepth 1 -mindepth 1 -type f); do
+  for file in $(find -P "$source_dir/" -maxdepth 1 -mindepth 1 -type f); do
     local file_basename="$(basename "$file")"
     should_ignore_file "$relative_path/$file_basename" && continue
     maybe_link_new_config "$file" "$tracking_dir/$file_basename" "$target_dir/$file_basename"
   done
 
   # last, handle the subdirectories recusively.
-  for sub in $(find -P "$source_dir" -maxdepth 1 -mindepth 1 -type d); do
+  for sub in $(find -P "$source_dir/" -maxdepth 1 -mindepth 1 -type d); do
     local sub_basename="$(basename "$sub")"
     link_configs "$relative_path/$sub_basename" "$sub" "$tracking_dir/$sub_basename" "$target_dir/$sub_basename"
   done
