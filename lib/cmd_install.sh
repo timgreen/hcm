@@ -138,6 +138,7 @@ process_cm() {
   pre_link_hook_status=$?
   case $pre_link_hook_status in
     $HOOK_EXIT_SKIP)
+      info "Install CM: '$dir' Skip"
       return 0
       ;;
     $HOOK_EXIT_ACTION_NOT_FOUND|0)
