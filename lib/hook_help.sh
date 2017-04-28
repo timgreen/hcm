@@ -7,3 +7,7 @@ skip_this_cm() {
 version_gt() {
   test "$(printf '%s\n' "$@" | sort -V | head -n 1)" != "$1";
 }
+
+version_gte() {
+  [[ "$1" == "$2" ]] || version_gt "$1" "$2"
+}
