@@ -29,7 +29,10 @@ maybe_remove_legacy_file() {
 # returns true if any legacy file(s) removed
 scan_and_remove_legacy_dir() {
   local target_dir="$1"
+  local level="$2"
   local removed_something=false
+
+  (( $level >= 5 )) && return 0
 
   IFS=$'\n'
   for file in $(find -P "$target_dir" -maxdepth 1 -mindepth 1 -type l); do
@@ -37,7 +40,7 @@ scan_and_remove_legacy_dir() {
   done
 
   for dir in $(find -P "$target_dir" -maxdepth 1 -mindepth 1 -type d); do
-    scan_and_remove_legacy_dir "$dir" && removed_something=true || IGNORE_ERROR=x
+    scan_and_remove_legacy_dir "$dir" $((level + 1)) && removed_something=true || IGNORE_ERROR=x
   done
 
   $removed_something || return 1
@@ -58,7 +61,7 @@ do_full_scan() {
 
   for dir in $(find -P "$HCM_TARGET_DIR" -maxdepth 1 -mindepth 1 -type d); do
     is_same_path "$dir" "$HCM_ROOT" && continue
-    scan_and_remove_legacy_dir "$dir" || IGNORE_ERROR=x
+    scan_and_remove_legacy_dir "$dir" 1 || IGNORE_ERROR=x
   done
 }
 
