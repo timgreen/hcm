@@ -33,8 +33,9 @@ Copy the example `config.yml` to `$HOME/.hcm/config.yml` and run `hcm install`.
 for more information
 
    * check `hcm help`
-   * [Advanced Topics](ADVANCED.md)
-   * [FAQ](FAQ.md)
+   * [Config Format](docs/CONFIG.md)
+   * [Advanced Topics](docs/ADVANCED.md)
+   * [FAQ](docs/FAQ.md)
 
 
 [installer_bin]: https://raw.githubusercontent.com/timgreen/hcm/master/install.sh
