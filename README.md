@@ -1,4 +1,4 @@
-# Home Config Manager (hcm)
+# hcm (Home Config Manager)
 
 [![Build Status](https://travis-ci.org/timgreen/hcm.svg?branch=master)](https://travis-ci.org/timgreen/hcm)
 
@@ -26,9 +26,9 @@ Or manually clone this repo and run hcm in the root directory.
     $ cd hcm
     $ ./install.sh
 
-## How to use
+## Quick Start
 
-Simply run `hcm install` in your [managed configs directory][MCD].
+Copy the example `config.yml` to `$HOME/.hcm/config.yml` and run `hcm install`.
 
 for more information
 
@@ -39,4 +39,3 @@ for more information
 
 [installer_bin]: https://raw.githubusercontent.com/timgreen/hcm/master/install.sh
 [installer_source]: https://github.com/timgreen/hcm/blob/master/install.sh
-[MCD]: docs/ADVANCED.md#managed-configs-directory-mcd
