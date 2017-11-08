@@ -2,6 +2,14 @@
 
 load test_helper
 
+setup() {
+  mkdir -p test_home
+}
+
+teardown() {
+  rm -fr test_home
+}
+
 @test "help: show usage without arguments" {
   run hcm
   [ "$status" -eq 0 ]

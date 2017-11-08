@@ -1,6 +1,6 @@
 
 hcm() {
-  HCM_TARGET_DIR="$BATS_TEST_DIRNAME/target" ../hcm "$@"
+  docker-compose -f docker/docker-compose.yml run --user="$UID:$GID" hcm "$@"
 }
 
 assert_starts_with() {

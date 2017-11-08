@@ -5,3 +5,5 @@ RUN apk add --no-cache \
   zsh \
   py-pip \
   && pip install yq
+
+USER hcm_user
