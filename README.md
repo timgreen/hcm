@@ -9,6 +9,22 @@ hcm is a set of bash scripts that manages your home configs. I create it solve t
    * Easy the setup process on a brand new machine.
    * Keep syncing the configs between multiple machines.
 
+## Requirements
+
+Commands/tools should already available in most of systems.
+
+   * coreutils, for tools like
+      * [readlink](https://linux.die.net/man/1/readlink)
+      * [tsort](https://en.wikipedia.org/wiki/Tsort)
+   * bash
+   * find
+   * grep
+
+Tools might need installation.
+
+   * [yq](https://yq.readthedocs.io/)
+      if `docker` is available, `hcm` will fallback to use image [evns/yq](https://hub.docker.com/r/evns/yq/) if yq can be found.
+
 ## Install
 
 ### Install Script
