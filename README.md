@@ -24,7 +24,8 @@ Commands/tools should already available in most of systems.
 Tools might need installation.
 
    * [yq](https://yq.readthedocs.io/)
-      when `docker` is available, `hcm` will fallback to use image [evns/yq](https://hub.docker.com/r/evns/yq/) if yq can be found.
+
+      when `docker` is available, `hcm` will fallback to use image [evns/yq](https://hub.docker.com/r/evns/yq/) if `yq` cannot be found.
 
 ## Install
 
