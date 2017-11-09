@@ -39,22 +39,11 @@ check_dir() {
   return 0
 }
 
-do_housekeeping() {
-  IFS=$'\n'
-  for file in $(find -P "$HOME" -maxdepth 1 -mindepth 1 -type l); do
-    check_file "$file" || IGNORE_ERROR=x
-  done
-
-  for dir in $(find -P "$HOME" -maxdepth 1 -mindepth 1 -type d); do
-    check_dir "$dir" 1 || IGNORE_ERROR=x
-  done
-}
-
 main() {
   # TODO: support flags
   #       - max_level
   #       - n, dry_run
-  do_housekeeping
+  check_dir "$HOME" 0 || IGNORE_ERROR=x
 }
 
 [[ "$DEBUG" != "" ]] && set -x
