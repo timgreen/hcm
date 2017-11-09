@@ -38,18 +38,11 @@ OPTIONS
 EOF
 }
 
-usage_remove_legacy() {
+usage_housekeeping() {
   cat << EOF
-usage: hcm remove-legacy [--[no-]fast-scan]
+usage: hcm housekeeping
 
-
-OPTIONS
-       --fast-scan
-           only scan the files and directories mentioned in the tracking directory.
-
-       --no-fast-scan (DEFAULT)
-           scan the whole HOME directory.
-
+Unlink dead softlinks from the HOME directory. Only go down 5 levels for now.
 EOF
 }
 

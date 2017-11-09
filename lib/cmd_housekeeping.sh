@@ -2,7 +2,7 @@
 
 MAX_LEVEL=5
 
-# returns true if legacy file removed
+# returns true if dead softlink has been removed
 check_file() {
   local file="$1"
   local linked_path="$(readlink -f "$file")"
@@ -15,7 +15,7 @@ check_file() {
   return 1
 }
 
-# returns true if any legacy file(s) removed
+# returns true if removed any dead softlink(s)
 check_dir() {
   local target_dir="$1"
   local level="$2"

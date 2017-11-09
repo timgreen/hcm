@@ -33,10 +33,10 @@ teardown() {
   assert_starts_with "${lines[0]}" 'usage: hcm install '
 }
 
-@test "help: show usage for remove-legacy" {
-  run hcm help remove-legacy
+@test "help: show usage for housekeeping" {
+  run hcm help housekeeping
   [ "$status" -eq 0 ]
-  assert_starts_with "${lines[0]}" 'usage: hcm remove-legacy '
+  assert_starts_with "${lines[0]}" 'usage: hcm housekeeping'
 }
 
 @test "help: return error and show usage when help a unknown cmd" {
