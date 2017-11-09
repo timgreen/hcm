@@ -5,9 +5,8 @@ MAX_LEVEL=5
 # returns true if dead softlink has been removed
 check_file() {
   local file="$1"
-  local linked_path="$(readlink -f "$file")"
 
-  if [ -r "$linkd_path" ]; then
+  if ! readlink -e "$file" > /dev/null; then
     unlink "$file"
     return 0
   fi
