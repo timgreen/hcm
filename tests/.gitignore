@@ -1,4 +1,2 @@
 bats/
-expected_target/
-source/
-target/
+test_home/
