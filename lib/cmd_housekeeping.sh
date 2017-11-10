@@ -13,23 +13,19 @@ action() {
   "$@"
 }
 
-# returns true if dead softlink has been removed
 check_file() {
   local file="$1"
 
   if ! readlink -e "$file" > /dev/null; then
     action unlink "$file"
-    return
   fi
-
-  return 1
 }
 
-# returns true if removed any dead softlink(s)
 check_dir() {
   local target_dir="$1"
   local level="$2"
   local removed_something=false
+  local keeped_something=false
 
   # Reached max level
   (( $level >= $MAX_LEVEL )) && return
@@ -38,15 +34,18 @@ check_dir() {
 
   IFS=$'\n'
   for file in $(find -P "$target_dir" -maxdepth 1 -mindepth 1 -type l); do
-    check_file "$file" && removed_something=true || IGNORE_ERROR=x
+    check_file "$file"
+    [ -r "$file" ] && keeped_something=true || removed_something=true
   done
 
   for dir in $(find -P "$target_dir" -maxdepth 1 -mindepth 1 -type d); do
-    check_dir "$dir" $((level + 1)) && removed_something=true || IGNORE_ERROR=x
+    check_dir "$dir" $((level + 1))
+    [ -d "$dir" ] && keeped_something=true || removed_something=true
   done
 
-  $removed_something || return 1
-  action rmdir --ignore-fail-on-non-empty "$target_dir"
+  if $removed_something && ! $keeped_something; then
+    action rmdir --ignore-fail-on-non-empty "$target_dir"
+  fi
 }
 
 main() {
@@ -67,7 +66,7 @@ main() {
   done
   set -- "${POSITIONAL[@]}" # restore positional parameters
 
-  check_dir "$HOME" 0 || IGNORE_ERROR=x
+  check_dir "$HOME" 0
 }
 
 [[ "$DEBUG" != "" ]] && set -x
