@@ -36,3 +36,12 @@ teardown() {
 
   diff_home_status "$fixture"
 }
+
+@test "housekeep: removes links to dead links" {
+  fixture="./fixtures/housekeeping/removes_links_to_dead_link"
+  use_fixture "$fixture"
+
+  hcm housekeeping
+
+  diff_home_status "$fixture"
+}
