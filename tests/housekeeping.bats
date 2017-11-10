@@ -46,6 +46,24 @@ teardown() {
   diff_home_status "$fixture"
 }
 
+@test "housekeep: no-dry-run -f" {
+  fixture="./fixtures/housekeeping/removes_links_to_dead_link"
+  use_fixture "$fixture"
+
+  hcm housekeeping -f
+
+  diff_home_status "$fixture"
+}
+
+@test "housekeep: no-dry-run --no-dry-run" {
+  fixture="./fixtures/housekeeping/removes_links_to_dead_link"
+  use_fixture "$fixture"
+
+  hcm housekeeping --no-dry-run
+
+  diff_home_status "$fixture"
+}
+
 @test "housekeep: dry-run -n" {
   fixture="./fixtures/housekeeping/removes_links_to_dead_link"
   use_fixture "$fixture"
