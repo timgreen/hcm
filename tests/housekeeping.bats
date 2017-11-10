@@ -63,3 +63,12 @@ teardown() {
 
   diff -rq --no-dereference "$fixture/before" test_home
 }
+
+@test "housekeep: cleanup empty dir" {
+  fixture="./fixtures/housekeeping/cleanup_empty_dir/"
+  use_fixture "$fixture"
+
+  hcm housekeeping
+
+  diff_home_status "$fixture"
+}

@@ -15,5 +15,5 @@ use_fixture() {
 
 diff_home_status() {
   fixture_dir="$1"
-  diff -rq --no-dereference "$fixture_dir/after" test_home
+  diff -r --no-dereference "$fixture_dir/after" test_home
 }
