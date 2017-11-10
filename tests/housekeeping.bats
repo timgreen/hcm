@@ -14,7 +14,7 @@ teardown() {
   fixture="./fixtures/housekeeping/keep_regular_files"
   use_fixture "$fixture"
 
-  hcm housekeeping
+  hcm housekeeping -f
 
   diff_home_status "$fixture"
 }
@@ -23,7 +23,7 @@ teardown() {
   fixture="./fixtures/housekeeping/only_remove_dead_links"
   use_fixture "$fixture"
 
-  hcm housekeeping
+  hcm housekeeping -f
 
   diff_home_status "$fixture"
 }
@@ -32,7 +32,7 @@ teardown() {
   fixture="./fixtures/housekeeping/removes_dead_links_in_dirs"
   use_fixture "$fixture"
 
-  hcm housekeeping
+  hcm housekeeping -f
 
   diff_home_status "$fixture"
 }
@@ -41,7 +41,7 @@ teardown() {
   fixture="./fixtures/housekeeping/removes_links_to_dead_link"
   use_fixture "$fixture"
 
-  hcm housekeeping
+  hcm housekeeping -f
 
   diff_home_status "$fixture"
 }
@@ -68,7 +68,7 @@ teardown() {
   fixture="./fixtures/housekeeping/cleanup_empty_dir/"
   use_fixture "$fixture"
 
-  hcm housekeeping
+  hcm housekeeping -f
 
   diff_home_status "$fixture"
 }

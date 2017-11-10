@@ -2,7 +2,7 @@
 
 # Options
 MAX_LEVEL=5
-DRY_RUN=false
+DRY_RUN=true
 
 # Only take the action iff this is not dry_run
 action() {
@@ -57,6 +57,10 @@ main() {
       -n|--dry-run)
         shift
         DRY_RUN=true
+        ;;
+      -f|--no-dry-run)
+        shift
+        DRY_RUN=false
         ;;
       *)
         POSITIONAL+=("$1") # save it in an array for later
