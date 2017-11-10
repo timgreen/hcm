@@ -11,8 +11,7 @@ usage: hcm <command> [<args>]
 Available commands:
 
    install        Install config module(s) in HOME directory
-   remove-legacy  Remove the legacy files that hcm installed in the HOME
-                  directory
+   housekeeping   Remove the dead links the HOME directory
    help           Show this doc
 
 See 'hcm help <command>' to read about a specific subcommand.
@@ -43,6 +42,14 @@ usage_housekeeping() {
 usage: hcm housekeeping
 
 Unlink dead softlinks from the HOME directory. Only go down 5 levels for now.
+
+OPTIONS
+       -n | --dry-run (DEFAULT)
+           Dry run. Only print the actions will be executed.
+
+       -f | --no-dry-run
+           Actually cleanup HOME directory.
+
 EOF
 }
 
