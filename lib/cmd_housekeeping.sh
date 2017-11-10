@@ -7,6 +7,7 @@ DRY_RUN=false
 # Only take the action iff this is not dry_run
 action() {
   if [ $DRY_RUN == true ]; then
+    echo "$@"
     return
   fi
   "$@"
