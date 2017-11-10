@@ -1,13 +1,23 @@
 #!/bin/bash
 
+# Options
 MAX_LEVEL=5
+DRY_RUN=false
+
+# Only take the action iff this is not dry_run
+action() {
+  if [ $DRY_RUN == true ]; then
+    return
+  fi
+  "$@"
+}
 
 # returns true if dead softlink has been removed
 check_file() {
   local file="$1"
 
   if ! readlink -e "$file" > /dev/null; then
-    unlink "$file"
+    action unlink "$file"
     return 0
   fi
 
@@ -35,14 +45,28 @@ check_dir() {
   done
 
   $removed_something || return 1
-  rmdir --ignore-fail-on-non-empty "$target_dir"
+  action rmdir --ignore-fail-on-non-empty "$target_dir"
   return 0
 }
 
 main() {
   # TODO: support flags
   #       - max_level
-  #       - n, dry_run
+  POSITIONAL=()
+  while (( $# > 0 )); do
+    case "$1" in
+      -n|--dry-run)
+        shift
+        DRY_RUN=true
+        ;;
+      *)
+        POSITIONAL+=("$1") # save it in an array for later
+        shift
+        ;;
+    esac
+  done
+  set -- "${POSITIONAL[@]}" # restore positional parameters
+
   check_dir "$HOME" 0 || IGNORE_ERROR=x
 }
 

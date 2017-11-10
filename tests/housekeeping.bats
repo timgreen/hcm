@@ -45,3 +45,21 @@ teardown() {
 
   diff_home_status "$fixture"
 }
+
+@test "housekeep: dry-run -n" {
+  fixture="./fixtures/housekeeping/removes_links_to_dead_link"
+  use_fixture "$fixture"
+
+  hcm housekeeping -n
+
+  diff -rq --no-dereference "$fixture/before" test_home
+}
+
+@test "housekeep: dry-run --dry-run" {
+  fixture="./fixtures/housekeeping/removes_links_to_dead_link"
+  use_fixture "$fixture"
+
+  hcm housekeeping --dry-run
+
+  diff -rq --no-dereference "$fixture/before" test_home
+}
