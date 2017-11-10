@@ -19,7 +19,7 @@ check_file() {
 
   if ! readlink -e "$file" > /dev/null; then
     action unlink "$file"
-    return 0
+    return
   fi
 
   return 1
@@ -32,9 +32,9 @@ check_dir() {
   local removed_something=false
 
   # Reached max level
-  (( $level >= $MAX_LEVEL )) && return 0
+  (( $level >= $MAX_LEVEL )) && return
   # Skip for git repo
-  [ -d "$target_dir/.git" ] && return 0
+  [ -d "$target_dir/.git" ] && return
 
   IFS=$'\n'
   for file in $(find -P "$target_dir" -maxdepth 1 -mindepth 1 -type l); do
@@ -47,7 +47,6 @@ check_dir() {
 
   $removed_something || return 1
   action rmdir --ignore-fail-on-non-empty "$target_dir"
-  return 0
 }
 
 main() {
