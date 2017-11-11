@@ -12,8 +12,10 @@ EOF
     exit 1
   }
   echo "Install"
-  echo "Default script shell: $(get_shell)"
-  echo "Modules: $(get_modules)"
+  echo -n "Default script shell: "
+  get_shell
+  echo -n "Modules: "
+  get_modules
 }
 
 [[ "$DEBUG" != "" ]] && set -x
