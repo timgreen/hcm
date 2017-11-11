@@ -21,3 +21,7 @@ get_shell() {
     echo "$scriptShell"
   fi
 }
+
+get_modules() {
+  cat "$MAIN_CONFIG" | yq_wrapper -r '.modules[]?'
+}
