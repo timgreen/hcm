@@ -14,3 +14,20 @@ teardown() {
   run hcm install
   [ "$status" -eq 1 ]
 }
+
+@test "install: error when home config not readable" {
+  mkdir test_home/.hcm
+  touch test_home/.hcm/config.yml
+  chmod a-r test_home/.hcm/config.yml
+
+  run hcm install
+  [ "$status" -eq 1 ]
+}
+
+@test "install: empty home config is OK" {
+  mkdir test_home/.hcm
+  touch test_home/.hcm/config.yml
+
+  run hcm install
+  [ "$status" -eq 0 ]
+}
