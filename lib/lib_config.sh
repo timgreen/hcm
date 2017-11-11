@@ -8,7 +8,7 @@ config::yq() {
   elif [ -n "$HAS_DOCKER" ]; then
     docker run -i evns/yq "$@"
   else
-    error_msg "yq not available"
+    msg::error "yq not available"
     exit 1
   fi
 }
@@ -28,7 +28,7 @@ config::get_modules() {
   [[ "$fieldType" == "null" ]] && return
 
   if [[ "$fieldType" != "array" ]]; then
-    error_msg "'modules' must be array"
+    msg::error "'modules' must be array"
     exit 1
   fi
 
