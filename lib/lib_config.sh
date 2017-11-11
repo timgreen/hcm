@@ -2,7 +2,7 @@
 HAS_YQ=$(which yq 2> /dev/null)
 HAS_DOCKER=$(which docker 2> /dev/null)
 
-yq_wrapper() {
+config::yq() {
   if [ -n "$HAS_YQ" ]; then
     yq "$@"
   elif [ -n "$HAS_DOCKER" ]; then
@@ -13,8 +13,8 @@ yq_wrapper() {
   fi
 }
 
-get_shell() {
-  scriptShell="$(cat "$MAIN_CONFIG" | yq_wrapper -r .shell)"
+config::get_shell() {
+  scriptShell="$(cat "$MAIN_CONFIG" | config::yq -r .shell)"
   if [[ "$scriptShell" == "" ]]; then
     echo bash
   else
@@ -22,8 +22,8 @@ get_shell() {
   fi
 }
 
-get_modules() {
-  fieldType="$(cat "$MAIN_CONFIG" | yq_wrapper -r '([.modules]|map(type))[0]')"
+config::get_modules() {
+  fieldType="$(cat "$MAIN_CONFIG" | config::yq -r '([.modules]|map(type))[0]')"
   [[ "$fieldType" == "" ]] && return
   [[ "$fieldType" == "null" ]] && return
 
@@ -32,5 +32,5 @@ get_modules() {
     exit 1
   fi
 
-  cat "$MAIN_CONFIG" | yq_wrapper -r '.modules[]?'
+  cat "$MAIN_CONFIG" | config::yq -r '.modules[]?'
 }

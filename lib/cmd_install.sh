@@ -13,9 +13,9 @@ EOF
   }
   echo "Install"
   echo -n "Default script shell: "
-  get_shell
+  config::get_shell
   echo -n "Modules: "
-  get_modules
+  config::get_modules
 }
 
 [[ "$DEBUG" != "" ]] && set -x
