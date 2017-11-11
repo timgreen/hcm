@@ -31,6 +31,12 @@ config::get_modules() {
     msg::error "'modules' must be array"
     exit 1
   fi
+  invalidTypeIndex="$(cat "$MAIN_CONFIG" | config::yq -r '.modules|map(type)|.[]' | nl -v0 -nln | grep '\(array\|object\)$' | head -n 1 | cut -d' ' -f 1)"
+  if [[ "$invalidTypeIndex" != "" ]]; then
+    msg::error "All items under modules must be path. Found issue with index: $invalidTypeIndex"
+    cat "$MAIN_CONFIG" | config::yq -y ".modules[$invalidTypeIndex]"
+    exit 1
+  fi
 
   cat "$MAIN_CONFIG" | config::yq -r '.modules[]?'
 }

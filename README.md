@@ -16,6 +16,7 @@ Commands/tools should already available in most of systems.
    * coreutils, for tools like
       * [readlink](https://linux.die.net/man/1/readlink)
       * [tsort](https://en.wikipedia.org/wiki/Tsort)
+      * nl
    * bash
    * find
    * grep
