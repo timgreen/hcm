@@ -26,6 +26,10 @@ config::get_shell() {
 }
 
 config::get_modules() {
+  cat "$MAIN_CONFIG" | config::yq -r '.modules[]?'
+}
+
+config::verify_main() {
   fieldType="$(cat "$MAIN_CONFIG" | config::yq -r '([.modules]|map(type))[0]')"
   [[ "$fieldType" == "" ]] && return
   [[ "$fieldType" == "null" ]] && return
@@ -40,6 +44,25 @@ config::get_modules() {
     cat "$MAIN_CONFIG" | config::yq -y ".modules[$invalidTypeIndex]"
     exit 1
   fi
+}
 
-  cat "$MAIN_CONFIG" | config::yq -r '.modules[]?'
+config::verify_module() {
+  mainConfigPath="$1"
+  modulePath="$2"
+
+  absModulePath="$(config::get_module_path "$mainConfigPath" "$modulePath")"
+  if [ ! -r "$absModulePath/$MODULE_CONFIG" ]; then
+    msg::error "Invalid module '$modulePath', cannot read module config $MODULE_CONFIG."
+    exit 1
+  fi
+}
+
+config::get_module_path() {
+  mainConfigPath="$1"
+  modulePath="$2"
+
+  (
+    cd "$(dirname "$mainConfigPath")"
+    readlink -e "$modulePath"
+  )
 }

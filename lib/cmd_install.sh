@@ -7,17 +7,17 @@ source "$BASE/lib_config.sh"
 DRY_RUN=true
 
 verify_configs() {
-  echo "Main config realpath: $(readlink -f $MAIN_CONFIG)"
+  mainConfigPath="$(readlink -f $MAIN_CONFIG)"
+  echo "Main config realpath: $mainConfigPath"
+  config::verify_main
   echo -n "Default script shell: "
   config::get_shell
-  modules="$(config::get_modules)"
   echo "Modules: "
-  echo "$modules" | sed 's/^/  - /'
+  config::get_modules | sed 's/^/  - /'
 
-
-  while read modulePath; do
-    echo $modulePath
-  done <<< "$modules"
+  config::get_modules | while read modulePath; do
+    config::verify_module "$mainConfigPath" "$modulePath"
+  done
 }
 
 main() {
