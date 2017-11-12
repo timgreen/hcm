@@ -20,19 +20,16 @@ EOF
 
 usage_install() {
   cat << EOF
-usage: hcm install [<dir>...] [--[no-]fast-scan]
+usage: hcm install
 
-Current PWD will be used if <dir> is omitted.
-
-If <dir> is a Managed Configs Directory (MCD), all of CMs inside will be installed.
-If <dir> is a Config Module (CM), only this CM will be installed.
+Install modules configured in '\$HOME/.hcm/config.yml'.
 
 OPTIONS
-       --fast-scan (DEFAULT)
-           Skip the directory without modification. (based on timestamp)
+       -n | --dry-run (DEFAULT)
+           Dry run. Only print the actions will be executed.
 
-       --no-fast-scan
-           Do full scan.
+       -f | --no-dry-run
+           Actually install modules.
 
 EOF
 }
