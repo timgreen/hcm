@@ -56,3 +56,31 @@ teardown() {
   run hcm install
   [ "$status" -eq 0 ]
 }
+
+@test "config: error when modules type is not array" {
+  mkdir test_home/.hcm
+
+  echo 'modules: a' > test_home/.hcm/config.yml
+  run hcm install
+  [ "$status" -eq 1 ]
+
+  echo 'modules: 1' > test_home/.hcm/config.yml
+  run hcm install
+  [ "$status" -eq 1 ]
+
+  echo 'modules: ' > test_home/.hcm/config.yml
+  echo '  a: b'  >> test_home/.hcm/config.yml
+  run hcm install
+  [ "$status" -eq 1 ]
+}
+
+@test "config: error when modules item type is not path" {
+  mkdir test_home/.hcm
+
+  cat > test_home/.hcm/config.yml << EOF
+modules:
+  - a: b
+EOF
+  run hcm install
+  [ "$status" -eq 1 ]
+}

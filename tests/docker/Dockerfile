@@ -5,6 +5,7 @@ RUN apk add --no-cache \
   bash \
   zsh \
   ncurses \
+  jq \
   py-pip \
   && pip install yq
 
