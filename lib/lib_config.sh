@@ -29,7 +29,7 @@ config::get_modules() {
   cat "$MAIN_CONFIG" | config::yq -r '.modules[]?'
 }
 
-config::verify_main() {
+config::_verify_main() {
   fieldType="$(cat "$MAIN_CONFIG" | config::yq -r '([.modules]|map(type))[0]')"
   [[ "$fieldType" == "" ]] && return
   [[ "$fieldType" == "null" ]] && return
@@ -46,7 +46,7 @@ config::verify_main() {
   fi
 }
 
-config::verify_module() {
+config::_verify_module() {
   mainConfigPath="$1"
   modulePath="$2"
 
@@ -55,6 +55,19 @@ config::verify_module() {
     msg::error "Invalid module '$modulePath', cannot read module config $MODULE_CONFIG."
     exit 1
   fi
+}
+
+config::verify() {
+  [ -r "$MAIN_CONFIG" ] || {
+    msg::error 'Cannot read main config "\$HOME/.hcm/config.yml".'
+    exit 1
+  }
+
+  mainConfigPath="$(readlink -f $MAIN_CONFIG)"
+  config::_verify_main
+  config::get_modules | while read modulePath; do
+    config::_verify_module "$mainConfigPath" "$modulePath"
+  done
 }
 
 config::get_module_path() {
