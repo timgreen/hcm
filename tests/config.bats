@@ -84,3 +84,14 @@ EOF
   run hcm install
   [ "$status" -eq 1 ]
 }
+
+@test "config: error when module not exists" {
+  mkdir test_home/.hcm
+
+  cat > test_home/.hcm/config.yml << EOF
+modules:
+  - a
+EOF
+  run hcm install
+  [ "$status" -eq 1 ]
+}
