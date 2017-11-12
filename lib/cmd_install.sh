@@ -6,6 +6,20 @@ source "$BASE/lib_config.sh"
 
 DRY_RUN=true
 
+verify_configs() {
+  echo "Main config realpath: $(readlink -f $MAIN_CONFIG)"
+  echo -n "Default script shell: "
+  config::get_shell
+  modules="$(config::get_modules)"
+  echo "Modules: "
+  echo "$modules" | sed 's/^/  - /'
+
+
+  while read modulePath; do
+    echo $modulePath
+  done <<< "$modules"
+}
+
 main() {
   POSITIONAL=()
   while (( $# > 0 )); do
@@ -27,17 +41,13 @@ main() {
   set -- "${POSITIONAL[@]}" # restore positional parameters
 
   [ -r "$MAIN_CONFIG" ] || {
-    cat << EOF
-Cannot read main config "\$HOME/.hcm/config.yml".
-EOF
+    msg::error 'Cannot read main config "\$HOME/.hcm/config.yml".'
     exit 1
   }
-  echo "Install"
-  echo -n "Default script shell: "
-  config::get_shell
-  echo -n "Modules: "
-  config::get_modules
+
+  verify_configs
 }
 
 [[ "$DEBUG" != "" ]] && set -x
+set -e
 main "$@"
