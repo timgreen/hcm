@@ -15,11 +15,14 @@ config::yq() {
 
 config::get_shell() {
   scriptShell="$(cat "$MAIN_CONFIG" | config::yq -r .shell)"
-  if [[ "$scriptShell" == "" ]]; then
-    echo bash
-  else
-    echo "$scriptShell"
-  fi
+  case "$scriptShell" in
+    bash|null|'')
+      echo bash
+      ;;
+    *)
+      echo "$scriptShell"
+      ;;
+  esac
 }
 
 config::get_modules() {
