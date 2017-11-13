@@ -4,6 +4,7 @@ services:
 
 before_install:
   - docker-compose -f tests/docker/docker-compose.yml build
+  - tests/bats/install.sh
 
 script: tests/run_tests.sh
 
