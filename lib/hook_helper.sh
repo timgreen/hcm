@@ -17,9 +17,9 @@ version_gte() {
 #
 # NOTE, this function assume $a ends with '/'.
 relative_to() {
-  a="$1"
-  b="$2"
-  prefix="$3"
+  local a="$1"
+  local b="$2"
+  local prefix="$3"
 
   if [[ "$b" = "$a"* ]]; then
     echo "$prefix${b#$a}"
@@ -30,8 +30,8 @@ relative_to() {
 
 # Link $from to $to, assuming both are abs path.
 link() {
-  from="$1"
-  to="$2"
+  local from="$1"
+  local to="$2"
 
   mkdir -p "$(dirname "$to")"
   ln -s "$(relative_to "$(dirname "$to")/" "$from")" "$to"

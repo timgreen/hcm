@@ -14,7 +14,7 @@ config::yq() {
 }
 
 config::get_shell() {
-  scriptShell="$(cat "$MAIN_CONFIG" | config::yq -r .shell)"
+  local scriptShell="$(cat "$MAIN_CONFIG" | config::yq -r .shell)"
   case "$scriptShell" in
     bash|null|'')
       echo bash
@@ -30,7 +30,7 @@ config::get_modules() {
 }
 
 config::_verify_main() {
-  fieldType="$(cat "$MAIN_CONFIG" | config::yq -r '([.modules]|map(type))[0]')"
+  local fieldType="$(cat "$MAIN_CONFIG" | config::yq -r '([.modules]|map(type))[0]')"
   [[ "$fieldType" == "" ]] && return
   [[ "$fieldType" == "null" ]] && return
 
@@ -38,7 +38,7 @@ config::_verify_main() {
     msg::error "'modules' must be array"
     exit 1
   fi
-  invalidTypeIndex="$(cat "$MAIN_CONFIG" | config::yq -r '.modules|map(type)|.[]' | nl -v0 -nln | grep '\(array\|object\)$' | head -n 1 | cut -d' ' -f 1)"
+  local invalidTypeIndex="$(cat "$MAIN_CONFIG" | config::yq -r '.modules|map(type)|.[]' | nl -v0 -nln | grep '\(array\|object\)$' | head -n 1 | cut -d' ' -f 1)"
   if [[ "$invalidTypeIndex" != "" ]]; then
     msg::error "All items under modules must be path. Found issue with index: $invalidTypeIndex"
     cat "$MAIN_CONFIG" | config::yq -y ".modules[$invalidTypeIndex]"
@@ -47,9 +47,8 @@ config::_verify_main() {
 }
 
 config::_verify_module() {
-  modulePath="$1"
-
-  absModulePath="$(config::get_module_path "$modulePath")"
+  local modulePath="$1"
+  local absModulePath="$(config::get_module_path "$modulePath")"
   if [ ! -r "$absModulePath/$MODULE_CONFIG" ]; then
     msg::error "Invalid module '$modulePath', cannot read module config $MODULE_CONFIG."
     exit 1
@@ -69,8 +68,8 @@ config::verify() {
 }
 
 config::get_module_path() {
-  modulePath="$1"
-  mainConfigPath="$(readlink -f $MAIN_CONFIG)"
+  local modulePath="$1"
+  local mainConfigPath="$(readlink -f $MAIN_CONFIG)"
 
   (
     cd "$(dirname "$mainConfigPath")"
