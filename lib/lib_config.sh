@@ -47,10 +47,9 @@ config::_verify_main() {
 }
 
 config::_verify_module() {
-  mainConfigPath="$1"
-  modulePath="$2"
+  modulePath="$1"
 
-  absModulePath="$(config::get_module_path "$mainConfigPath" "$modulePath")"
+  absModulePath="$(config::get_module_path "$modulePath")"
   if [ ! -r "$absModulePath/$MODULE_CONFIG" ]; then
     msg::error "Invalid module '$modulePath', cannot read module config $MODULE_CONFIG."
     exit 1
@@ -63,16 +62,15 @@ config::verify() {
     exit 1
   }
 
-  mainConfigPath="$(readlink -f $MAIN_CONFIG)"
   config::_verify_main
   config::get_modules | while read modulePath; do
-    config::_verify_module "$mainConfigPath" "$modulePath"
+    config::_verify_module "$modulePath"
   done
 }
 
 config::get_module_path() {
-  mainConfigPath="$1"
-  modulePath="$2"
+  modulePath="$1"
+  mainConfigPath="$(readlink -f $MAIN_CONFIG)"
 
   (
     cd "$(dirname "$mainConfigPath")"
