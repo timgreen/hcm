@@ -27,6 +27,8 @@ Tools might need installation.
    * [yq](https://yq.readthedocs.io/)
 
       when `docker` is available, `hcm` will fallback to use image [evns/yq](https://hub.docker.com/r/evns/yq/) if `yq` cannot be found.
+   * md5sum
+   * rsync, optional, `hcm` will fallback to use `rm` & `cp` if `rsync` cannot be found.
 
 ## Install
 
