@@ -31,7 +31,7 @@ install::backup_installed_module() {
 
   mkdir -p "$(dirname "$backupModulePath")"
   if which rsync &> /dev/null; then
-    rsync -r --links "$absModulePath" "$backupModulePath"
+    rsync -r --links "$absModulePath/" "$backupModulePath"
   else
     rm -fr "$backupModulePath"
     cp -r "$absModulePath" "$backupModulePath"
