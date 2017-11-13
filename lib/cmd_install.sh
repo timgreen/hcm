@@ -3,6 +3,7 @@
 BASE=$(dirname $(readlink -f "$0"))
 source "$BASE/lib_msg.sh"
 source "$BASE/lib_config.sh"
+source "$BASE/hook_helper.sh"
 source "$BASE/lib_hook.sh"
 
 DRY_RUN=true
