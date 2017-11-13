@@ -3,8 +3,21 @@
 BASE=$(dirname $(readlink -f "$0"))
 source "$BASE/lib_msg.sh"
 source "$BASE/lib_config.sh"
+source "$BASE/lib_hook.sh"
 
 DRY_RUN=true
+
+install::install_module() {
+  modulePath="$1"
+  absModulePath="$(config::get_module_path "$modulePath")"
+  hook::install "$absModulePath"
+}
+
+install::install_modules() {
+  config::get_modules | while read modulePath; do
+    install::install_module "$modulePath"
+  done
+}
 
 main() {
   POSITIONAL=()
@@ -27,6 +40,7 @@ main() {
   set -- "${POSITIONAL[@]}" # restore positional parameters
 
   config::verify
+  install::install_modules
 }
 
 [[ "$DEBUG" != "" ]] && set -x

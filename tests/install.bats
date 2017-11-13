@@ -18,3 +18,12 @@ teardown() {
 
   diff_home_status "$fixture"
 }
+
+@test "install: a simple module with empty config" {
+  fixture="./fixtures/install/only_link_files"
+  use_fixture "$fixture"
+
+  hcm install
+
+  diff_home_status "$fixture"
+}
