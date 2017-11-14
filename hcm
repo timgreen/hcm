@@ -10,7 +10,6 @@ set -e
 [[ "$DEBUG" != "" ]] && set -x
 
 set -a
-[ -t 1 ] && USE_COLORS=true || USE_COLORS=false
 
 HCM_HOME="$HOME/.hcm"
 MAIN_CONFIG="$HCM_HOME/config.yml"

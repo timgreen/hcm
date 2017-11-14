@@ -1,5 +1,7 @@
 INIT_MSG=true
 
+[ -t 1 ] && USE_COLORS=true || USE_COLORS=false
+
 msg::color() {
   if $USE_COLORS; then
     echo -e "$(tput setaf $1)$2$(tput op)"
