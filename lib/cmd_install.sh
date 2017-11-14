@@ -24,10 +24,8 @@ install::install_modules() {
 # Make a copy of the installed module, this is needed for uninstall. So even the
 # user deleted and orignal copy, hcm still knows how to uninstall it.
 install::backup_installed_module() {
-  # use md5 as backup name, so we have a flat structure under $HOME/.hcm/installed_modules/
-  local name=$(echo "$modulePath" | md5sum | cut -c 1-32)
   local absModulePath="$(config::get_module_path "$modulePath")"
-  local backupModulePath="$HCM_HOME/installed_modules/$name"
+  local backupModulePath="$(config::get_backup_module_path "$modulePath")"
 
   mkdir -p "$(dirname "$backupModulePath")"
   if which rsync &> /dev/null; then

@@ -76,3 +76,15 @@ config::get_module_path() {
     readlink -e "$modulePath"
   )
 }
+
+# use md5 as backup name, so we have a flat structure under $HOME/.hcm/installed_modules/
+config::_get_flatten_name() {
+  local modulePath="$1"
+  echo "$modulePath" | md5sum | cut -c 1-32
+}
+
+config::get_backup_module_path() {
+  local modulePath="$1"
+  local flattenName="$(config::_get_flatten_name "$modulePath")"
+  echo "$HCM_HOME/installed_modules/$flattenName"
+}
