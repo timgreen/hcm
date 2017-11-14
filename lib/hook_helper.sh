@@ -1,3 +1,4 @@
+HOOK_HELPER=true
 
 # http://stackoverflow.com/questions/16989598/bash-comparing-version-numbers#answer-24067243
 version_gt() {

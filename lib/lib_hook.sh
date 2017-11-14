@@ -1,3 +1,4 @@
+INIT_HOOK=true
 
 hook::install() {
   local absModulePath="$1"

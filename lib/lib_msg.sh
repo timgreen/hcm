@@ -1,3 +1,4 @@
+INIT_MSG=true
 
 msg::color() {
   if $USE_COLORS; then

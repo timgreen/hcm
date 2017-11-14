@@ -1,3 +1,6 @@
+INIT_CONFIG=true
+
+[ -z "$INIT_MSG" ] && source "$(dirname "${BASH_SOURCE[0]}")"/lib_msg.sh
 
 HAS_YQ=$(which yq 2> /dev/null)
 HAS_DOCKER=$(which docker 2> /dev/null)

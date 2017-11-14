@@ -1,8 +1,9 @@
 #!/bin/bash
 
 BASE=$(dirname $(readlink -f "$0"))
-source "$BASE/lib_cmd.sh"
-source "$BASE/lib_msg.sh"
+
+[ -z "$INIT_MSG" ] && source "$BASE/lib_msg.sh"
+[ -z "$INIT_CMD" ] && source "$BASE/lib_cmd.sh"
 
 usage_help() {
   cat << EOF

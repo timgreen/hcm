@@ -1,10 +1,11 @@
 #!/bin/bash
 
 BASE=$(dirname $(readlink -f "$0"))
-source "$BASE/lib_msg.sh"
-source "$BASE/lib_config.sh"
-source "$BASE/hook_helper.sh"
-source "$BASE/lib_hook.sh"
+
+[ -z "$INIT_MSG" ]         && source "$BASE/lib_msg.sh"
+[ -z "$INIT_CONFIG" ]      && source "$BASE/lib_config.sh"
+[ -z "$INIT_HOOK_HELPER" ] && source "$BASE/hook_helper.sh"
+[ -z "$INIT_HOOK" ]        && source "$BASE/lib_hook.sh"
 
 DRY_RUN=true
 

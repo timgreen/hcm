@@ -1,3 +1,4 @@
+INIT_CMD=true
 
 is_valid_cmd_name() {
   echo "$1" | grep -qs "^[a-z][a-z-]*[a-z]$"
