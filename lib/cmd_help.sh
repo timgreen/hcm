@@ -64,7 +64,7 @@ print_usage() {
   if is_valid_cmd_name "$cmd" && [[ "$(type -t usage_$cmd_filename)" == "function" ]]; then
     usage_$cmd_filename
   else
-    echo "Unknown command $(highlight "$cmd")"
+    echo "Unknown command $(msg::highlight "$cmd")"
     echo
     usage_help
     exit 1
