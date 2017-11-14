@@ -9,6 +9,39 @@ BASE=$(dirname $(readlink -f "$0"))
 
 DRY_RUN=true
 
+install::remove_installed_module() {
+  local installedModulePath="$1"
+  rm -fr "$installedModulePath"
+}
+
+install::uninstall_module() {
+  local installedModulePath="$1"
+  local linkLog="$(config::link_log_path "$installedModulePath")"
+  cat "$linkLog" | while read linkTarget; do
+    unlink "$HOME/$linkTarget"
+    # rmdir still might fail when it don't have permission to remove the
+    # directory, so ignore the error here.
+    rmdir --ignore-fail-on-non-empty --parents "$(dirname "$HOME/$linkTarget")" || echo -n
+  done
+  rm -f "$linkLog"
+}
+
+install::uninstall_modules() {
+  # Get the list of installed modules which no longer mentioned in the main
+  # config.
+  {
+    config::get_modules | while read modulePath; do
+      local installedModulePath="$(config::get_backup_module_path "$modulePath")"
+      echo "$installedModulePath"
+      echo "$installedModulePath"
+    done
+    find "$HCM_INSTALLED_MODULES_ROOT" -maxdepth 1 -mindepth 1 -type d
+  } | sort | uniq -u | while read installedModulePath; do
+    install::uninstall_module "$installedModulePath"
+    install::remove_installed_module "$installedModulePath"
+  done
+}
+
 install::install_module() {
   local modulePath="$1"
   local absModulePath="$(config::get_module_path "$modulePath")"
@@ -61,6 +94,7 @@ main() {
   set -- "${POSITIONAL[@]}" # restore positional parameters
 
   config::verify
+  install::uninstall_modules
   install::install_modules
 }
 

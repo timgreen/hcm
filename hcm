@@ -14,6 +14,7 @@ set -a
 HCM_HOME="$HOME/.hcm"
 MAIN_CONFIG="$HCM_HOME/config.yml"
 MODULE_CONFIG="module.yml"
+HCM_INSTALLED_MODULES_ROOT="$HCM_HOME/installed_modules"
 
 set +a
 

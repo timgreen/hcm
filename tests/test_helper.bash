@@ -10,7 +10,7 @@ assert_starts_with() {
 use_fixture() {
   fixture_dir="$1"
   rm -fr test_home
-  cp -r "$fixture_dir/before" test_home
+  cp -d -r "$fixture_dir/before" test_home
 }
 
 diff_home_status() {

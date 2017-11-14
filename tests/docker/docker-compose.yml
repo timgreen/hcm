@@ -6,3 +6,5 @@ services:
       - ../../:/source
       - ../test_home:/home/hcm_user
     entrypoint: /source/hcm
+    environment:
+      - DEBUG=x
