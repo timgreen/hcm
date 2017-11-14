@@ -17,8 +17,11 @@ install::install_module() {
 
 install::install_modules() {
   config::get_modules | while read modulePath; do
-    install::install_module "$modulePath"
-    install::backup_installed_module "$modulePath"
+    (
+      export HCM_MODULE_LINK_LOG="$(config::get_module_link_log_path "$modulePath")"
+      install::install_module "$modulePath"
+      install::backup_installed_module "$modulePath"
+    )
   done
 }
 

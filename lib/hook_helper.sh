@@ -29,11 +29,18 @@ relative_to() {
   fi
 }
 
-# Link $from to $to, assuming both are abs path.
+# Link $from to $to, assuming both are abs path and $to is under $HOME.
+#
+# Also log linked target in $HCM_MODULE_LINK_LOG.
 link() {
+  [ -z "$HCM_MODULE_LINK_LOG" ] && exit 2
+
   local from="$1"
   local to="$2"
 
   mkdir -p "$(dirname "$to")"
   ln -s "$(relative_to "$(dirname "$to")/" "$from")" "$to"
+
+  mkdir -p "$(dirname "$HCM_MODULE_LINK_LOG")"
+  relative_to "$HOME/" "$to" >> "$HCM_MODULE_LINK_LOG"
 }

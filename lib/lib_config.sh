@@ -91,3 +91,8 @@ config::get_backup_module_path() {
   local flattenName="$(config::_get_flatten_name "$modulePath")"
   echo "$HCM_HOME/installed_modules/$flattenName"
 }
+
+config::get_module_link_log_path() {
+  local modulePath="$1"
+  echo "$(config::get_backup_module_path "$modulePath").link.log"
+}
