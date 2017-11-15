@@ -50,6 +50,8 @@ install::install_module() {
 
 install::install_modules() {
   config::get_modules | while read modulePath; do
+    # Skip the already installed module that has no update.
+    config::if_module_has_no_update "$modulePath" && continue
     (
       export HCM_MODULE_LINK_LOG="$(config::get_module_link_log_path "$modulePath")"
       install::install_module "$modulePath"
