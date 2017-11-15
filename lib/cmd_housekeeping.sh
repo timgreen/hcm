@@ -7,20 +7,11 @@ MAX_LEVEL=5
 DRY_RUN=true
 source "$BASE/lib_dry_run.sh"
 
-# Only take the action iff this is not dry_run
-action() {
-  if [ $DRY_RUN == true ]; then
-    echo "$@"
-    return
-  fi
-  "$@"
-}
-
 check_file() {
   local file="$1"
 
   if ! readlink -e "$file" > /dev/null; then
-    action unlink "$file"
+    dryrun::action unlink "$file"
   fi
 }
 
@@ -47,7 +38,7 @@ check_dir() {
   done
 
   if $removed_something && ! $keeped_something; then
-    action rmdir --ignore-fail-on-non-empty "$target_dir"
+    dryrun::action rmdir --ignore-fail-on-non-empty "$target_dir"
   fi
 }
 
