@@ -27,10 +27,10 @@ teardown() {
   [ "$status" -eq 0 ]
 }
 
-@test "help: show usage for install" {
-  run hcm help install
+@test "help: show usage for sync" {
+  run hcm help sync
   [ "$status" -eq 0 ]
-  assert_starts_with "${lines[0]}" 'usage: hcm install'
+  assert_starts_with "${lines[0]}" 'usage: hcm sync'
 }
 
 @test "help: show usage for housekeeping" {

@@ -11,7 +11,7 @@ usage: hcm <command> [<args>]
 
 Available commands:
 
-   install        Install config module(s) in HOME directory
+   sync           Sync config module(s) to HOME directory
    housekeeping   Remove the dead links the HOME directory
    help           Show this doc
 
@@ -19,18 +19,18 @@ See 'hcm help <command>' to read about a specific subcommand.
 EOF
 }
 
-usage_install() {
+usage_sync() {
   cat << EOF
-usage: hcm install
+usage: hcm sync
 
-Install modules configured in '\$HOME/.hcm/config.yml'.
+Sync modules configured in '\$HOME/.hcm/config.yml' to HOME directory.
 
 OPTIONS
        -n | --dry-run (DEFAULT)
            Dry run. Only print the actions will be executed.
 
        -f | --no-dry-run
-           Actually install modules.
+           Actually sync modules.
 
 EOF
 }
