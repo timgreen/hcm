@@ -13,7 +13,11 @@ use_fixture() {
   cp -d -r "$fixture_dir/before" test_home
 }
 
+diff_dir() {
+  diff -r --no-dereference "$1" "$2"
+}
+
 diff_home_status() {
   fixture_dir="$1"
-  diff -r --no-dereference "$fixture_dir/after" test_home
+  diff_dir "$fixture_dir/after" test_home
 }

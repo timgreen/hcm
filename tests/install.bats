@@ -20,7 +20,7 @@ teardown() {
 }
 
 @test "uninstall: a simple empty module" {
-  diff -r --no-dereference \
+  diff_dir \
       "./fixtures/install/simple_empty_module_uninstall/before" \
       "./fixtures/install/simple_empty_module/after"
 
@@ -43,7 +43,7 @@ teardown() {
 }
 
 @test "uninstall: a simple module with empty config" {
-  diff -r --no-dereference \
+  diff_dir \
       "./fixtures/install/only_link_files_uninstall/before" \
       "./fixtures/install/only_link_files/after"
 
@@ -64,7 +64,7 @@ teardown() {
   diff_home_status "$fixture"
 
   # step 2
-  diff -r --no-dereference \
+  diff_dir \
       "./fixtures/install/step_2_remove_one_module/before" \
       "./fixtures/install/step_1_install_two_modules/after"
   fixture="./fixtures/install/step_2_remove_one_module"
