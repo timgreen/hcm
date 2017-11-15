@@ -56,4 +56,10 @@ teardown() {
   diff_home_status "$fixture"
 }
 
-
+@test "install: complex step by step test" {
+  # step 1
+  fixture="./fixtures/install/step_1_install_two_modules"
+  use_fixture "$fixture"
+  hcm install
+  diff_home_status "$fixture"
+}
