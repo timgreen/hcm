@@ -3,7 +3,7 @@
 BASE="$(dirname "$(readlink -f "$0")")"
 
 # Options
-DRY_RUN=false
+DRY_RUN=true
 
 [ -z "$INIT_MSG" ]         && source "$BASE/lib_msg.sh"
 [ -z "$INIT_CONFIG" ]      && source "$BASE/lib_config.sh"
