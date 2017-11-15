@@ -47,6 +47,10 @@ install::install_modules() {
     (
       export HCM_MODULE_LINK_LOG="$(config::get_module_link_log_path "$modulePath")"
       install::install_module "$modulePath"
+      # sort the file for deterministic result
+      if [ -r "$HCM_MODULE_LINK_LOG" ]; then
+        LC_ALL=C sort "$HCM_MODULE_LINK_LOG" -o "$HCM_MODULE_LINK_LOG"
+      fi
       install::backup_installed_module "$modulePath"
     )
   done
