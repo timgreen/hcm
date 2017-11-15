@@ -52,8 +52,12 @@ config::_verify_main() {
 config::_verify_module() {
   local modulePath="$1"
   local absModulePath="$(config::get_module_path "$modulePath")"
+  if [ -z "$absModulePath" ] || [ ! -d "$absModulePath" ]; then
+    msg::error "Invalid module '$modulePath', directory not exist."
+    exit 1
+  fi
   if [ ! -r "$absModulePath/$MODULE_CONFIG" ]; then
-    msg::error "Invalid module '$modulePath', cannot read module config $MODULE_CONFIG."
+    msg::error "Invalid module '$modulePath', cannot read module config $absModulePath/$MODULE_CONFIG."
     exit 1
   fi
 }
