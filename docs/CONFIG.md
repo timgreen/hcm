@@ -36,6 +36,11 @@ modules:
 
 Everything is *optional* in the module config. You just need a empty file if you only want to link dotfiles.
 
+   * `after`
+
+      A list of module need be installed before this one, absolute path or relative paths from current file, must
+      already be mentioned in the main config.
+
 For hooks, please check [Life Cycle][Life Cycle] for details.
 
 ```yaml

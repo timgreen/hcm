@@ -64,10 +64,12 @@ config::_verify_module() {
     msg::error "Invalid module '$modulePath', directory not exist."
     exit 1
   fi
-  if [ ! -r "$absModulePath/$MODULE_CONFIG" ]; then
-    msg::error "Invalid module '$modulePath', cannot read module config $absModulePath/$MODULE_CONFIG."
+  local absModuleConfigPath="$absModulePath/$MODULE_CONFIG"
+  if [ ! -r "$absModuleConfigPath" ]; then
+    msg::error "Invalid module '$modulePath', cannot read module config $absModuleConfigPath."
     exit 1
   fi
+  config::_ensure_string_array_for_field "$absModuleConfigPath" ".after"
 }
 
 config::verify() {
