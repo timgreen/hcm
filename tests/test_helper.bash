@@ -14,6 +14,8 @@ use_fixture() {
 }
 
 diff_dir() {
+  [ -d "$1" ] || unzip "$1.zip" -d "$1"
+  [ -d "$2" ] || unzip "$2.zip" -d "$2"
   diff -r --no-dereference "$1" "$2"
 }
 
