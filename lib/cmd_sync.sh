@@ -10,11 +10,6 @@ BASE=$(dirname $(readlink -f "$0"))
 
 DRY_RUN=true
 
-remove_installed_module() {
-  local installedModulePath="$1"
-  rm -fr "$installedModulePath"
-}
-
 uninstall_module() {
   local installedModulePath="$1"
   local linkLog="$(config::link_log_path "$installedModulePath")"
@@ -30,14 +25,22 @@ uninstall_module() {
 uninstall_modules() {
   sync::list_the_modules_need_remove | while read installedModulePath; do
     uninstall_module "$installedModulePath"
-    remove_installed_module "$installedModulePath"
+    rm -fr "$installedModulePath"
   done
 }
 
 install_module() {
   local modulePath="$1"
   local absModulePath="$(config::get_module_path "$modulePath")"
-  hook::install "$absModulePath"
+  (
+    export HCM_MODULE_LINK_LOG="$(config::get_module_link_log_path "$modulePath")"
+    hook::install "$absModulePath"
+    # sort the file for deterministic result
+    if [ -r "$HCM_MODULE_LINK_LOG" ]; then
+      LC_ALL=C sort "$HCM_MODULE_LINK_LOG" -o "$HCM_MODULE_LINK_LOG"
+    fi
+    backup_installed_module "$modulePath"
+  )
 }
 
 install_modules() {
@@ -64,15 +67,7 @@ install_modules() {
       uninstall_module "$installedModulePath"
     fi
     if $doInstall; then
-      (
-        export HCM_MODULE_LINK_LOG="$(config::get_module_link_log_path "$modulePath")"
-        install_module "$modulePath"
-        # sort the file for deterministic result
-        if [ -r "$HCM_MODULE_LINK_LOG" ]; then
-          LC_ALL=C sort "$HCM_MODULE_LINK_LOG" -o "$HCM_MODULE_LINK_LOG"
-        fi
-        backup_installed_module "$modulePath"
-      )
+      install_module "$modulePath"
     fi
   done
 }
