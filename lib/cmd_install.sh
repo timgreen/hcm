@@ -22,7 +22,7 @@ install::uninstall_module() {
     unlink "$HOME/$linkTarget"
     # rmdir still might fail when it don't have permission to remove the
     # directory, so ignore the error here.
-    rmdir --ignore-fail-on-non-empty --parents "$(dirname "$HOME/$linkTarget")" || echo -n
+    rmdir --ignore-fail-on-non-empty --parents "$(dirname "$HOME/$linkTarget")" 2> /dev/null || echo -n
   done
   rm -f "$linkLog"
 }

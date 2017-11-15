@@ -18,6 +18,6 @@ sync::list_the_modules_need_remove() {
       echo "$installedModulePath"
       echo "$installedModulePath"
     done
-    find "$HCM_INSTALLED_MODULES_ROOT" -maxdepth 1 -mindepth 1 -type d
+    find "$HCM_INSTALLED_MODULES_ROOT" -maxdepth 1 -mindepth 1 -type d 2> /dev/null
   } | sort | uniq -u
 }
