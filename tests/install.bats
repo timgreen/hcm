@@ -62,4 +62,14 @@ teardown() {
   use_fixture "$fixture"
   hcm install
   diff_home_status "$fixture"
+
+  # step 2
+  diff -r --no-dereference \
+      "./fixtures/install/step_2_remove_one_module/before" \
+      "./fixtures/install/step_1_install_two_modules/after"
+  fixture="./fixtures/install/step_2_remove_one_module"
+  use_fixture "$fixture"
+  sed -i '/- module_b$/d' "test_home/repo/config.yml"
+  hcm install
+  diff_home_status "$fixture"
 }
