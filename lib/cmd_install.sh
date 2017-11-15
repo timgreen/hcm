@@ -28,16 +28,7 @@ install::uninstall_module() {
 }
 
 install::uninstall_modules() {
-  # Get the list of installed modules which no longer mentioned in the main
-  # config.
-  {
-    config::get_modules | while read modulePath; do
-      local installedModulePath="$(config::get_backup_module_path "$modulePath")"
-      echo "$installedModulePath"
-      echo "$installedModulePath"
-    done
-    find "$HCM_INSTALLED_MODULES_ROOT" -maxdepth 1 -mindepth 1 -type d
-  } | sort | uniq -u | while read installedModulePath; do
+  sync::list_the_modules_need_remove | while read installedModulePath; do
     install::uninstall_module "$installedModulePath"
     install::remove_installed_module "$installedModulePath"
   done
