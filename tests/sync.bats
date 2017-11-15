@@ -11,7 +11,7 @@ teardown() {
 }
 
 @test "sync: install a simple empty module" {
-  fixture="./fixtures/install/simple_empty_module"
+  fixture="./fixtures/sync/install_simple_empty_module"
   use_fixture "$fixture"
 
   hcm sync
@@ -21,10 +21,10 @@ teardown() {
 
 @test "sync: uninstall a simple empty module" {
   diff_dir \
-      "./fixtures/install/simple_empty_module_uninstall/before" \
-      "./fixtures/install/simple_empty_module/after"
+      "./fixtures/sync/uninstall_simple_empty_module/before" \
+      "./fixtures/sync/install_simple_empty_module/after"
 
-  fixture="./fixtures/install/simple_empty_module_uninstall"
+  fixture="./fixtures/sync/uninstall_simple_empty_module"
   use_fixture "$fixture"
 
   sed -i '/- empty$/d' "test_home/repo/config.yml"
@@ -34,7 +34,7 @@ teardown() {
 }
 
 @test "sync: install a simple module with empty config" {
-  fixture="./fixtures/install/only_link_files"
+  fixture="./fixtures/sync/install_only_link_files"
   use_fixture "$fixture"
 
   hcm sync
@@ -44,10 +44,10 @@ teardown() {
 
 @test "sync: uninstall a simple module with empty config" {
   diff_dir \
-      "./fixtures/install/only_link_files_uninstall/before" \
-      "./fixtures/install/only_link_files/after"
+      "./fixtures/sync/uninstall_only_link_files/before" \
+      "./fixtures/sync/install_only_link_files/after"
 
-  fixture="./fixtures/install/only_link_files_uninstall"
+  fixture="./fixtures/sync/uninstall_only_link_files"
   use_fixture "$fixture"
 
   sed -i '/- files_to_link$/d' "test_home/repo/config.yml"
@@ -58,16 +58,16 @@ teardown() {
 
 @test "sync: complex step by step test" {
   # step 1
-  fixture="./fixtures/install/step_1_install_two_modules"
+  fixture="./fixtures/sync/step_1_install_two_modules"
   use_fixture "$fixture"
   hcm sync
   diff_home_status "$fixture"
 
   # step 2
   diff_dir \
-      "./fixtures/install/step_2_remove_one_module/before" \
-      "./fixtures/install/step_1_install_two_modules/after"
-  fixture="./fixtures/install/step_2_remove_one_module"
+      "./fixtures/sync/step_2_remove_one_module/before" \
+      "./fixtures/sync/step_1_install_two_modules/after"
+  fixture="./fixtures/sync/step_2_remove_one_module"
   use_fixture "$fixture"
   sed -i '/- module_b$/d' "test_home/repo/config.yml"
   hcm sync
