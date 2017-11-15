@@ -101,10 +101,3 @@ config::link_log_path() {
   local installedModulePath="$1"
   echo "$installedModulePath.link.log"
 }
-
-config::if_module_has_no_update() {
-  local modulePath="$1"
-  local backupModulePath="$(config::get_backup_module_path "$modulePath")"
-  local absModulePath="$(config::get_module_path "$modulePath")"
-  diff -r --no-dereference "$absModulePath" "$backupModulePath" &> /dev/null
-}

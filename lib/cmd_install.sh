@@ -4,6 +4,7 @@ BASE=$(dirname $(readlink -f "$0"))
 
 [ -z "$INIT_MSG" ]         && source "$BASE/lib_msg.sh"
 [ -z "$INIT_CONFIG" ]      && source "$BASE/lib_config.sh"
+[ -z "$INIT_SYNC" ]        && source "$BASE/lib_sync.sh"
 [ -z "$INIT_HOOK_HELPER" ] && source "$BASE/hook_helper.sh"
 [ -z "$INIT_HOOK" ]        && source "$BASE/lib_hook.sh"
 
@@ -51,7 +52,7 @@ install::install_module() {
 install::install_modules() {
   config::get_modules | while read modulePath; do
     # Skip the already installed module that has no update.
-    config::if_module_has_no_update "$modulePath" && continue
+    sync::if_no_update_for_module "$modulePath" && continue
     (
       export HCM_MODULE_LINK_LOG="$(config::get_module_link_log_path "$modulePath")"
       install::install_module "$modulePath"
