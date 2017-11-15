@@ -28,8 +28,12 @@ config::get_shell() {
   esac
 }
 
-config::get_modules() {
-  cat "$MAIN_CONFIG" | config::yq -r '.modules[]?'
+CACHED_MODULE_LIST=""
+config::get_module_list() {
+  [ -z "$CACHED_MODULE_LIST" ] && {
+    CACHED_MODULE_LIST="$(cat "$MAIN_CONFIG" | config::yq -r '.modules[]?')"
+  }
+  echo "$CACHED_MODULE_LIST" | sed '/^$/d'
 }
 
 config::_ensure_string_array_for_field() {
@@ -79,7 +83,7 @@ config::verify() {
   }
 
   config::_verify_main
-  config::get_modules | while read modulePath; do
+  config::get_module_list | while read modulePath; do
     config::_verify_module "$modulePath"
   done
 }

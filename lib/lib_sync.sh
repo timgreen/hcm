@@ -23,7 +23,7 @@ sync::check_module_status() {
 # config.
 sync::list_the_modules_need_remove() {
   {
-    config::get_modules | while read modulePath; do
+    config::get_module_list | while read modulePath; do
       local installedModulePath="$(config::get_backup_module_path "$modulePath")"
       echo "$installedModulePath"
       echo "$installedModulePath"

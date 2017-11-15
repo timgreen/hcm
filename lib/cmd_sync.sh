@@ -46,7 +46,7 @@ install_module() {
 }
 
 install_modules() {
-  config::get_modules | while read modulePath; do
+  config::get_module_list | while read modulePath; do
     local skipUninstall=true
     local skipInstall=true
     case "$(sync::check_module_status "$modulePath")" in
