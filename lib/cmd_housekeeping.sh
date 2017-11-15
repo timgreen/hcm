@@ -1,8 +1,11 @@
 #!/bin/bash
 
+BASE="$(dirname "$(readlink -f "$0")")"
+
 # Options
 MAX_LEVEL=5
 DRY_RUN=true
+source "$BASE/lib_dry_run.sh"
 
 # Only take the action iff this is not dry_run
 action() {
@@ -51,17 +54,9 @@ check_dir() {
 main() {
   # TODO: support flags
   #       - max_level
-  POSITIONAL=()
+  local POSITIONAL=()
   while (( $# > 0 )); do
     case "$1" in
-      -n|--dry-run)
-        shift
-        DRY_RUN=true
-        ;;
-      -f|--no-dry-run)
-        shift
-        DRY_RUN=false
-        ;;
       *)
         POSITIONAL+=("$1") # save it in an array for later
         shift

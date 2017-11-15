@@ -1,6 +1,6 @@
 #!/bin/bash
 
-BASE=$(dirname $(readlink -f "$0"))
+BASE="$(dirname "$(readlink -f "$0")")"
 
 [ -z "$INIT_MSG" ]         && source "$BASE/lib_msg.sh"
 [ -z "$INIT_CONFIG" ]      && source "$BASE/lib_config.sh"
@@ -9,6 +9,7 @@ BASE=$(dirname $(readlink -f "$0"))
 [ -z "$INIT_HOOK" ]        && source "$BASE/lib_hook.sh"
 
 DRY_RUN=true
+source "$BASE/lib_dry_run.sh"
 
 uninstall_module() {
   local installedModulePath="$1"
@@ -88,25 +89,6 @@ backup_installed_module() {
 }
 
 main() {
-  local POSITIONAL=()
-  while (( $# > 0 )); do
-    case "$1" in
-      -n|--dry-run)
-        shift
-        DRY_RUN=true
-        ;;
-      -f|--no-dry-run)
-        shift
-        DRY_RUN=false
-        ;;
-      *)
-        POSITIONAL+=("$1") # save it in an array for later
-        shift
-        ;;
-    esac
-  done
-  set -- "${POSITIONAL[@]}" # restore positional parameters
-
   config::verify
   uninstall_modules
   install_modules
