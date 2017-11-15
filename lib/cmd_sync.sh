@@ -21,12 +21,12 @@ uninstall_module() {
     rmdir --ignore-fail-on-non-empty --parents "$(dirname "$HOME/$linkTarget")" 2> /dev/null || echo -n
   done
   rm -f "$linkLog"
+  rm -fr "$installedModulePath"
 }
 
 uninstall_modules() {
   sync::list_the_modules_need_remove | while read installedModulePath; do
     uninstall_module "$installedModulePath"
-    rm -fr "$installedModulePath"
   done
 }
 
