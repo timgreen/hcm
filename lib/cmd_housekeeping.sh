@@ -5,7 +5,8 @@ BASE="$(dirname "$(readlink -f "$0")")"
 # Options
 MAX_LEVEL=5
 DRY_RUN=true
-source "$BASE/lib_dry_run.sh"
+
+[ -z "$INIT_DRY_RUN" ] && source "$BASE/lib_dry_run.sh"
 
 check_file() {
   local file="$1"

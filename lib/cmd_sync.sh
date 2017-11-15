@@ -2,26 +2,27 @@
 
 BASE="$(dirname "$(readlink -f "$0")")"
 
+# Options
+DRY_RUN=false
+
 [ -z "$INIT_MSG" ]         && source "$BASE/lib_msg.sh"
 [ -z "$INIT_CONFIG" ]      && source "$BASE/lib_config.sh"
 [ -z "$INIT_SYNC" ]        && source "$BASE/lib_sync.sh"
 [ -z "$INIT_HOOK_HELPER" ] && source "$BASE/hook_helper.sh"
 [ -z "$INIT_HOOK" ]        && source "$BASE/lib_hook.sh"
-
-DRY_RUN=true
-source "$BASE/lib_dry_run.sh"
+[ -z "$INIT_DRY_RUN" ]     && source "$BASE/lib_dry_run.sh"
 
 uninstall_module() {
   local installedModulePath="$1"
   local linkLog="$(config::link_log_path "$installedModulePath")"
   cat "$linkLog" | while read linkTarget; do
-    unlink "$HOME/$linkTarget"
+    dryrun::action unlink "$HOME/$linkTarget"
     # rmdir still might fail when it don't have permission to remove the
     # directory, so ignore the error here.
-    rmdir --ignore-fail-on-non-empty --parents "$(dirname "$HOME/$linkTarget")" 2> /dev/null || echo -n
+    dryrun::action rmdir --ignore-fail-on-non-empty --parents "$(dirname "$HOME/$linkTarget")" 2> /dev/null || echo -n
   done
-  rm -f "$linkLog"
-  rm -fr "$installedModulePath"
+  dryrun::internal_action rm -f "$linkLog"
+  dryrun::internal_action rm -fr "$installedModulePath"
 }
 
 uninstall_modules() {
@@ -38,9 +39,9 @@ install_module() {
     hook::install "$absModulePath"
     # sort the file for deterministic result
     if [ -r "$HCM_MODULE_LINK_LOG" ]; then
-      LC_ALL=C sort "$HCM_MODULE_LINK_LOG" -o "$HCM_MODULE_LINK_LOG"
+      LC_ALL=C dryrun::internal_action sort "$HCM_MODULE_LINK_LOG" -o "$HCM_MODULE_LINK_LOG"
     fi
-    backup_installed_module "$modulePath"
+    dryrun::internal_action backup_installed_module "$modulePath"
   )
 }
 

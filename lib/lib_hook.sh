@@ -1,5 +1,7 @@
 INIT_HOOK=true
 
+[ -z "$INIT_DRY_RUN" ] && source "$(dirname "${BASH_SOURCE[0]}")"/lib_dry_run.sh
+
 hook::install() {
   local absModulePath="$1"
   hook::_do_link_all "$absModulePath" "$absModulePath"
@@ -25,6 +27,6 @@ hook::_do_link() {
     return
   fi
 
-  link "$file" "$HOME/$relativeFilePath"
+  dryrun::action link "$file" "$HOME/$relativeFilePath"
 }
 

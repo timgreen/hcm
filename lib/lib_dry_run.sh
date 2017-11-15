@@ -1,3 +1,5 @@
+INIT_DRY_RUN=true
+
 POSITIONAL=()
 while (( $# > 0 )); do
   case "$1" in
