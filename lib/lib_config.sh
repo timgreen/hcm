@@ -32,21 +32,29 @@ config::get_modules() {
   cat "$MAIN_CONFIG" | config::yq -r '.modules[]?'
 }
 
-config::_verify_main() {
-  local fieldType="$(cat "$MAIN_CONFIG" | config::yq -r '([.modules]|map(type))[0]')"
+config::_ensure_string_array_for_field() {
+  local configPath="$1"
+  local fieldPath="$2"
+
+  local fieldType="$(cat "$configPath" | config::yq -r "([$fieldPath]|map(type))[0]")"
   [[ "$fieldType" == "" ]] && return
   [[ "$fieldType" == "null" ]] && return
 
   if [[ "$fieldType" != "array" ]]; then
-    msg::error "'modules' must be array"
+    msg::error "Field '$fieldPath' must be array.\nFound errors in $configPath"
     exit 1
   fi
-  local invalidTypeIndex="$(cat "$MAIN_CONFIG" | config::yq -r '.modules|map(type)|.[]' | nl -v0 -nln | grep '\(array\|object\)$' | head -n 1 | cut -d' ' -f 1)"
+  local invalidTypeIndex="$(cat "$configPath" | config::yq -r "$fieldPath|map(type)|.[]" | nl -v0 -nln | grep '\(array\|object\)$' | head -n 1 | cut -d' ' -f 1)"
   if [[ "$invalidTypeIndex" != "" ]]; then
-    msg::error "All items under modules must be path. Found issue with index: $invalidTypeIndex"
-    cat "$MAIN_CONFIG" | config::yq -y ".modules[$invalidTypeIndex]"
+    msg::error "All items under field '$fieldPath' must be string. Found issue with index: $invalidTypeIndex"
+    msg::error "In file: $configPath"
+    cat "$configPath" | config::yq -y "$fieldPath[$invalidTypeIndex]"
     exit 1
   fi
+}
+
+config::_verify_main() {
+  config::_ensure_string_array_for_field "$MAIN_CONFIG" ".modules"
 }
 
 config::_verify_module() {
