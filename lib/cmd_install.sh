@@ -42,17 +42,38 @@ install::install_module() {
 
 install::install_modules() {
   config::get_modules | while read modulePath; do
-    # Skip the already installed module that has no update.
-    sync::if_no_update_for_module "$modulePath" && continue
-    (
-      export HCM_MODULE_LINK_LOG="$(config::get_module_link_log_path "$modulePath")"
-      install::install_module "$modulePath"
-      # sort the file for deterministic result
-      if [ -r "$HCM_MODULE_LINK_LOG" ]; then
-        LC_ALL=C sort "$HCM_MODULE_LINK_LOG" -o "$HCM_MODULE_LINK_LOG"
-      fi
-      install::backup_installed_module "$modulePath"
-    )
+    local doUninstall=false
+    local doInstall=false
+    case "$(sync::check_module_status "$modulePath")" in
+      $STATUS_UP_TO_DATE)
+        # Skip the already installed module that has no update.
+        continue
+        ;;
+      $STATUS_UPDATED|*)
+        doUninstall=true
+        doInstall=true
+        ;;
+      $STATUS_NEW)
+        doUninstall=false
+        doInstall=true
+        ;;
+    esac
+
+    if $doUninstall; then
+      local installedModulePath="$(config::get_backup_module_path "$modulePath")"
+      install::uninstall_module "$installedModulePath"
+    fi
+    if $doInstall; then
+      (
+        export HCM_MODULE_LINK_LOG="$(config::get_module_link_log_path "$modulePath")"
+        install::install_module "$modulePath"
+        # sort the file for deterministic result
+        if [ -r "$HCM_MODULE_LINK_LOG" ]; then
+          LC_ALL=C sort "$HCM_MODULE_LINK_LOG" -o "$HCM_MODULE_LINK_LOG"
+        fi
+        install::backup_installed_module "$modulePath"
+      )
+    fi
   done
 }
 
