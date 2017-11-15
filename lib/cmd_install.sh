@@ -69,7 +69,7 @@ install::backup_installed_module() {
     rsync -r --links "$absModulePath/" "$backupModulePath"
   else
     rm -fr "$backupModulePath"
-    cp -r "$absModulePath" "$backupModulePath"
+    cp -d -r "$absModulePath" "$backupModulePath"
   fi
 }
 

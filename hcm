@@ -7,7 +7,6 @@ cmd="$1"
 shift
 
 set -e
-[[ "$DEBUG" != "" ]] && set -x
 
 set -a
 
