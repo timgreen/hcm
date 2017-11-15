@@ -46,30 +46,25 @@ install_module() {
 
 install_modules() {
   config::get_modules | while read modulePath; do
-    local doUninstall=false
-    local doInstall=false
+    local skipUninstall=true
+    local skipInstall=true
     case "$(sync::check_module_status "$modulePath")" in
       $STATUS_UP_TO_DATE)
         # Skip the already installed module that has no update.
         continue
         ;;
       $STATUS_UPDATED|*)
-        doUninstall=true
-        doInstall=true
+        skipUninstall=false
+        skipInstall=false
         ;;
       $STATUS_NEW)
-        doUninstall=false
-        doInstall=true
+        skipUninstall=true
+        skipInstall=false
         ;;
     esac
 
-    if $doUninstall; then
-      local installedModulePath="$(config::get_backup_module_path "$modulePath")"
-      uninstall_module "$installedModulePath"
-    fi
-    if $doInstall; then
-      install_module "$modulePath"
-    fi
+    $skipUninstall || uninstall_module "$(config::get_backup_module_path "$modulePath")"
+    $skipInstall || install_module "$modulePath"
   done
 }
 
