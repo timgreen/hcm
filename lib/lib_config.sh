@@ -31,6 +31,7 @@ config::get_shell() {
 }
 
 CACHED_MODULE_LIST=""
+# Returns the abs path for modules.
 config::get_module_list() {
   [ -z "$CACHED_MODULE_LIST" ] && {
     CACHED_MODULE_LIST="$(cat "$MAIN_CONFIG_FILE" | config::yq -r '.modules[]?')"
@@ -98,7 +99,8 @@ config::get_module_path() {
 # use md5 as backup name, so we have a flat structure under $HOME/.hcm/installed_modules/
 config::_get_flatten_name() {
   local modulePath="$1"
-  echo "$modulePath" | md5sum | cut -c 1-32
+  local absModulePath="$(config::get_module_path "$modulePath")"
+  echo "$absModulePath" | md5sum | cut -c 1-32
 }
 
 config::get_backup_module_path() {
