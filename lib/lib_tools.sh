@@ -16,3 +16,6 @@ tools::yq() {
   fi
 }
 
+tools::sort() {
+  LC_ALL=C sort "$@"
+}

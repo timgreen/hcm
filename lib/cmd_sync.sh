@@ -5,12 +5,13 @@ BASE="$(dirname "$(readlink -f "$0")")"
 # Options
 DRY_RUN=true
 
-[ -z "$INIT_MSG" ]         && source "$BASE/lib_msg.sh"
 [ -z "$INIT_CONFIG" ]      && source "$BASE/lib_config.sh"
-[ -z "$INIT_SYNC" ]        && source "$BASE/lib_sync.sh"
-[ -z "$INIT_HOOK_HELPER" ] && source "$BASE/hook_helper.sh"
-[ -z "$INIT_HOOK" ]        && source "$BASE/lib_hook.sh"
 [ -z "$INIT_DRY_RUN" ]     && source "$BASE/lib_dry_run.sh"
+[ -z "$INIT_HOOK" ]        && source "$BASE/lib_hook.sh"
+[ -z "$INIT_HOOK_HELPER" ] && source "$BASE/hook_helper.sh"
+[ -z "$INIT_MSG" ]         && source "$BASE/lib_msg.sh"
+[ -z "$INIT_SYNC" ]        && source "$BASE/lib_sync.sh"
+[ -z "$INIT_TOOLS" ]       && source "$BASE/lib_tools.sh"
 
 uninstall_module() {
   local installedModulePath="$1"
@@ -38,7 +39,7 @@ install_module() {
     hook::install "$absModulePath"
     # sort the file for deterministic result
     if [ -r "$HCM_MODULE_LINK_LOG" ]; then
-      LC_ALL=C dryrun::internal_action sort "$HCM_MODULE_LINK_LOG" -o "$HCM_MODULE_LINK_LOG"
+      dryrun::internal_action tools::sort "$HCM_MODULE_LINK_LOG" -o "$HCM_MODULE_LINK_LOG"
     fi
     dryrun::internal_action backup_installed_module "$absModulePath"
   )

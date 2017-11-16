@@ -1,10 +1,11 @@
 HOOK_HELPER=true
 
-[ -z "$INIT_PATH" ] && source "$(dirname "${BASH_SOURCE[0]}")"/lib_path.sh
+[ -z "$INIT_PATH" ]  && source "$(dirname "${BASH_SOURCE[0]}")"/lib_path.sh
+[ -z "$INIT_TOOLS" ] && source "$(dirname "${BASH_SOURCE[0]}")"/lib_tools.sh
 
 # http://stackoverflow.com/questions/16989598/bash-comparing-version-numbers#answer-24067243
 version_gt() {
-  test "$(printf '%s\n' "$@" | sort -V | head -n 1)" != "$1";
+  test "$(printf '%s\n' "$@" | tools::sort -V | head -n 1)" != "$1";
 }
 
 version_gte() {
