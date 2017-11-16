@@ -59,3 +59,19 @@ path::abs_path_for() {
     realpath --no-symlinks -m "$1"
   )
 }
+
+# Usage path::abs_readlink <file>
+#
+# Assume <file> is abs path.
+# Returns <file> is <file> is regular file.
+# Returns the absolute path for the symlink target (only resolve 1 level) if
+#   <file> is symlink.
+path::abs_readlink() {
+  local file="$1"
+  if [ -L "$file" ]; then
+    path::abs_path_for --relative-base-file "$file" "$(readlink "$file")"
+  else
+    echo "$file"
+  fi
+}
+

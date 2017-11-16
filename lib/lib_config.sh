@@ -1,9 +1,12 @@
 INIT_CONFIG=true
 
 [ -z "$INIT_MSG" ] && source "$(dirname "${BASH_SOURCE[0]}")"/lib_msg.sh
+[ -z "$INIT_PATH" ] && source "$(dirname "${BASH_SOURCE[0]}")"/lib_path.sh
 
 HAS_YQ=$(which yq 2> /dev/null)
 HAS_DOCKER=$(which docker 2> /dev/null)
+
+MAIN_CONFIG_REAL_PATH="$(path::abs_readlink "$MAIN_CONFIG_FILE")"
 
 config::yq() {
   if [ -n "$HAS_YQ" ]; then
@@ -17,7 +20,7 @@ config::yq() {
 }
 
 config::get_shell() {
-  local scriptShell="$(cat "$MAIN_CONFIG" | config::yq -r .shell)"
+  local scriptShell="$(cat "$MAIN_CONFIG_FILE" | config::yq -r .shell)"
   case "$scriptShell" in
     bash|null|'')
       echo bash
@@ -31,7 +34,7 @@ config::get_shell() {
 CACHED_MODULE_LIST=""
 config::get_module_list() {
   [ -z "$CACHED_MODULE_LIST" ] && {
-    CACHED_MODULE_LIST="$(cat "$MAIN_CONFIG" | config::yq -r '.modules[]?')"
+    CACHED_MODULE_LIST="$(cat "$MAIN_CONFIG_FILE" | config::yq -r '.modules[]?')"
   }
   echo "$CACHED_MODULE_LIST" | sed '/^$/d'
 }
@@ -58,7 +61,7 @@ config::_ensure_string_array_for_field() {
 }
 
 config::_verify_main() {
-  config::_ensure_string_array_for_field "$MAIN_CONFIG" ".modules"
+  config::_ensure_string_array_for_field "$MAIN_CONFIG_FILE" ".modules"
 }
 
 config::_verify_module() {
@@ -77,7 +80,7 @@ config::_verify_module() {
 }
 
 config::verify() {
-  [ -r "$MAIN_CONFIG" ] || {
+  [ -r "$MAIN_CONFIG_FILE" ] || {
     msg::error 'Cannot read main config "\$HOME/.hcm/config.yml".'
     exit 1
   }
@@ -90,8 +93,7 @@ config::verify() {
 
 config::get_module_path() {
   local modulePath="$1"
-  local realMainConfigPath="$(readlink -f $MAIN_CONFIG)"
-  path::abs_path_for --relative-base-file "$realMainConfigPath" "$modulePath"
+  path::abs_path_for --relative-base-file "$MAIN_CONFIG_REAL_PATH" "$modulePath"
 }
 
 # use md5 as backup name, so we have a flat structure under $HOME/.hcm/installed_modules/
