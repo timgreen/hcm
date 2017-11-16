@@ -12,7 +12,7 @@ Which could be a symlink, its actual path (`readlink -f`) will be use as the bas
 
 ## Main Config Format
 
-```
+```yaml
 # Optional, specify the shell used to run the scripts, e.g. zsh or bash, defaults to bash.
 shell: zsh
 # List of module path.
