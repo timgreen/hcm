@@ -8,15 +8,6 @@ shift
 
 set -e
 
-set -a
-
-HCM_HOME="$HOME/.hcm"
-MAIN_CONFIG_FILE="$HCM_HOME/config.yml"
-MODULE_CONFIG="module.yml"
-HCM_INSTALLED_MODULES_ROOT="$HCM_HOME/installed_modules"
-
-set +a
-
 if is_valid_cmd_name "$cmd" && [ -f "$BASE/lib/cmd_$(cmd_to_filename "$cmd").sh" ]; then
   bash "$BASE/lib/cmd_$(cmd_to_filename "$cmd").sh" "$@"
 else

@@ -1,12 +1,11 @@
 INIT_CONFIG=true
 
-[ -z "$INIT_MSG" ] && source "$(dirname "${BASH_SOURCE[0]}")"/lib_msg.sh
-[ -z "$INIT_PATH" ] && source "$(dirname "${BASH_SOURCE[0]}")"/lib_path.sh
+[ -z "$INIT_MSG" ]         && source "$(dirname "${BASH_SOURCE[0]}")"/lib_msg.sh
+[ -z "$INIT_PATH" ]        && source "$(dirname "${BASH_SOURCE[0]}")"/lib_path.sh
+[ -z "$INIT_PATH_CONSTS" ] && source "$(dirname "${BASH_SOURCE[0]}")"/lib_path_consts.sh
 
 HAS_YQ=$(which yq 2> /dev/null)
 HAS_DOCKER=$(which docker 2> /dev/null)
-
-MAIN_CONFIG_REAL_PATH="$(path::abs_readlink "$MAIN_CONFIG_FILE")"
 
 config::yq() {
   if [ -n "$HAS_YQ" ]; then
