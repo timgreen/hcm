@@ -32,24 +32,23 @@ uninstall_modules() {
 }
 
 install_module() {
-  local modulePath="$1"
-  local absModulePath="$(config::get_module_path "$modulePath")"
+  local absModulePath="$1"
   (
-    export HCM_MODULE_LINK_LOG="$(config::get_module_link_log_path "$modulePath")"
+    export HCM_MODULE_LINK_LOG="$(config::get_module_link_log_path "$absModulePath")"
     hook::install "$absModulePath"
     # sort the file for deterministic result
     if [ -r "$HCM_MODULE_LINK_LOG" ]; then
       LC_ALL=C dryrun::internal_action sort "$HCM_MODULE_LINK_LOG" -o "$HCM_MODULE_LINK_LOG"
     fi
-    dryrun::internal_action backup_installed_module "$modulePath"
+    dryrun::internal_action backup_installed_module "$absModulePath"
   )
 }
 
 install_modules() {
-  config::get_module_list | while read modulePath; do
+  config::get_module_list | while read absModulePath; do
     local skipUninstall=true
     local skipInstall=true
-    case "$(sync::check_module_status "$modulePath")" in
+    case "$(sync::check_module_status "$absModulePath")" in
       $STATUS_UP_TO_DATE)
         # Skip the already installed module that has no update.
         continue
@@ -64,16 +63,16 @@ install_modules() {
         ;;
     esac
 
-    $skipUninstall || uninstall_module "$(config::get_backup_module_path "$modulePath")"
-    $skipInstall || install_module "$modulePath"
+    $skipUninstall || uninstall_module "$(config::get_backup_module_path "$absModulePath")"
+    $skipInstall || install_module "$absModulePath"
   done
 }
 
 # Make a copy of the installed module, this is needed for uninstall. So even the
 # user deleted and orignal copy, hcm still knows how to uninstall it.
 backup_installed_module() {
-  local absModulePath="$(config::get_module_path "$modulePath")"
-  local backupModulePath="$(config::get_backup_module_path "$modulePath")"
+  local absModulePath="$1"
+  local backupModulePath="$(config::get_backup_module_path "$absModulePath")"
 
   mkdir -p "$(dirname "$backupModulePath")"
   if which rsync &> /dev/null; then

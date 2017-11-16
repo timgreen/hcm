@@ -7,9 +7,8 @@ STATUS_UPDATED='updated'
 [ -z "$INIT_CONFIG" ] && source "$(dirname "${BASH_SOURCE[0]}")"/lib_config.sh
 
 sync::check_module_status() {
-  local modulePath="$1"
-  local backupModulePath="$(config::get_backup_module_path "$modulePath")"
-  local absModulePath="$(config::get_module_path "$modulePath")"
+  local absModulePath="$1"
+  local backupModulePath="$(config::get_backup_module_path "$absModulePath")"
   if [ ! -d "$backupModulePath" ]; then
     echo "$STATUS_NEW"
   elif diff -r --no-dereference "$absModulePath" "$backupModulePath" &> /dev/null; then
@@ -23,8 +22,8 @@ sync::check_module_status() {
 # config.
 sync::list_the_modules_need_remove() {
   {
-    config::get_module_list | while read modulePath; do
-      local installedModulePath="$(config::get_backup_module_path "$modulePath")"
+    config::get_module_list | while read absModulePath; do
+      local installedModulePath="$(config::get_backup_module_path "$absModulePath")"
       echo "$installedModulePath"
       echo "$installedModulePath"
     done

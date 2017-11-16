@@ -34,7 +34,12 @@ CACHED_MODULE_LIST=""
 # Returns the abs path for modules.
 config::get_module_list() {
   [ -z "$CACHED_MODULE_LIST" ] && {
-    CACHED_MODULE_LIST="$(cat "$MAIN_CONFIG_FILE" | config::yq -r '.modules[]?')"
+    CACHED_MODULE_LIST="$(
+      cat "$MAIN_CONFIG_FILE" | config::yq -r '.modules[]?' | while read modulePath; do
+        # output absModulePath
+        path::abs_path_for --relative-base-file "$MAIN_CONFIG_REAL_PATH" "$modulePath"
+      done
+    )"
   }
   echo "$CACHED_MODULE_LIST" | sed '/^$/d'
 }
@@ -65,15 +70,14 @@ config::_verify_main() {
 }
 
 config::_verify_module() {
-  local modulePath="$1"
-  local absModulePath="$(config::get_module_path "$modulePath")"
+  local absModulePath="$1"
   if [ -z "$absModulePath" ] || [ ! -d "$absModulePath" ]; then
-    msg::error "Invalid module '$modulePath', directory not exist: $absModulePath"
+    msg::error "Invalid module '$absModulePath', directory not exist."
     exit 1
   fi
   local absModuleConfigPath="$absModulePath/$MODULE_CONFIG"
   if [ ! -r "$absModuleConfigPath" ]; then
-    msg::error "Invalid module '$modulePath', cannot read module config $absModuleConfigPath."
+    msg::error "Invalid module '$absModulePath', cannot read module config $absModuleConfigPath."
     exit 1
   fi
   config::_ensure_string_array_for_field "$absModuleConfigPath" ".after"
@@ -86,32 +90,26 @@ config::verify() {
   }
 
   config::_verify_main
-  config::get_module_list | while read modulePath; do
-    config::_verify_module "$modulePath"
+  config::get_module_list | while read absModulePath; do
+    config::_verify_module "$absModulePath"
   done
-}
-
-config::get_module_path() {
-  local modulePath="$1"
-  path::abs_path_for --relative-base-file "$MAIN_CONFIG_REAL_PATH" "$modulePath"
 }
 
 # use md5 as backup name, so we have a flat structure under $HOME/.hcm/installed_modules/
 config::_get_flatten_name() {
-  local modulePath="$1"
-  local absModulePath="$(config::get_module_path "$modulePath")"
+  local absModulePath="$1"
   echo "$absModulePath" | md5sum | cut -c 1-32
 }
 
 config::get_backup_module_path() {
-  local modulePath="$1"
-  local flattenName="$(config::_get_flatten_name "$modulePath")"
+  local absModulePath="$1"
+  local flattenName="$(config::_get_flatten_name "$absModulePath")"
   echo "$HCM_INSTALLED_MODULES_ROOT/$flattenName"
 }
 
 config::get_module_link_log_path() {
-  local modulePath="$1"
-  config::link_log_path "$(config::get_backup_module_path "$modulePath")"
+  local absModulePath="$1"
+  config::link_log_path "$(config::get_backup_module_path "$absModulePath")"
 }
 
 config::link_log_path() {
