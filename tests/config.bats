@@ -118,3 +118,11 @@ EOF
   run hcm sync
   [ "$status" -eq 1 ]
 }
+
+@test "config: error with circular dependency in '.after'" {
+  fixture="./fixtures/config/circular_dependency"
+  use_fixture "$fixture"
+
+  run hcm sync
+  [ "$status" -eq 1 ]
+}

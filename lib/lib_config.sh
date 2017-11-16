@@ -52,11 +52,11 @@ config::_ensure_string_array_for_field() {
   fi
 }
 
-config::_verify_main() {
+config::verify::_main() {
   config::_ensure_string_array_for_field "$MAIN_CONFIG_FILE" ".modules"
 }
 
-config::_verify_module() {
+config::verify::_module() {
   local absModulePath="$1"
   if [ -z "$absModulePath" ] || [ ! -d "$absModulePath" ]; then
     msg::error "Invalid module '$absModulePath', directory not exist."
@@ -79,16 +79,27 @@ config::_verify_module() {
   done
 }
 
+config::verify::_dependencies() {
+  # Use `tsort` to do topological sort.
+  config::get_module_list | while read absModulePath; do
+    config::get_module_after_list "$absModulePath" | while read absAfterModulePath; do
+      echo "$absModulePath" | tr ' ' '_'
+      echo "$absModuleConfigPath" | tr ' ' '_'
+    done
+  done | tsort > /dev/null
+}
+
 config::verify() {
   [ -r "$MAIN_CONFIG_FILE" ] || {
     msg::error 'Cannot read main config "\$HOME/.hcm/config.yml".'
     exit 1
   }
 
-  config::_verify_main
+  config::verify::_main
   config::get_module_list | while read absModulePath; do
-    config::_verify_module "$absModulePath"
+    config::verify::_module "$absModulePath"
   done
+  config::verify::_dependencies
 }
 
 # use md5 as backup name, so we have a flat structure under $HOME/.hcm/installed_modules/
