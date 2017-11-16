@@ -3,23 +3,10 @@ INIT_CONFIG=true
 [ -z "$INIT_MSG" ]         && source "$(dirname "${BASH_SOURCE[0]}")"/lib_msg.sh
 [ -z "$INIT_PATH" ]        && source "$(dirname "${BASH_SOURCE[0]}")"/lib_path.sh
 [ -z "$INIT_PATH_CONSTS" ] && source "$(dirname "${BASH_SOURCE[0]}")"/lib_path_consts.sh
-
-HAS_YQ=$(which yq 2> /dev/null)
-HAS_DOCKER=$(which docker 2> /dev/null)
-
-config::yq() {
-  if [ -n "$HAS_YQ" ]; then
-    yq "$@"
-  elif [ -n "$HAS_DOCKER" ]; then
-    docker run -i evns/yq "$@"
-  else
-    msg::error "yq not available"
-    exit 1
-  fi
-}
+[ -z "$INIT_TOOLS" ]       && source "$(dirname "${BASH_SOURCE[0]}")"/lib_tools.sh
 
 config::get_shell() {
-  local scriptShell="$(cat "$MAIN_CONFIG_FILE" | config::yq -r .shell)"
+  local scriptShell="$(cat "$MAIN_CONFIG_FILE" | tools::yq -r .shell)"
   case "$scriptShell" in
     bash|null|'')
       echo bash
@@ -35,7 +22,7 @@ CACHED_MODULE_LIST=""
 config::get_module_list() {
   [ -z "$CACHED_MODULE_LIST" ] && {
     CACHED_MODULE_LIST="$(
-      cat "$MAIN_CONFIG_FILE" | config::yq -r '.modules[]?' | while read modulePath; do
+      cat "$MAIN_CONFIG_FILE" | tools::yq -r '.modules[]?' | while read modulePath; do
         # output absModulePath
         path::abs_path_for --relative-base-file "$MAIN_CONFIG_REAL_PATH" "$modulePath"
       done
@@ -48,7 +35,7 @@ config::_ensure_string_array_for_field() {
   local configPath="$1"
   local fieldPath="$2"
 
-  local fieldType="$(cat "$configPath" | config::yq -r "([$fieldPath]|map(type))[0]")"
+  local fieldType="$(cat "$configPath" | tools::yq -r "([$fieldPath]|map(type))[0]")"
   [[ "$fieldType" == "" ]] && return
   [[ "$fieldType" == "null" ]] && return
 
@@ -56,11 +43,11 @@ config::_ensure_string_array_for_field() {
     msg::error "Field '$fieldPath' must be array.\nFound errors in $configPath"
     exit 1
   fi
-  local invalidTypeIndex="$(cat "$configPath" | config::yq -r "$fieldPath|map(type)|.[]" | nl -v0 -nln | grep '\(array\|object\)$' | head -n 1 | cut -d' ' -f 1)"
+  local invalidTypeIndex="$(cat "$configPath" | tools::yq -r "$fieldPath|map(type)|.[]" | nl -v0 -nln | grep '\(array\|object\)$' | head -n 1 | cut -d' ' -f 1)"
   if [[ "$invalidTypeIndex" != "" ]]; then
     msg::error "All items under field '$fieldPath' must be string. Found issue with index: $invalidTypeIndex"
     msg::error "In file: $configPath"
-    cat "$configPath" | config::yq -y "$fieldPath[$invalidTypeIndex]"
+    cat "$configPath" | tools::yq -y "$fieldPath[$invalidTypeIndex]"
     exit 1
   fi
 }
@@ -129,7 +116,7 @@ config::link_log_path() {
 config::get_module_after_list() {
   local absModulePath="$1"
   local absModuleConfigPath="$absModulePath/$MODULE_CONFIG"
-  cat "$absModuleConfigPath" | config::yq -r '.after[]?' | while read afterModulePath; do
+  cat "$absModuleConfigPath" | tools::yq -r '.after[]?' | while read afterModulePath; do
     # output absAfterModulePath
     path::abs_path_for --relative-base-file "$absModuleConfigPath" "$afterModulePath"
   done
