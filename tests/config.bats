@@ -95,3 +95,26 @@ EOF
   run hcm sync
   [ "$status" -eq 1 ]
 }
+
+@test "config: error when '.after' listed invalid module" {
+  fixture="./fixtures/sync/step_1_install_two_modules"
+  use_fixture "$fixture"
+
+  sed -i '/- module_b/d' test_home/repo/config.yml
+  echo "after:" >> test_home/repo/module_a/module.yml
+  echo "  - ../module_b" >> test_home/repo/module_a/module.yml
+
+  run hcm sync
+  [ "$status" -eq 1 ]
+}
+
+@test "config: error when '.after' listed non-exists module" {
+  fixture="./fixtures/sync/step_1_install_two_modules"
+  use_fixture "$fixture"
+
+  echo "after:" >> test_home/repo/module_a/module.yml
+  echo "  - ../module_c" >> test_home/repo/module_a/module.yml
+
+  run hcm sync
+  [ "$status" -eq 1 ]
+}

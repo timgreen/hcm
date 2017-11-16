@@ -81,6 +81,15 @@ config::_verify_module() {
     exit 1
   fi
   config::_ensure_string_array_for_field "$absModuleConfigPath" ".after"
+  # Ensure all the module listed in `after` are mentioned in the main config.
+  config::get_module_after_list "$absModulePath" | while read absAfterModulePath; do
+    grep --fixed-strings --line-regexp "$absModuleConfigPath" <<<"$(config::get_module_list)" &> /dev/null || {
+      msg::error "Depends on invalid module that not mentioned in main config."
+      msg::info "module config: $absModuleConfigPath"
+      msg::info "invalid module listed in .after: $absAfterModulePath"
+      exit 1
+    }
+  done
 }
 
 config::verify() {
@@ -115,4 +124,13 @@ config::get_module_link_log_path() {
 config::link_log_path() {
   local installedModulePath="$1"
   echo "$installedModulePath.link.log"
+}
+
+config::get_module_after_list() {
+  local absModulePath="$1"
+  local absModuleConfigPath="$absModulePath/$MODULE_CONFIG"
+  cat "$absModuleConfigPath" | config::yq -r '.after[]?' | while read afterModulePath; do
+    # output absAfterModulePath
+    path::abs_path_for --relative-base-file "$absModuleConfigPath" "$afterModulePath"
+  done
 }
