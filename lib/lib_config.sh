@@ -65,7 +65,7 @@ config::_verify_module() {
   local modulePath="$1"
   local absModulePath="$(config::get_module_path "$modulePath")"
   if [ -z "$absModulePath" ] || [ ! -d "$absModulePath" ]; then
-    msg::error "Invalid module '$modulePath', directory not exist."
+    msg::error "Invalid module '$modulePath', directory not exist: $absModulePath"
     exit 1
   fi
   local absModuleConfigPath="$absModulePath/$MODULE_CONFIG"
@@ -90,12 +90,8 @@ config::verify() {
 
 config::get_module_path() {
   local modulePath="$1"
-  local mainConfigPath="$(readlink -f $MAIN_CONFIG)"
-
-  (
-    cd "$(dirname "$mainConfigPath")"
-    readlink -e "$modulePath"
-  )
+  local realMainConfigPath="$(readlink -f $MAIN_CONFIG)"
+  path::abs_path_for --relative-base-file "$realMainConfigPath" "$modulePath"
 }
 
 # use md5 as backup name, so we have a flat structure under $HOME/.hcm/installed_modules/

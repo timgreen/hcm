@@ -1,5 +1,7 @@
 INIT_PATH=true
 
+[ -z "$INIT_MSG" ] && source "$(dirname "${BASH_SOURCE[0]}")"/lib_msg.sh
+
 # Why not just `realpath --relative-to=A B`?
 #
 # 1. realpath will resolve B if it is a softlink, but I prefer not.
@@ -20,3 +22,40 @@ path::relative_to() {
   fi
 }
 
+# "Usage: abs_path_for [--relative-base-file <file> | --relative-base-dir <dir>] <path>"
+#
+# Return the abs path for <path> based on relative base dir or file.
+path::abs_path_for() {
+  local relativeBase=""
+  local positional=()
+  while (( $# > 0 )); do
+    case "$1" in
+      --relative-base-dir)
+        shift
+        relativeBase="$1"
+        shift
+        ;;
+      --relative-base-file)
+        shift
+        relativeBase="$(dirname "$1")"
+        shift
+        ;;
+      *)
+        positional+=("$1") # save it in an array for later
+        shift
+        ;;
+    esac
+  done
+  set -- "${positional[@]}" # restore positional parameters
+
+  if (( $# != 1 )) || [ -z "$relativeBase" ]; then
+    msg::error "Wrong parameters"
+    msg::info "Usage: abs_path_for [--relative-base-file <file> | --relative-base-dir <dir>] <path>"
+    exit 1
+  fi
+
+  (
+    cd "$relativeBase"
+    realpath --no-symlinks -m "$1"
+  )
+}
