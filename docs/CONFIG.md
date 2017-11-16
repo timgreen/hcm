@@ -35,7 +35,9 @@ modules:
 
 ## Module Config Format
 
-Everything is *optional* in the module config. You just need a empty file if you only want to link dotfiles.
+The module config is the `module.yml` file under the root of each module directory. Everything is *optional* in the 
+module config. You just need a empty file if you only want to link dotfiles. (Empty file is requires in this case for
+`hcm` to know it is a module directory.)
 
    * `after`
 
