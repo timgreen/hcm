@@ -25,7 +25,7 @@ config::get_module_list() {
       cat "$MAIN_CONFIG_FILE" | tools::yq -r '.modules[]?' | while read modulePath; do
         # output absModulePath
         path::abs_path_for --relative-base-file "$MAIN_CONFIG_REAL_PATH" "$modulePath"
-      done
+      done | tools::sort
     )"
   }
   echo "$CACHED_MODULE_LIST" | sed '/^$/d'
