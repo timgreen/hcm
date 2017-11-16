@@ -2,7 +2,8 @@
 
 The main config of hcm is `$HOME/.hcm/config.yml`.
 
-Which could be a symlink, its actual path (`readlink -f`) will be use as the base for the relative paths mentioned in config.
+Which could be a symlink, its actual path (`readlink`, only resolve one level) will be use as the base for the relative
+paths mentioned in config.
 
 > #### WHY use actual path as relative base?
 >
