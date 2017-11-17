@@ -46,26 +46,52 @@ install_module() {
 }
 
 install_modules() {
-  config::get_module_list | while read absModulePath; do
-    local skipUninstall=true
-    local skipInstall=true
+  local pendingAbsModulePaths=()
+  # First, go through the module list.
+  #   - ignore the up-to-date modules.
+  #   - uninstall the updated modules and add them to pending list
+  #   - add new modules to pending list.
+  local absModulePath
+  while read absModulePath; do
+    # NOTE: change to `output | while read x; do ... done` style could fix the
+    # empty line input issue. But the while statement after pipe will be in a
+    # new sub shell, the changes to $pendingAbsModulePaths won't visible
+    # outside.
+    [ -z "$absModulePath" ] && continue
     case "$(sync::check_module_status "$absModulePath")" in
       $STATUS_UP_TO_DATE)
         # Skip the already installed module that has no update.
         continue
         ;;
-      $STATUS_UPDATED|*)
-        skipUninstall=false
-        skipInstall=false
-        ;;
       $STATUS_NEW)
-        skipUninstall=true
-        skipInstall=false
+        pendingAbsModulePaths+=("$absModulePath")
+        ;;
+      $STATUS_UPDATED|*)
+        uninstall_module "$(config::get_backup_module_path "$absModulePath")"
+        pendingAbsModulePaths+=("$absModulePath")
         ;;
     esac
+  done <<< "$(config::get_module_list)"
 
-    $skipUninstall || uninstall_module "$(config::get_backup_module_path "$absModulePath")"
-    $skipInstall || install_module "$absModulePath"
+  # Install pending modules.
+  # Only install the first module with unresolved dependencies in each
+  # interation.
+  while (( ${#pendingAbsModulePaths[@]} > 0 )); do
+    local installedOneModule=false
+    for i in "${!pendingAbsModulePaths[@]}"; do
+      local absModulePath="${pendingAbsModulePaths[$i]}"
+      if sync::ready_to_install "$absModulePath"; then
+        install_module "$absModulePath"
+        unset -v "pendingAbsModulePaths[$i]"
+        installedOneModule=true
+        break
+      fi
+    done
+    if ! $installedOneModule; then
+      msg::error "Cannot resolve following modules:"
+      printf '%s\n' "${pendingAbsModulePaths[@]}"
+      exit 1
+    fi
   done
 }
 

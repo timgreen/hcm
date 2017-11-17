@@ -32,3 +32,14 @@ sync::list_the_modules_need_remove() {
     find "$HCM_INSTALLED_MODULES_ROOT" -maxdepth 1 -mindepth 1 -type d 2> /dev/null
   } | tools::sort | uniq -u
 }
+
+# Returns true if the given module is ready to install.
+sync::ready_to_install() {
+  local absModulePath="$1"
+  # Ensure all the modules listed in '.after' have been installed.
+  config::get_module_after_list "$absModulePath" | while read absAfterModulePath; do
+    if [[ "$(sync::check_module_status "$absModulePath")" != "$STATUS_UP_TO_DATE" ]]; then
+      return 1
+    fi
+  done
+}
