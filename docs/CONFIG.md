@@ -1,6 +1,6 @@
 # Main Config
 
-The main config of hcm is `$HOME/.hcm/config.yml`.
+The main config of hcm is `$HOME/.hcm/hcm.yml`.
 
 Which could be a symlink, its actual path (`readlink`, only resolve one level) will be use as the base for the relative
 paths mentioned in config.

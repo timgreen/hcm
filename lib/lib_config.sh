@@ -91,7 +91,7 @@ config::verify::_dependencies() {
 
 config::verify() {
   [ -r "$MAIN_CONFIG_FILE" ] || {
-    msg::error 'Cannot read main config "\$HOME/.hcm/config.yml".'
+    msg::error 'Cannot read main config "$HOME/.hcm/hcm.yml".'
     exit 1
   }
 

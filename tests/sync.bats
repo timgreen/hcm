@@ -27,7 +27,7 @@ teardown() {
   fixture="./fixtures/sync/uninstall_simple_empty_module"
   use_fixture "$fixture"
 
-  sed -i '/- empty$/d' "test_home/repo/config.yml"
+  sed -i '/- empty$/d' "test_home/repo/hcm.yml"
   hcm sync -f
 
   diff_home_status "$fixture"
@@ -50,7 +50,7 @@ teardown() {
   fixture="./fixtures/sync/uninstall_only_link_files"
   use_fixture "$fixture"
 
-  sed -i '/- files_to_link$/d' "test_home/repo/config.yml"
+  sed -i '/- files_to_link$/d' "test_home/repo/hcm.yml"
   hcm sync -f
 
   diff_home_status "$fixture"
@@ -69,7 +69,7 @@ teardown() {
       "./fixtures/sync/step_1_install_two_modules/after"
   fixture="./fixtures/sync/step_2_remove_one_module"
   use_fixture "$fixture"
-  sed -i '/- module_b$/d' "test_home/repo/config.yml"
+  sed -i '/- module_b$/d' "test_home/repo/hcm.yml"
   hcm sync -f
   diff_home_status "$fixture"
 }

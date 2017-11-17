@@ -23,7 +23,7 @@ usage_sync() {
   cat << EOF
 usage: hcm sync
 
-Sync modules configured in '\$HOME/.hcm/config.yml' to HOME directory.
+Sync modules configured in '\$HOME/.hcm/hcm.yml' to HOME directory.
 
 OPTIONS
        -n | --dry-run (DEFAULT)

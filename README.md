@@ -49,7 +49,7 @@ Or manually clone this repo and run hcm in the root directory.
 
 ## Quick Start
 
-Copy the example `config.yml` to `$HOME/.hcm/config.yml` and run `hcm install`.
+Copy the example `hcm.yml` to `$HOME/.hcm/hcm.yml` and run `hcm install`.
 
 for more information
 
