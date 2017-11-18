@@ -3,6 +3,7 @@ FROM alpine
 RUN apk add --no-cache \
   coreutils \
   findutils \
+  grep \
   bash \
   zsh \
   ncurses \

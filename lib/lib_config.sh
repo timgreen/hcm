@@ -72,7 +72,7 @@ config::verify::_module() {
   config::_ensure_string_array_for_field "$absModuleConfigPath" ".after"
   ## Ensure all the module listed in `after` are mentioned in the main config.
   config::get_module_after_list "$absModulePath" | while read absAfterModulePath; do
-    grep --fixed-strings --line-regexp "$absModuleConfigPath" <<<"$(config::get_module_list)" &> /dev/null || {
+    grep --fixed-strings --line-regexp "$absAfterModulePath" <<<"$(config::get_module_list)" &> /dev/null || {
       msg::error "Depends on invalid module that not mentioned in main config."
       msg::info "module config: $absModuleConfigPath"
       msg::info "invalid module listed in .after: $absAfterModulePath"
@@ -89,7 +89,7 @@ config::verify::_dependencies() {
   config::get_module_list | while read absModulePath; do
     config::get_module_after_list "$absModulePath" | while read absAfterModulePath; do
       echo "$absModulePath" | tr ' ' '_'
-      echo "$absModuleConfigPath" | tr ' ' '_'
+      echo "$absAfterModulePath" | tr ' ' '_'
     done
   done | tsort > /dev/null
 }
