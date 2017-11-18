@@ -1,0 +1,3 @@
+requires:
+  - a: b
+    c: d

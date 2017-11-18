@@ -52,6 +52,6 @@ sync::ready_to_install() {
 sync::is_cmd_available() {
   local cmd="$1"
   (
-    $(config::get_shell) < "which $cmd"
+    $(config::get_shell) <<< "which $cmd"
   ) &> /dev/null
 }

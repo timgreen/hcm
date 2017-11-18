@@ -126,3 +126,11 @@ EOF
   run hcm sync
   [ "$status" -eq 1 ]
 }
+
+@test "config: error with invalid value in '.requires'" {
+  fixture="./fixtures/config/invalid_requires"
+  use_fixture "$fixture"
+
+  run hcm sync
+  [ "$status" -eq 1 ]
+}
