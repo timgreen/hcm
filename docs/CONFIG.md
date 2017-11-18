@@ -35,7 +35,7 @@ modules:
 
 ## Module Config Format
 
-The module config is the `module.yml` file under the root of each module directory. Everything is *optional* in the 
+The module config is the `module.yml` file under the root of each module directory. Everything is *optional* in the
 module config. You just need a empty file if you only want to link dotfiles. (Empty file is requires in this case for
 `hcm` to know it is a module directory.)
 
@@ -43,6 +43,11 @@ module config. You just need a empty file if you only want to link dotfiles. (Em
 
       A list of module need be installed before this one, absolute path or relative paths from current file, must
       already be mentioned in the main config.
+
+   * `requires`
+
+      A list of cmd required to install this module. `hcm` will use `which` cmd in the *shell* defined in the main
+      config to check existence of the cmd.
 
 For hooks, please check [Life Cycle][Life Cycle] for details.
 

@@ -67,8 +67,10 @@ config::verify::_module() {
     msg::error "Invalid module '$absModulePath', cannot read module config $absModuleConfigPath."
     exit 1
   fi
+
+  # .after
   config::_ensure_string_array_for_field "$absModuleConfigPath" ".after"
-  # Ensure all the module listed in `after` are mentioned in the main config.
+  ## Ensure all the module listed in `after` are mentioned in the main config.
   config::get_module_after_list "$absModulePath" | while read absAfterModulePath; do
     grep --fixed-strings --line-regexp "$absModuleConfigPath" <<<"$(config::get_module_list)" &> /dev/null || {
       msg::error "Depends on invalid module that not mentioned in main config."
@@ -77,6 +79,9 @@ config::verify::_module() {
       exit 1
     }
   done
+
+  # .requires
+  config::_ensure_string_array_for_field "$absModuleConfigPath" ".requires"
 }
 
 config::verify::_dependencies() {
@@ -131,4 +136,10 @@ config::get_module_after_list() {
     # output absAfterModulePath
     path::abs_path_for --relative-base-file "$absModuleConfigPath" "$afterModulePath"
   done
+}
+
+config::get_module_requires_list() {
+  local absModulePath="$1"
+  local absModuleConfigPath="$absModulePath/$MODULE_CONFIG"
+  cat "$absModuleConfigPath" | tools::yq -r '.requires[]?'
 }

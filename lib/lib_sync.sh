@@ -42,4 +42,16 @@ sync::ready_to_install() {
       return 1
     fi
   done
+  # Ensure all the cmd listed in '.requires' can be found.
+  config::get_module_requires_list "$absModulePath" | while read requiredCmd; do
+    sync::is_cmd_available "$requiredCmd" || return 1
+  done
+}
+
+# Return true if then given cmd is available
+sync::is_cmd_available() {
+  local cmd="$1"
+  (
+    $(config::get_shell) < "which $cmd"
+  ) &> /dev/null
 }
