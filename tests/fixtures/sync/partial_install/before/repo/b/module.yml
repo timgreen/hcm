@@ -1,0 +1,4 @@
+after:
+  - ../c
+requires:
+  - /unknown-command-xxoo

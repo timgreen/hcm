@@ -48,10 +48,20 @@ sync::ready_to_install() {
   done
 }
 
-# Return true if then given cmd is available
+# Return true if then given cmd is available in the current shell environment.
 sync::is_cmd_available() {
   local cmd="$1"
   (
-    $(config::get_shell) <<< "which $cmd"
+    case "$(config::get_shell)" in
+      bash)
+        bash --rcfile <(echo "source ~/.bashrc; type -t '$cmd' | grep '\(alias\|function\|builtin\|file\)'; exit $?")
+        ;;
+      zsh)
+        zsh --rcs <(echo "source ~/.zshrc; whence -t '$cmd' | grep '\(alias\|function\|builtin\|command\)'; exit $?")
+        ;;
+      *)
+        exec "$(config::get_shell)" <<< "which '$cmd'"
+        ;;
+    esac
   ) &> /dev/null
 }

@@ -56,6 +56,17 @@ teardown() {
   diff_home_status "$fixture"
 }
 
+@test "sync: partial install, stop on error" {
+  fixture="./fixtures/sync/partial_install/"
+  use_fixture "$fixture"
+
+  sed -i '/- files_to_link$/d' "test_home/repo/hcm.yml"
+  run hcm sync -f
+  [ "$status" -eq 1 ]
+
+  diff_home_status "$fixture"
+}
+
 @test "sync: complex step by step test" {
   # step 1
   fixture="./fixtures/sync/step_1_install_two_modules"
