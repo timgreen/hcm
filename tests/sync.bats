@@ -93,10 +93,36 @@ teardown() {
   diff_home_status "$fixture"
 }
 
+@test "sync: run uninstall hook in bash" {
+  diff_dir \
+      "./fixtures/sync/hook_uninstall_bash/before" \
+      "./fixtures/sync/hook_install_bash/after"
+  fixture="./fixtures/sync/hook_uninstall_bash"
+  use_fixture "$fixture"
+
+  sed -i '/- b$/d' "test_home/repo/hcm.yml"
+  hcm sync -f
+
+  diff_home_status "$fixture"
+}
+
 @test "sync: run install hook in zsh" {
   fixture="./fixtures/sync/hook_install_zsh"
   use_fixture "$fixture"
 
+  hcm sync -f
+
+  diff_home_status "$fixture"
+}
+
+@test "sync: run uninstall hook in zsh" {
+  diff_dir \
+      "./fixtures/sync/hook_uninstall_zsh/before" \
+      "./fixtures/sync/hook_install_zsh/after"
+  fixture="./fixtures/sync/hook_uninstall_zsh"
+  use_fixture "$fixture"
+
+  sed -i '/- b$/d' "test_home/repo/hcm.yml"
   hcm sync -f
 
   diff_home_status "$fixture"
