@@ -1,6 +1,8 @@
 INIT_HOOK=true
 
 [ -z "$INIT_DRY_RUN" ] && source "$(dirname "${BASH_SOURCE[0]}")"/lib_dry_run.sh
+[ -z "$INIT_SHELL" ]   && source "$(dirname "${BASH_SOURCE[0]}")"/lib_shell.sh
+[ -z "$INIT_CONFIG" ]  && source "$(dirname "${BASH_SOURCE[0]}")"/lib_config.sh
 
 hook::install() {
   local absModulePath="$1"
@@ -30,3 +32,26 @@ hook::_do_link() {
   dryrun::action link "$file" "$HOME/$relativeFilePath"
 }
 
+hook::run_hook() {
+  local absModulePath="$1"
+  local hook="$2"
+
+  local hookCmd="$(config::get_module_hook "$absModulePath" "$hook")"
+  if [ -z "$hookCmd" ] || [[ "$hookCmd" == "null" ]]; then
+    return
+  fi
+
+  (
+    case "$(config::get_shell)" in
+      bash)
+        shell::run_in::bash "$hookCmd"
+        ;;
+      zsh)
+        shell::run_in::zsh "$hookCmd"
+        ;;
+      *)
+        shell::run_in::fallback "$hookCmd"
+        ;;
+    esac
+  ) &> /dev/null
+}

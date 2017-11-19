@@ -143,3 +143,10 @@ config::get_module_requires_list() {
   local absModuleConfigPath="$absModulePath/$MODULE_CONFIG"
   cat "$absModuleConfigPath" | tools::yq -r '.requires[]?'
 }
+
+config::get_module_hook() {
+  local absModulePath="$1"
+  local hook="$2"
+  local absModuleConfigPath="$absModulePath/$MODULE_CONFIG"
+  cat "$absModuleConfigPath" | tools::yq -r ".\"$hook\"?"
+}

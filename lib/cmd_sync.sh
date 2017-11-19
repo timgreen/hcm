@@ -36,7 +36,9 @@ install_module() {
   local absModulePath="$1"
   (
     export HCM_MODULE_LINK_LOG="$(config::get_module_link_log_path "$absModulePath")"
+    hook::run_hook "$absModulePath" pre-install
     hook::install "$absModulePath"
+    hook::run_hook "$absModulePath" post-install
     # sort the file for deterministic result
     if [ -r "$HCM_MODULE_LINK_LOG" ]; then
       dryrun::internal_action tools::sort "$HCM_MODULE_LINK_LOG" -o "$HCM_MODULE_LINK_LOG"

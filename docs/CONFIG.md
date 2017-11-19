@@ -72,15 +72,15 @@ after:
 # Hooks
 
 # Hook script to run before install.
-pre_install: |
+pre-install: |
   echo 'pre install'
 # Hook script to run after install.
-post_install: |
+post-install: |
   echo 'post install'
-pre_uninstall: |
+pre-uninstall: |
   echo 'pre uninstall'
 # Hook script to run after uninstall.
-post_uninstall: |
+post-uninstall: |
   echo 'post uninstall'
 
 ```
