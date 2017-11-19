@@ -54,13 +54,13 @@ sync::is_cmd_available() {
   (
     case "$(config::get_shell)" in
       bash)
-        bash --rcfile <(echo "source ~/.bashrc; type -t '$cmd' | grep '\(alias\|function\|builtin\|file\)'; exit $?")
+        bash --rcfile "$HOME/.bashrc" -ci "type -t '$cmd'" 2> /dev/null | grep '\(alias\|function\|builtin\|file\)'
         ;;
       zsh)
         zsh --rcs <(echo "source ~/.zshrc; whence -t '$cmd' | grep '\(alias\|function\|builtin\|command\)'; exit $?")
         ;;
       *)
-        exec "$(config::get_shell)" <<< "which '$cmd'"
+        "$(config::get_shell)" <<< "which '$cmd'" &> /dev/null
         ;;
     esac
   ) &> /dev/null
