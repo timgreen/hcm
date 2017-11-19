@@ -1,0 +1,8 @@
+requires:
+  - provided_by_a
+pre-install: |
+  {
+    echo "start hook"
+    provided_by_a
+    echo "end hook"
+  } > $HOME/b_hook_output

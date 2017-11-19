@@ -84,6 +84,24 @@ teardown() {
   diff_home_status "$fixture"
 }
 
+@test "sync: run hook in bash" {
+  fixture="./fixtures/sync/hook_bash"
+  use_fixture "$fixture"
+
+  hcm sync -f
+
+  diff_home_status "$fixture"
+}
+
+@test "sync: run hook in zsh" {
+  fixture="./fixtures/sync/hook_zsh"
+  use_fixture "$fixture"
+
+  hcm sync -f
+
+  diff_home_status "$fixture"
+}
+
 @test "sync: complex step by step test" {
   # step 1
   fixture="./fixtures/sync/step_1_install_two_modules"
