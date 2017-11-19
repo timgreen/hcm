@@ -9,16 +9,20 @@ INIT_PATH=true
 #
 # Returns the relative path to $a for $b.
 #
-# NOTE, this function assume both $a & $b is abs path and $a ends with '/'.
+# NOTE, this function assume both $a & $b is abs path.
 path::relative_to() {
   local a="$1"
   local b="$2"
   local prefix="$3"
 
+  # Ensure $a ends with '/'
+  if [[ ! "$a" = *"/" ]]; then
+    a="$a/"
+  fi
   if [[ "$b" = "$a"* ]]; then
     echo "$prefix${b#$a}"
   else
-    path::relative_to "$(dirname "$a")/" "$b" "../$prefix"
+    path::relative_to "$(dirname "$a")" "$b" "../$prefix"
   fi
 }
 

@@ -1,0 +1,6 @@
+#!/bin/bash
+
+HELPER_BASE="$(dirname "$(readlink -f "$0")")"
+[ -z "$INIT_PATH" ] && source "$HELPER_BASE/../lib_path.sh"
+
+path::relative_to "$@"
