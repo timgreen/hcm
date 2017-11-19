@@ -6,3 +6,5 @@ pre-install: |
     provided_by_a
     echo "end hook"
   } > $HOME/b_hook_output
+post-uninstall: |
+  rm -f $HOME/b_hook_output

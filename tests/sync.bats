@@ -84,8 +84,8 @@ teardown() {
   diff_home_status "$fixture"
 }
 
-@test "sync: run hook in bash" {
-  fixture="./fixtures/sync/hook_bash"
+@test "sync: run install hook in bash" {
+  fixture="./fixtures/sync/hook_install_bash"
   use_fixture "$fixture"
 
   hcm sync -f
@@ -93,8 +93,8 @@ teardown() {
   diff_home_status "$fixture"
 }
 
-@test "sync: run hook in zsh" {
-  fixture="./fixtures/sync/hook_zsh"
+@test "sync: run install hook in zsh" {
+  fixture="./fixtures/sync/hook_install_zsh"
   use_fixture "$fixture"
 
   hcm sync -f
