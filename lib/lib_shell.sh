@@ -21,11 +21,10 @@ shell::run_in::bash() {
 shell::run_in::zsh() {
   local cmd="$1"
   zsh --rcs <(
-    echo "source $HOME/.zshrc"
-    echo "path+=($HELPERS_ROOT)"
-    echo "{ $cmd }"
-    echo 'exit $?'
-  )
+    echo 'source $HOME/.zshrc'
+    echo "PATH=$HELPERS_ROOT:\$PATH"
+    echo "$cmd"
+  ) -i
 }
 
 shell::run_in::fallback() {

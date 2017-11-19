@@ -58,7 +58,7 @@ sync::is_cmd_available() {
         shell::run_in::bash "type -t '$cmd'" | grep '\(alias\|function\|builtin\|file\)'
         ;;
       zsh)
-        shell::run_in::zsh "whence -t '$cmd' | grep '\(alias\|function\|builtin\|command\)'"
+        shell::run_in::zsh "whence -w '$cmd'" | grep '\(alias\|function\|builtin\|command\)'
         ;;
       *)
         shell::run_in::fallback "which '$cmd'"
