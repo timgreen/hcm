@@ -46,8 +46,15 @@ module config. You just need a empty file if you only want to link dotfiles. (Em
 
    * `requires`
 
-      A list of cmd required to install this module. `hcm` will use `which` cmd in the *shell* defined in the main
-      config to check existence of the cmd.
+      A list of cmd required to install this module. Depends on the *shell* defined in the main config, `hcm` will
+
+         * Use `type -t` for bash
+         * Use `whence -w` for zsh
+         * Use `which` for others
+
+      to check existence of the cmd.
+
+      NOTE, only bash and zsh will reflect up-to-date *.bashrc* or *.zshrc* settings.
 
 For hooks, please check [Life Cycle][Life Cycle] for details.
 

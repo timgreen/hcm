@@ -7,6 +7,7 @@ STATUS_UPDATED='updated'
 [ -z "$INIT_CONFIG" ]      && source "$(dirname "${BASH_SOURCE[0]}")"/lib_config.sh
 [ -z "$INIT_PATH_CONSTS" ] && source "$(dirname "${BASH_SOURCE[0]}")"/lib_path_consts.sh
 [ -z "$INIT_TOOLS" ]       && source "$(dirname "${BASH_SOURCE[0]}")"/lib_tools.sh
+[ -z "$INIT_SHELL" ]       && source "$(dirname "${BASH_SOURCE[0]}")"/lib_shell.sh
 
 sync::check_module_status() {
   local absModulePath="$1"
@@ -54,13 +55,13 @@ sync::is_cmd_available() {
   (
     case "$(config::get_shell)" in
       bash)
-        bash --rcfile "$HOME/.bashrc" -ci "type -t '$cmd'" 2> /dev/null | grep '\(alias\|function\|builtin\|file\)'
+        shell::run_in::bash "type -t '$cmd'" | grep '\(alias\|function\|builtin\|file\)'
         ;;
       zsh)
-        zsh --rcs <(echo "source ~/.zshrc; whence -t '$cmd' | grep '\(alias\|function\|builtin\|command\)'; exit $?")
+        shell::run_in::zsh "whence -t '$cmd' | grep '\(alias\|function\|builtin\|command\)'"
         ;;
       *)
-        "$(config::get_shell)" <<< "which '$cmd'" &> /dev/null
+        shell::run_in::fallback "which '$cmd'"
         ;;
     esac
   ) &> /dev/null
