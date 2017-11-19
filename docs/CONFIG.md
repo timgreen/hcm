@@ -48,9 +48,9 @@ module config. You just need a empty file if you only want to link dotfiles. (Em
 
       A list of cmd required to install this module. Depends on the *shell* defined in the main config, `hcm` will
 
-         * Use `type -t` for bash
-         * Use `whence -w` for zsh
-         * Use `which` for others
+      * Use `type -t` for bash
+      * Use `whence -w` for zsh
+      * Use `which` for others
 
       to check existence of the cmd.
 
