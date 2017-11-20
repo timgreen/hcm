@@ -1,4 +1,4 @@
-HOOK_HELPER=true
+INIT_HOOK_HELPER=true
 
 [ -z "$INIT_PATH" ]  && source "$(dirname "${BASH_SOURCE[0]}")"/lib_path.sh
 [ -z "$INIT_TOOLS" ] && source "$(dirname "${BASH_SOURCE[0]}")"/lib_tools.sh

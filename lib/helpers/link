@@ -1,0 +1,7 @@
+#!/bin/bash
+
+HELPER_BASE="$(dirname "$(readlink -f "$0")")"
+[ -z "$INIT_HOOK_HELPER" ] && source "$HELPER_BASE/../hook_helper.sh"
+[ -z "$INIT_PATH" ]        && source "$HELPER_BASE/../lib_path.sh"
+
+link "$@"

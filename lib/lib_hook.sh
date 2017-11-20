@@ -1,8 +1,9 @@
 INIT_HOOK=true
 
-[ -z "$INIT_DRY_RUN" ] && source "$(dirname "${BASH_SOURCE[0]}")"/lib_dry_run.sh
-[ -z "$INIT_SHELL" ]   && source "$(dirname "${BASH_SOURCE[0]}")"/lib_shell.sh
-[ -z "$INIT_CONFIG" ]  && source "$(dirname "${BASH_SOURCE[0]}")"/lib_config.sh
+[ -z "$INIT_CONFIG" ]      && source "$(dirname "${BASH_SOURCE[0]}")"/lib_config.sh
+[ -z "$INIT_DRY_RUN" ]     && source "$(dirname "${BASH_SOURCE[0]}")"/lib_dry_run.sh
+[ -z "$INIT_HOOK_HELPER" ] && source "$(dirname "${BASH_SOURCE[0]}")"/hook_helper.sh
+[ -z "$INIT_SHELL" ]       && source "$(dirname "${BASH_SOURCE[0]}")"/lib_shell.sh
 
 hook::install() {
   local absModulePath="$1"
