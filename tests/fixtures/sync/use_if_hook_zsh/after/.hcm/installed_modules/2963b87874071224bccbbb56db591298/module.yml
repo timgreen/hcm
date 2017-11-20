@@ -1,0 +1,7 @@
+pre-install: |
+  if [[ 'x' == 'x' ]]; then
+    echo x > $HOME/pre-install-output
+  fi
+  if [[ 'x' != 'x' ]]; then
+    echo ignore > $HOME/pre-install-output
+  fi

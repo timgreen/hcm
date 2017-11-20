@@ -181,3 +181,22 @@ teardown() {
 
   diff_home_status "$fixture"
 }
+
+@test "sync: use if in hook - zsh" {
+  fixture="./fixtures/sync/use_if_hook_zsh"
+  use_fixture "$fixture"
+
+  hcm sync -f
+
+  diff_home_status "$fixture"
+}
+
+@test "sync: use if in hook - bash" {
+  fixture="./fixtures/sync/use_if_hook_bash"
+  use_fixture "$fixture"
+
+  hcm sync -f
+
+  diff_home_status "$fixture"
+}
+
