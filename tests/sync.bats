@@ -145,3 +145,21 @@ teardown() {
   hcm sync -f
   diff_home_status "$fixture"
 }
+
+@test "sync: use helper in hook - zsh" {
+  fixture="./fixtures/sync/use_helpers_in_hook_zsh"
+  use_fixture "$fixture"
+
+  hcm sync -f
+
+  diff_home_status "$fixture"
+}
+
+@test "sync: use helper in hook - bash" {
+  fixture="./fixtures/sync/use_helpers_in_hook_bash"
+  use_fixture "$fixture"
+
+  hcm sync -f
+
+  diff_home_status "$fixture"
+}

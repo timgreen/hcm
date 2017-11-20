@@ -1,0 +1,2 @@
+pre-install: |
+  relative_to /a /b > $HOME/hook_output
