@@ -51,5 +51,5 @@ hook::run_hook() {
         shell::run_in::zsh "$hookCmd"
         ;;
     esac
-  ) &> /dev/null
+  )
 }
