@@ -26,8 +26,3 @@ shell::run_in::zsh() {
     echo "$cmd"
   ) -i
 }
-
-shell::run_in::fallback() {
-  local cmd="$1"
-  "$(config::get_shell)" <<< "$cmd"
-}

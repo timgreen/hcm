@@ -11,8 +11,12 @@ config::get_shell() {
     bash|null|'')
       echo bash
       ;;
+    zsh)
+      echo zsh
+      ;;
     *)
-      echo "$scriptShell"
+      msg::error "Unsupported shell: $scriptShell, currently only support bash & zsh."
+      exit 1
       ;;
   esac
 }

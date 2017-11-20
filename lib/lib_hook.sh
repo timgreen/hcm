@@ -49,9 +49,6 @@ hook::run_hook() {
       zsh)
         shell::run_in::zsh "$hookCmd"
         ;;
-      *)
-        shell::run_in::fallback "$hookCmd"
-        ;;
     esac
   ) &> /dev/null
 }

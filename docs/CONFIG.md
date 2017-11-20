@@ -14,7 +14,7 @@ paths mentioned in config.
 ## Main Config Format
 
 ```yaml
-# Optional, specify the shell used to run the scripts, e.g. zsh or bash, defaults to bash.
+# Optional, specify the shell used to run the scripts, zsh | bash, defaults to bash.
 shell: zsh
 # List of module path.
 # There should be a file name "module.yml" in the root of the module directory.

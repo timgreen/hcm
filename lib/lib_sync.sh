@@ -60,9 +60,6 @@ sync::is_cmd_available() {
       zsh)
         shell::run_in::zsh "whence -w '$cmd'" | grep '\(alias\|function\|builtin\|command\)'
         ;;
-      *)
-        shell::run_in::fallback "which '$cmd'"
-        ;;
     esac
   ) &> /dev/null
 }
