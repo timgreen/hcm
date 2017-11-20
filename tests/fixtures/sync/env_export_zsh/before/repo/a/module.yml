@@ -1,0 +1,4 @@
+pre-install: |
+  echo $HCM_ABS_MODULE_PATH > $HOME/pre-install-output
+post-install: |
+  echo $HCM_ABS_MODULE_PATH > $HOME/post-install-output

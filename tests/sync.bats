@@ -163,3 +163,21 @@ teardown() {
 
   diff_home_status "$fixture"
 }
+
+@test "sync: use exported env in hook - zsh" {
+  fixture="./fixtures/sync/env_export_zsh"
+  use_fixture "$fixture"
+
+  hcm sync -f
+
+  diff_home_status "$fixture"
+}
+
+@test "sync: use exported env in hook - bash" {
+  fixture="./fixtures/sync/env_export_bash"
+  use_fixture "$fixture"
+
+  hcm sync -f
+
+  diff_home_status "$fixture"
+}
