@@ -20,7 +20,7 @@ uninstall_module() {
   local linkLog="$(config::link_log_path "$installedModulePath")"
   cat "$linkLog" | while read linkTarget; do
     dryrun::action unlink "$HOME/$linkTarget"
-    # rmdir still might fail when it don't have permission to remove the
+    # rmdir still might fail when it doesn't have permission to remove the
     # directory, so ignore the error here.
     dryrun::action rmdir --ignore-fail-on-non-empty --parents "$(dirname "$HOME/$linkTarget")" 2> /dev/null || echo -n
   done
@@ -38,13 +38,14 @@ uninstall_modules() {
 install_module() {
   local absModulePath="$1"
   (
-    export HCM_MODULE_LINK_LOG="$(config::get_module_link_log_path "$absModulePath")"
+    export HCM_ABS_MODULE_PATH="$absModulePath"
     dryrun::internal_action hook::run_hook "$absModulePath" pre-install
     dryrun::internal_action hook::install "$absModulePath"
     dryrun::internal_action hook::run_hook "$absModulePath" post-install
     # sort the file for deterministic result
-    if [ -r "$HCM_MODULE_LINK_LOG" ]; then
-      dryrun::internal_action tools::sort "$HCM_MODULE_LINK_LOG" -o "$HCM_MODULE_LINK_LOG"
+    local linkLog="$(config::get_module_link_log_path "$absModulePath")"
+    if [ -r "$linkLog" ]; then
+      dryrun::internal_action tools::sort "$linkLog" -o "$linkLog"
     fi
     dryrun::internal_action backup_installed_module "$absModulePath"
   )
