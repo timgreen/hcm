@@ -1,0 +1,2 @@
+pre-install: |
+  echo 'b' >> $HOME/order_is_important

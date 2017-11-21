@@ -1,0 +1,4 @@
+after:
+  - ../b
+pre-install: |
+  echo 'a' >> $HOME/order_is_important

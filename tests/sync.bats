@@ -200,3 +200,12 @@ teardown() {
   diff_home_status "$fixture"
 }
 
+@test "sync: repects .after list" {
+  fixture="./fixtures/sync/repect_after_list"
+  use_fixture "$fixture"
+
+  hcm sync -f
+
+  diff_home_status "$fixture"
+}
+
