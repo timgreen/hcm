@@ -114,3 +114,15 @@ sync::finish_install() {
     cp -d -r "$absModulePath" "$backupModulePath"
   fi
 }
+
+sync::uninstall() {
+  local installedModulePath="$1"
+  local linkLog="$(config::link_log_path "$installedModulePath")"
+  cat "$linkLog" | while read linkTarget; do
+    dryrun::action unlink "$HOME/$linkTarget"
+    # rmdir still might fail when it doesn't have permission to remove the
+    # directory, so ignore the error here.
+    dryrun::action rmdir --ignore-fail-on-non-empty --parents "$(dirname "$HOME/$linkTarget")" 2> /dev/null || echo -n
+  done
+  dryrun::internal_action rm -f "$linkLog"
+}

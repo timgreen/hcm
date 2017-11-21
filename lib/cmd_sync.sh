@@ -18,14 +18,7 @@ uninstall_module() {
   (
     export HCM_INSTALLED_MODULE_PATH="$installedModulePath"
     dryrun::internal_action hook::run_hook "$installedModulePath" pre-uninstall
-    local linkLog="$(config::link_log_path "$installedModulePath")"
-    cat "$linkLog" | while read linkTarget; do
-      dryrun::action unlink "$HOME/$linkTarget"
-      # rmdir still might fail when it doesn't have permission to remove the
-      # directory, so ignore the error here.
-      dryrun::action rmdir --ignore-fail-on-non-empty --parents "$(dirname "$HOME/$linkTarget")" 2> /dev/null || echo -n
-    done
-    dryrun::internal_action rm -f "$linkLog"
+    sync::uninstall "$installedModulePath"
     dryrun::internal_action hook::run_hook "$installedModulePath" post-uninstall
     dryrun::internal_action rm -fr "$installedModulePath"
   )
