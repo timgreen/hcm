@@ -67,7 +67,7 @@ path::abs_path_for() {
 # Usage path::abs_readlink <file>
 #
 # Assume <file> is abs path.
-# Returns <file> is <file> is regular file.
+# Returns <file> if <file> is regular file.
 # Returns the absolute path for the symlink target (only resolve 1 level) if
 #   <file> is symlink.
 path::abs_readlink() {
