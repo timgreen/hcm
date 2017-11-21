@@ -82,7 +82,7 @@ install_modules() {
   done <<< "$(config::get_module_list)"
 
   # Install pending modules.
-  # Only install the first module with unresolved dependencies in each
+  # Only install the first module with no unresolved dependencies in each
   # interation.
   while (( ${#pendingAbsModulePaths[@]} > 0 )); do
     local installedOneModule=false

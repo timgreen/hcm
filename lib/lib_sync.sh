@@ -38,15 +38,17 @@ sync::list_the_modules_need_remove() {
 sync::ready_to_install() {
   local absModulePath="$1"
   # Ensure all the modules listed in '.after' have been installed.
-  config::get_module_after_list "$absModulePath" | while read absAfterModulePath; do
-    if [[ "$(sync::check_module_status "$absModulePath")" != "$STATUS_UP_TO_DATE" ]]; then
+  while read absAfterModulePath; do
+    [ -z "$absAfterModulePath" ] && continue
+    if [[ "$(sync::check_module_status "$absAfterModulePath")" != "$STATUS_UP_TO_DATE" ]]; then
       return 1
     fi
-  done
+  done <<< "$(config::get_module_after_list "$absModulePath")"
   # Ensure all the cmd listed in '.requires' can be found.
-  config::get_module_requires_list "$absModulePath" | while read requiredCmd; do
+  while read requiredCmd; do
+    [ -z "$requiredCmd" ] && continue
     sync::is_cmd_available "$requiredCmd" || return 1
-  done
+  done <<< "$(config::get_module_requires_list "$absModulePath")"
 }
 
 # Return true if then given cmd is available in the current shell environment.
