@@ -70,30 +70,21 @@ sync::is_cmd_available() {
 
 sync::install() {
   local absModulePath="$1"
-  sync::_do_link_all "$absModulePath" "$absModulePath"
-}
-
-sync::_do_link_all() {
-  local absModulePath="$1"
-  local dir="$2"
-
   IFS=$'\n'
-  for file in $(find -P "$dir" \( -type l -o -type f \)); do
-    sync::_do_link "$absModulePath" "$file"
+  for file in $(sync::install::_list "$absModulePath"); do
+    dryrun::action link "$absModulePath/$file" "$HOME/$file"
   done
 }
 
-sync::_do_link() {
+sync::install::_list() {
   local absModulePath="$1"
-  local file="$2"
-  local relativeFilePath="${file#$absModulePath/}"
+  (
+    cd "$absModulePath"
+    find -P . \( -type l -o -type f \)
 
-  # ignore module config
-  if [[ "$MODULE_CONFIG" == "$relativeFilePath" ]]; then
-    return
-  fi
-
-  dryrun::action link "$file" "$HOME/$relativeFilePath"
+    # ignore $MODULE_CONFIG
+    echo ./$MODULE_CONFIG
+  ) | tools::sort | uniq -u | cut -c3-
 }
 
 sync::finish_install() {
