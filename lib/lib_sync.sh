@@ -80,10 +80,35 @@ sync::install::_list() {
   local absModulePath="$1"
   (
     cd "$absModulePath"
+
+    # Print the list of all files, -P never follow symlinks.
     find -P . \( -type l -o -type f \)
 
-    # ignore $MODULE_CONFIG
+    # Everything printed again below will be filtered out by `sort | uniq -u`.
+
+    # Ignore $MODULE_CONFIG
     echo ./$MODULE_CONFIG
+
+    # Ignore all .hcmignore files
+    find -P . \( -type l -o -type f \) -name .hcmignore
+
+    # Concatenate a listing of all .hcmignore files, with the path to the
+    # ignore file it came from prefixed to each pattern
+    {
+      # Process all directories with a .hcmignore file
+      find -P . \( -type l -o -type f \) -name .hcmignore | \
+        while read hcmignoreFile; do
+          local dir="$(dirname "$hcmignoreFile")"
+          # Prefix the contents of each .hcmignore file with the path
+          # to the file it came from
+          sed 's|^|'"$dir/"'|' "$dir"/.hcmignore
+        done
+
+      # And finally, print out all of the files that match each of the
+      # patterns from all .hcmignore files. Using find and the -path
+      # option allows us to respect the relative placement of each
+      # pattern in the directory hiearchy.
+    } | xargs -n1 find -P . -type f -path 2>/dev/null
   ) | tools::sort | uniq -u | cut -c3-
 }
 
