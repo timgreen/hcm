@@ -42,7 +42,7 @@ install_module() {
   (
     export HCM_ABS_MODULE_PATH="$absModulePath"
     dryrun::internal_action hook::run_hook "$absModulePath" pre-install
-    dryrun::internal_action hook::install "$absModulePath"
+    dryrun::internal_action sync::install "$absModulePath"
     dryrun::internal_action hook::run_hook "$absModulePath" post-install
     # sort the file for deterministic result
     local linkLog="$(config::get_module_link_log_path "$absModulePath")"
