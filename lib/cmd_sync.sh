@@ -44,12 +44,7 @@ install_module() {
     dryrun::internal_action hook::run_hook "$absModulePath" pre-install
     sync::install "$absModulePath"
     dryrun::internal_action hook::run_hook "$absModulePath" post-install
-    # sort the file for deterministic result
-    local linkLog="$(config::get_module_link_log_path "$absModulePath")"
-    if [ -r "$linkLog" ]; then
-      dryrun::internal_action tools::sort "$linkLog" -o "$linkLog"
-    fi
-    dryrun::internal_action backup_installed_module "$absModulePath"
+    dryrun::internal_action sync::finish_install "$absModulePath"
   )
 }
 
@@ -101,21 +96,6 @@ install_modules() {
       exit 1
     fi
   done
-}
-
-# Make a copy of the installed module, this is needed for uninstall. So even the
-# user deleted and orignal copy, hcm still knows how to uninstall it.
-backup_installed_module() {
-  local absModulePath="$1"
-  local backupModulePath="$(config::get_backup_module_path "$absModulePath")"
-
-  mkdir -p "$(dirname "$backupModulePath")"
-  if which rsync &> /dev/null; then
-    rsync -r --links "$absModulePath/" "$backupModulePath"
-  else
-    rm -fr "$backupModulePath"
-    cp -d -r "$absModulePath" "$backupModulePath"
-  fi
 }
 
 main() {

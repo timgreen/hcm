@@ -95,3 +95,22 @@ sync::_do_link() {
 
   dryrun::action link "$file" "$HOME/$relativeFilePath"
 }
+
+sync::finish_install() {
+  local absModulePath="$1"
+  # sort the file for deterministic result
+  local linkLog="$(config::get_module_link_log_path "$absModulePath")"
+  if [ -r "$linkLog" ]; then
+    tools::sort "$linkLog" -o "$linkLog"
+  fi
+  # Make a copy of the installed module, this is needed for uninstall. So even the
+  # user deleted and orignal copy, hcm still knows how to uninstall it.
+  local backupModulePath="$(config::get_backup_module_path "$absModulePath")"
+  mkdir -p "$(dirname "$backupModulePath")"
+  if which rsync &> /dev/null; then
+    rsync -r --links "$absModulePath/" "$backupModulePath"
+  else
+    rm -fr "$backupModulePath"
+    cp -d -r "$absModulePath" "$backupModulePath"
+  fi
+}
