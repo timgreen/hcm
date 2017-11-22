@@ -15,6 +15,7 @@ DRY_RUN=true
 
 uninstall_module() {
   local installedModulePath="$1"
+  msg::highlight "Uninstall $(basename $installedModulePath)"
   (
     export HCM_INSTALLED_MODULE_PATH="$installedModulePath"
     dryrun::internal_action hook::run_hook "$installedModulePath" pre-uninstall
@@ -32,6 +33,7 @@ uninstall_modules() {
 
 install_module() {
   local absModulePath="$1"
+  msg::highlight "Install $(basename $absModulePath)"
   (
     export HCM_ABS_MODULE_PATH="$absModulePath"
     dryrun::internal_action hook::run_hook "$absModulePath" pre-install
