@@ -144,6 +144,17 @@ teardown() {
   sed -i '/- module_b$/d' "test_home/repo/hcm.yml"
   hcm sync -f
   diff_home_status "$fixture"
+
+  # step 3
+  diff_dir \
+      "./fixtures/sync/step_3_update_one_module/before" \
+      "./fixtures/sync/step_2_remove_one_module/after"
+  fixture="./fixtures/sync/step_3_update_one_module"
+  use_fixture "$fixture"
+  echo "updated file in a" > "test_home/repo/module_a/a"
+  echo "new file in a" > "test_home/repo/module_a/new"
+  hcm sync -f
+  diff_home_status "$fixture"
 }
 
 @test "sync: use helper in hook - zsh" {
