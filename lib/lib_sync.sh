@@ -134,7 +134,7 @@ sync::finish_install() {
 sync::uninstall() {
   local installedModulePath="$1"
   local linkLog="$(config::link_log_path "$installedModulePath")"
-  cat "$linkLog" | while read linkTarget; do
+  cat "$linkLog" 2> /dev/null | while read linkTarget; do
     dryrun::action unlink "$HOME/$linkTarget"
     # rmdir still might fail when it doesn't have permission to remove the
     # directory, so ignore the error here.
