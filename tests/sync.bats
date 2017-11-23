@@ -209,3 +209,12 @@ teardown() {
   diff_home_status "$fixture"
 }
 
+@test "sync: repects .hcmignore" {
+  fixture="./fixtures/sync/hcmignore"
+  use_fixture "$fixture"
+
+  hcm sync -f
+
+  diff_home_status "$fixture"
+}
+
