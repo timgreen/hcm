@@ -11,7 +11,7 @@ HELPERS_ROOT="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/helpers"
 shell::run_in::bash() {
   local cmd="$1"
   bash --rcfile <(
-    echo 'source "$HOME/.bashrc"'
+    echo '[ -r "$HOME/.bashrc" ] && source "$HOME/.bashrc"'
     echo "PATH=$HELPERS_ROOT:\$PATH"
   ) -ci "$cmd"
 }
@@ -21,7 +21,7 @@ shell::run_in::bash() {
 shell::run_in::zsh() {
   local cmd="$1"
   zsh --rcs <(
-    echo 'source $HOME/.zshrc'
+    echo '[ -r "$HOME/.zshrc" ] && source $HOME/.zshrc'
     echo "PATH=$HELPERS_ROOT:\$PATH"
     echo "$cmd"
   ) -i
