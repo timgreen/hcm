@@ -14,20 +14,21 @@ DRY_RUN=true
 [ -z "$INIT_TOOLS" ]       && source "$BASE/lib_tools.sh"
 
 uninstall_module() {
-  local installedModulePath="$1"
-  msg::highlight "Uninstall $(basename $installedModulePath)"
+  local moduleTrackBase="$1"
+  local moduleBackupPath="$(config::backup_path_for "$moduleTrackBase")"
+  msg::highlight "Uninstall $(basename $moduleTrackBase)"
   (
-    export HCM_INSTALLED_MODULE_PATH="$installedModulePath"
-    dryrun::internal_action hook::run_hook "$installedModulePath" pre-uninstall
-    sync::uninstall "$installedModulePath"
-    dryrun::internal_action hook::run_hook "$installedModulePath" post-uninstall
-    dryrun::internal_action rm -fr "$installedModulePath"
+    export HCM_MODULE_BACKUP_PATH="$moduleBackupPath"
+    dryrun::internal_action hook::run_hook "$moduleBackupPath" pre-uninstall
+    sync::uninstall "$moduleTrackBase"
+    dryrun::internal_action hook::run_hook "$moduleBackupPath" post-uninstall
+    dryrun::internal_action rm -fr "$moduleTrackBase"
   )
 }
 
 uninstall_modules() {
-  sync::list_the_modules_need_remove | while read installedModulePath; do
-    uninstall_module "$installedModulePath"
+  sync::list_the_modules_need_remove | while read moduleTrackBase; do
+    uninstall_module "$moduleTrackBase"
   done
 }
 
@@ -65,7 +66,7 @@ install_modules() {
         pendingAbsModulePaths+=("$absModulePath")
         ;;
       $STATUS_UPDATED|*)
-        uninstall_module "$(config::get_backup_module_path "$absModulePath")"
+        uninstall_module "$(config::to_module_track_base "$absModulePath")"
         pendingAbsModulePaths+=("$absModulePath")
         ;;
     esac

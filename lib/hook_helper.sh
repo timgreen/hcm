@@ -21,7 +21,8 @@ link() {
 
   local from="$1"
   local to="$2"
-  local hcmModuleLinkLog="$(config::get_module_link_log_path "$HCM_ABS_MODULE_PATH")"
+  local hcmModuleTrackBase="$(config::to_module_track_base "$HCM_ABS_MODULE_PATH")"
+  local hcmModuleLinkLog="$(config::link_log_path_for "$hcmModuleTrackBase")"
 
   mkdir -p "$(dirname "$to")"
   ln -s "$(path::relative_to "$(dirname "$to")/" "$from")" "$to"

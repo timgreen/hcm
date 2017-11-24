@@ -111,26 +111,21 @@ config::verify() {
   config::verify::_dependencies
 }
 
-# use md5 as backup name, so we have a flat structure under $HOME/.hcm/installed_modules/
-config::_get_flatten_name() {
+# use md5 as track base name, so we have a flat structure under $HOME/.hcm/installed_modules/
+config::to_module_track_base() {
   local absModulePath="$1"
-  echo "$absModulePath" | md5sum | cut -c 1-32
-}
-
-config::get_backup_module_path() {
-  local absModulePath="$1"
-  local flattenName="$(config::_get_flatten_name "$absModulePath")"
+  local flattenName="$(echo "$absModulePath" | md5sum | cut -c 1-32)"
   echo "$HCM_INSTALLED_MODULES_ROOT/$flattenName"
 }
 
-config::get_module_link_log_path() {
-  local absModulePath="$1"
-  config::link_log_path "$(config::get_backup_module_path "$absModulePath")"
+config::backup_path_for() {
+  local moduleTrackBase="$1"
+  echo "$moduleTrackBase/module"
 }
 
-config::link_log_path() {
-  local installedModulePath="$1"
-  echo "$installedModulePath.link.log"
+config::link_log_path_for() {
+  local moduleTrackBase="$1"
+  echo "$moduleTrackBase/link.log"
 }
 
 config::get_module_after_list() {

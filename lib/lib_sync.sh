@@ -13,10 +13,10 @@ STATUS_UPDATED='updated'
 
 sync::check_module_status() {
   local absModulePath="$1"
-  local backupModulePath="$(config::get_backup_module_path "$absModulePath")"
-  if [ ! -d "$backupModulePath" ]; then
+  local moduleTrackBase="$(config::to_module_track_base "$absModulePath")"
+  if [ ! -d "$moduleTrackBase" ]; then
     echo "$STATUS_NEW"
-  elif diff -r --no-dereference "$absModulePath" "$backupModulePath" &> /dev/null; then
+  elif diff -r --no-dereference "$absModulePath" "$(config::backup_path_for "$moduleTrackBase")" &> /dev/null; then
     echo "$STATUS_UP_TO_DATE"
   else
     echo "$STATUS_UPDATED"
@@ -28,9 +28,9 @@ sync::check_module_status() {
 sync::list_the_modules_need_remove() {
   {
     config::get_module_list | while read absModulePath; do
-      local installedModulePath="$(config::get_backup_module_path "$absModulePath")"
-      echo "$installedModulePath"
-      echo "$installedModulePath"
+      local moduleTrackBase="$(config::to_module_track_base "$absModulePath")"
+      echo "$moduleTrackBase"
+      echo "$moduleTrackBase"
     done
     find "$HCM_INSTALLED_MODULES_ROOT" -maxdepth 1 -mindepth 1 -type d 2> /dev/null
   } | tools::sort | uniq -u
@@ -114,26 +114,27 @@ sync::install::_list() {
 
 sync::finish_install() {
   local absModulePath="$1"
+  local moduleTrackBase="$(config::to_module_track_base "$absModulePath")"
   # sort the file for deterministic result
-  local linkLog="$(config::get_module_link_log_path "$absModulePath")"
+  local linkLog="$(config::link_log_path_for "$moduleTrackBase")"
   if [ -r "$linkLog" ]; then
     tools::sort "$linkLog" -o "$linkLog"
   fi
   # Make a copy of the installed module, this is needed for uninstall. So even the
   # user deleted and orignal copy, hcm still knows how to uninstall it.
-  local backupModulePath="$(config::get_backup_module_path "$absModulePath")"
-  mkdir -p "$(dirname "$backupModulePath")"
+  local moduleBackupPath="$(config::backup_path_for "$moduleTrackBase")"
+  mkdir -p "$(dirname "$moduleBackupPath")"
   if which rsync &> /dev/null; then
-    rsync -r --links "$absModulePath/" "$backupModulePath"
+    rsync -r --links "$absModulePath/" "$moduleBackupPath"
   else
-    rm -fr "$backupModulePath"
-    cp -d -r "$absModulePath" "$backupModulePath"
+    rm -fr "$moduleBackupPath"
+    cp -d -r "$absModulePath" "$moduleBackupPath"
   fi
 }
 
 sync::uninstall() {
-  local installedModulePath="$1"
-  local linkLog="$(config::link_log_path "$installedModulePath")"
+  local moduleTrackBase="$1"
+  local linkLog="$(config::link_log_path_for "$moduleTrackBase")"
   cat "$linkLog" 2> /dev/null | while read linkTarget; do
     dryrun::action unlink "$HOME/$linkTarget"
     # rmdir still might fail when it doesn't have permission to remove the
