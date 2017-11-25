@@ -112,14 +112,9 @@ sync::install::_list() {
   ) | tools::sort | uniq -u | cut -c3-
 }
 
-sync::finish_install() {
+sync::backup_module_before_install() {
   local absModulePath="$1"
   local moduleTrackBase="$(config::to_module_track_base "$absModulePath")"
-  # sort the file for deterministic result
-  local linkLog="$(config::link_log_path_for "$moduleTrackBase")"
-  if [ -r "$linkLog" ]; then
-    tools::sort "$linkLog" -o "$linkLog"
-  fi
   # Make a copy of the installed module, this is needed for uninstall. So even the
   # user deleted and orignal copy, hcm still knows how to uninstall it.
   local moduleBackupPath="$(config::backup_path_for "$moduleTrackBase")"

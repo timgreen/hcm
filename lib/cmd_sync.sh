@@ -37,10 +37,10 @@ install_module() {
   msg::highlight "Install $(basename $absModulePath)"
   (
     export HCM_ABS_MODULE_PATH="$absModulePath"
+    dryrun::internal_action sync::backup_module_before_install "$absModulePath"
     dryrun::internal_action hook::run_hook "$absModulePath" pre-install
     sync::install "$absModulePath"
     dryrun::internal_action hook::run_hook "$absModulePath" post-install
-    dryrun::internal_action sync::finish_install "$absModulePath"
   )
 }
 
