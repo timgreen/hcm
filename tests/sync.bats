@@ -229,3 +229,23 @@ teardown() {
   diff_home_status "$fixture"
 }
 
+@test "sync: stop on hook pre-install error bash" {
+  fixture="./fixtures/sync/hook_error_pre_install_bash"
+  use_fixture "$fixture"
+
+  run hcm sync -f
+  [ "$status" -eq 1 ]
+
+  diff_home_status "$fixture"
+}
+
+@test "sync: stop on hook pre-install error zsh" {
+  fixture="./fixtures/sync/hook_error_pre_install_zsh"
+  use_fixture "$fixture"
+
+  run hcm sync -f
+  [ "$status" -eq 1 ]
+
+  diff_home_status "$fixture"
+}
+
