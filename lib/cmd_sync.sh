@@ -22,7 +22,7 @@ uninstall_module() {
     dryrun::internal_action hook::run_hook "$moduleBackupPath" pre-uninstall
     sync::uninstall "$moduleTrackBase"
     dryrun::internal_action hook::run_hook "$moduleBackupPath" post-uninstall
-    dryrun::internal_action rm -fr "$moduleTrackBase"
+    dryrun::internal_action sync::finish_uninstall "$moduleTrackBase"
   )
 }
 

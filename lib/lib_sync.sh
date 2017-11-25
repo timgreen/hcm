@@ -146,3 +146,8 @@ sync::uninstall() {
   done
   dryrun::internal_action rm -f "$linkLog"
 }
+
+sync::finish_uninstall() {
+  local moduleTrackBase="$1"
+  rm -fr "$moduleTrackBase"
+}
