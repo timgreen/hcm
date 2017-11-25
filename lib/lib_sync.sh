@@ -130,6 +130,9 @@ sync::finish_install() {
     rm -fr "$moduleBackupPath"
     cp -d -r "$absModulePath" "$moduleBackupPath"
   fi
+  # Save metadata
+  local metadataFile="$(config::metadata_file_for "$moduleTrackBase")"
+  echo "path: $absModulePath" > "$metadataFile"
 }
 
 sync::uninstall() {

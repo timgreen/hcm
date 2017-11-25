@@ -128,6 +128,11 @@ config::link_log_path_for() {
   echo "$moduleTrackBase/link.log"
 }
 
+config::metadata_file_for() {
+  local moduleTrackBase="$1"
+  echo "$moduleTrackBase/metadata.yml"
+}
+
 config::get_module_after_list() {
   local absModulePath="$1"
   local absModuleConfigPath="$absModulePath/$MODULE_CONFIG"
