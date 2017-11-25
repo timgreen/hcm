@@ -112,7 +112,7 @@ sync::install::_list() {
   ) | tools::sort | uniq -u | cut -c3-
 }
 
-sync::backup_module_before_install() {
+sync::prepare_before_install() {
   local absModulePath="$1"
   local moduleTrackBase="$(config::to_module_track_base "$absModulePath")"
   # Make a copy of the installed module, this is needed for uninstall. So even the
@@ -142,7 +142,7 @@ sync::uninstall() {
   dryrun::internal_action rm -f "$linkLog"
 }
 
-sync::finish_uninstall() {
+sync::cleanup_after_uninstall() {
   local moduleTrackBase="$1"
   rm -fr "$moduleTrackBase"
 }

@@ -22,7 +22,7 @@ uninstall_module() {
     dryrun::internal_action hook::run_hook "$moduleBackupPath" pre-uninstall
     sync::uninstall "$moduleTrackBase"
     dryrun::internal_action hook::run_hook "$moduleBackupPath" post-uninstall
-    dryrun::internal_action sync::finish_uninstall "$moduleTrackBase"
+    dryrun::internal_action sync::cleanup_after_uninstall "$moduleTrackBase"
   )
 }
 
@@ -37,7 +37,7 @@ install_module() {
   msg::highlight "Install $(basename $absModulePath)"
   (
     export HCM_ABS_MODULE_PATH="$absModulePath"
-    dryrun::internal_action sync::backup_module_before_install "$absModulePath"
+    dryrun::internal_action sync::prepare_before_install "$absModulePath"
     dryrun::internal_action hook::run_hook "$absModulePath" pre-install
     sync::install "$absModulePath"
     dryrun::internal_action hook::run_hook "$absModulePath" post-install
