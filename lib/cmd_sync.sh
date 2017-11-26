@@ -36,12 +36,36 @@ install_module() {
   local absModulePath="$1"
   msg::highlight "Install $(basename $absModulePath)"
   (
+    # try to install
     export HCM_ABS_MODULE_PATH="$absModulePath"
     dryrun::internal_action sync::prepare_before_install "$absModulePath"
-    dryrun::internal_action hook::run_hook "$absModulePath" pre-install
-    sync::install "$absModulePath"
-    dryrun::internal_action hook::run_hook "$absModulePath" post-install
+    dryrun::internal_action hook::run_hook "$absModulePath" pre-install  || recover_error "$absModulePath" pre-install $?
+    sync::install "$absModulePath"                                       || recover_error "$absModulePath" install $?
+    dryrun::internal_action hook::run_hook "$absModulePath" post-install || recover_error "$absModulePath" post-install $?
   )
+}
+
+recover_error() {
+  local absModulePath="$1"
+  local lastStage="$2"
+  local exitCode=$3
+  local moduleTrackBase="$(config::to_module_track_base "$absModulePath")"
+  local moduleBackupPath="$(config::backup_path_for "$moduleTrackBase")"
+  (
+    # try to revert the failed install
+    export HCM_MODULE_BACKUP_PATH="$moduleBackupPath"
+    if [[ "$lastStage" == "post-install" ]]; then
+      dryrun::internal_action hook::run_hook "$moduleBackupPath" pre-uninstall
+    fi
+    if [[ "$lastStage" == "post-install" ]] || [[ "$lastStage" == "install" ]]; then
+      sync::uninstall "$moduleTrackBase"
+    fi
+    if [[ "$lastStage" == "post-install" ]] || [[ "$lastStage" == "install" ]] || [[ "$lastStage" == "pre-install" ]]; then
+      dryrun::internal_action hook::run_hook "$moduleBackupPath" post-uninstall
+    fi
+    dryrun::internal_action sync::cleanup_after_uninstall "$moduleTrackBase"
+  )
+  exit $exitCode
 }
 
 install_modules() {
