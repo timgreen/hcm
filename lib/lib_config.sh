@@ -104,6 +104,9 @@ config::verify() {
     exit 1
   }
 
+  # load and cache.
+  config::get_module_list &> /dev/null
+
   config::verify::_main
   config::get_module_list | while read absModulePath; do
     config::verify::_module "$absModulePath"
