@@ -3,6 +3,7 @@ FROM alpine
 RUN apk add --no-cache \
   coreutils \
   findutils \
+  util-linux \
   grep \
   bash \
   zsh \

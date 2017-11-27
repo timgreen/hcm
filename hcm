@@ -2,14 +2,20 @@
 
 BASE="$(dirname "$(readlink -f "$0")")"
 source "$BASE/lib/lib_cmd.sh"
+source "$BASE/lib/lib_path_consts.sh"
 
 cmd="$1"
 shift
 
-set -e
-
 if is_valid_cmd_name "$cmd" && [ -f "$BASE/lib/cmd_$(cmd_to_filename "$cmd").sh" ]; then
-  bash "$BASE/lib/cmd_$(cmd_to_filename "$cmd").sh" "$@"
+  flock -E 123 -n -x "$MAIN_CONFIG_FILE" bash "$BASE/lib/cmd_$(cmd_to_filename "$cmd").sh" "$@"
+  exitCode=$?
+  if (( $exitCode == 123 )); then
+    echo >&2 "Another hcm is running?"
+    exit 1
+  else
+    exit $exitCode
+  fi
 else
   bash "$BASE/lib/cmd_help.sh" "$cmd"
 fi
