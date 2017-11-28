@@ -13,7 +13,7 @@ hook::run_hook() {
   fi
 
   (
-    case "$(config::get_shell)" in
+    case "$(config::get_main_shell)" in
       bash)
         shell::run_in::bash "$hookCmd"
         ;;

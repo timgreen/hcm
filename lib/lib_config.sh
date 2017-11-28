@@ -5,8 +5,17 @@ INIT_CONFIG=true
 [ -z "$INIT_PATH_CONSTS" ] && source "$(dirname "${BASH_SOURCE[0]}")"/lib_path_consts.sh
 [ -z "$INIT_TOOLS" ]       && source "$(dirname "${BASH_SOURCE[0]}")"/lib_tools.sh
 
-config::get_shell() {
-  local scriptShell="$(cat "$MAIN_CONFIG_FILE" | tools::yq -r .shell)"
+CACHED_SHELL=""
+config::get_main_shell() {
+  [ -z "$CACHED_SHELL" ] && {
+    CACHED_SHELL="$(config::_get_shell "$MAIN_CONFIG_FILE")"
+  }
+  echo "$CACHED_SHELL"
+}
+
+config::_get_shell() {
+  local config="$1"
+  local scriptShell="$(cat "$config" | tools::yq -r .shell)"
   case "$scriptShell" in
     bash|null|'')
       echo bash
@@ -15,7 +24,7 @@ config::get_shell() {
       echo zsh
       ;;
     *)
-      msg::error "Unsupported shell: $scriptShell, currently only support bash & zsh."
+      msg::error "Unsupported shell: $scriptShell in $config\ncurrently only support bash & zsh."
       exit 1
       ;;
   esac
@@ -39,7 +48,11 @@ config::get_module_list() {
             msg::error "Cannot read list config: '$absListPath'."
             exit 1
           }
-          cat "$absListPath" | tools::yq -r '.[]?' | while read modulePath; do
+          [[ "$(config::get_main_shell)" == "$(config::_get_shell "$absListPath")" ]] || {
+            msg::error "Cannot include list with different 'shell' settings: '$absListPath'."
+            exit 1
+          }
+          cat "$absListPath" | tools::yq -r '.modules[]?' | while read modulePath; do
             path::abs_path_for --relative-base-file "$absListPath" "$modulePath"
           done
         done
@@ -119,7 +132,10 @@ config::verify() {
   }
 
   # load and cache.
-  config::get_module_list &> /dev/null
+  {
+    config::get_main_shell
+    config::get_module_list
+  } &> /dev/null
 
   config::verify::_main
   config::get_module_list | while read absModulePath; do

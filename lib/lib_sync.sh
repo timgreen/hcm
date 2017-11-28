@@ -57,7 +57,7 @@ sync::ready_to_install() {
 sync::is_cmd_available() {
   local cmd="$1"
   (
-    case "$(config::get_shell)" in
+    case "$(config::get_main_shell)" in
       bash)
         shell::run_in::bash "type -t '$cmd'" | grep '\(alias\|function\|builtin\|file\)'
         ;;
