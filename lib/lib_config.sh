@@ -26,10 +26,24 @@ CACHED_MODULE_LIST=""
 config::get_module_list() {
   [ -z "$CACHED_MODULE_LIST" ] && {
     CACHED_MODULE_LIST="$(
-      cat "$MAIN_CONFIG_FILE" | tools::yq -r '.modules[]?' | while read modulePath; do
-        # output absModulePath
-        path::abs_path_for --relative-base-file "$MAIN_CONFIG_REAL_PATH" "$modulePath"
-      done | tools::sort
+      {
+        # Output modules
+        cat "$MAIN_CONFIG_FILE" | tools::yq -r '.modules[]?' | while read modulePath; do
+          path::abs_path_for --relative-base-file "$MAIN_CONFIG_REAL_PATH" "$modulePath"
+        done
+        # Output modules in the lists
+        cat "$MAIN_CONFIG_FILE" | tools::yq -r '.lists[]?' | while read listPath; do
+          path::abs_path_for --relative-base-file "$MAIN_CONFIG_REAL_PATH" "$listPath"
+        done | while read absListPath; do
+          [ -r "$absListPath" ] || {
+            msg::error "Cannot read list config: '$absListPath'."
+            exit 1
+          }
+          cat "$absListPath" | tools::yq -r '.[]?' | while read modulePath; do
+            path::abs_path_for --relative-base-file "$absListPath" "$modulePath"
+          done
+        done
+      } | tools::sort -u
     )"
   }
   echo "$CACHED_MODULE_LIST" | sed '/^$/d'

@@ -22,6 +22,11 @@ modules:
   - /abs_path/module_a
   - ./relative_path/module_b
   - relative_path/dir/module_c
+# List of module list to merge.
+lists:
+  - /abs_path/list_a.yml
+  - ./relative_path/list_b.yml
+  - relative_path/dir/list_c.yml
 ```
 
 > #### WHY need to specify the shell?
@@ -32,6 +37,23 @@ modules:
 >
 > When module provides tools (declared as `provides`), will need to update shell's $PATH or make sure the new tool is
 > installed in one of the $PATH. see [Shell Skeleton][Shell Skeleton] for more details.
+
+## List Config Format
+
+The list config path will be use as the base for the relative paths mentioned in config. Not like main config, `hcm`
+won't follow the symlink, instead it will use the value resolved from the main config.
+
+```yaml
+# Optional, specify the shell used to run the scripts, zsh | bash, defaults to bash.
+# The list can only be included in the config has the same shell value.
+shell: zsh
+# List of module path.
+# There should be a file name "module.yml" in the root of the module directory.
+modules:
+  - /abs_path/module_a
+  - ./relative_path/module_b
+  - relative_path/dir/module_c
+```
 
 ## Module Config Format
 
