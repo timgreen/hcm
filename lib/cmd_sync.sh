@@ -76,11 +76,6 @@ install_modules() {
   #   - add new modules to pending list.
   local absModulePath
   while read absModulePath; do
-    # NOTE: change to `output | while read x; do ... done` style could fix the
-    # empty line input issue. But the while statement after pipe will be in a
-    # new sub shell, the changes to $pendingAbsModulePaths won't visible
-    # outside.
-    [ -z "$absModulePath" ] && continue
     case "$(sync::check_module_status "$absModulePath")" in
       $STATUS_UP_TO_DATE)
         # Skip the already installed module that has no update.
@@ -94,7 +89,7 @@ install_modules() {
         pendingAbsModulePaths+=("$absModulePath")
         ;;
     esac
-  done <<< "$(config::get_module_list)"
+  done < <(config::get_module_list)
 
   # Install pending modules.
   # Only install the first module with no unresolved dependencies in each

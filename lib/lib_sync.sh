@@ -45,12 +45,12 @@ sync::ready_to_install() {
     if [[ "$(sync::check_module_status "$absAfterModulePath")" != "$STATUS_UP_TO_DATE" ]]; then
       return 1
     fi
-  done <<< "$(config::get_module_after_list "$absModulePath")"
+  done < <(config::get_module_after_list "$absModulePath")
   # Ensure all the cmd listed in '.requires' can be found.
   while read requiredCmd; do
     [ -z "$requiredCmd" ] && continue
     sync::is_cmd_available "$requiredCmd" || return 1
-  done <<< "$(config::get_module_requires_list "$absModulePath")"
+  done < <(config::get_module_requires_list "$absModulePath")
 }
 
 # Return true if then given cmd is available in the current shell environment.
