@@ -134,3 +134,13 @@ EOF
   run hcm sync
   [ "$status" -eq 1 ]
 }
+
+@test "config: error when list config not found" {
+  mkdir test_home/.hcm
+  echo 'lists:' > test_home/.hcm/hcm.yml
+  echo '  - list_config_not_found.yml' >> test_home/.hcm/hcm.yml
+
+  run hcm sync
+  [ "$status" -eq 1 ]
+}
+

@@ -5,10 +5,11 @@ INIT_CONFIG=true
 [ -z "$INIT_PATH_CONSTS" ] && source "$(dirname "${BASH_SOURCE[0]}")"/lib_path_consts.sh
 [ -z "$INIT_TOOLS" ]       && source "$(dirname "${BASH_SOURCE[0]}")"/lib_tools.sh
 
-CACHED_SHELL=""
+CACHED_SHELL="-"
 config::get_main_shell() {
-  [ -z "$CACHED_SHELL" ] && {
+  [[ "$CACHED_SHELL" == "-" ]] && {
     CACHED_SHELL="$(config::_get_shell "$MAIN_CONFIG_FILE")"
+    readonly CACHED_SHELL
   }
   echo "$CACHED_SHELL"
 }
@@ -30,10 +31,10 @@ config::_get_shell() {
   esac
 }
 
-CACHED_MODULE_LIST=""
+CACHED_MODULE_LIST="-"
 # Returns the abs path for modules.
 config::get_module_list() {
-  [ -z "$CACHED_MODULE_LIST" ] && {
+  [[ "$CACHED_MODULE_LIST" == "-" ]] && {
     CACHED_MODULE_LIST="$(
       {
         # Output modules
@@ -58,6 +59,7 @@ config::get_module_list() {
         done
       } | tools::sort -u
     )"
+    readonly CACHED_MODULE_LIST
   }
   echo "$CACHED_MODULE_LIST" | sed '/^$/d'
 }
@@ -135,7 +137,7 @@ config::verify() {
   {
     config::get_main_shell
     config::get_module_list
-  } &> /dev/null
+  } > /dev/null
 
   config::verify::_main
   config::get_module_list | while read absModulePath; do
