@@ -32,7 +32,7 @@ sync::list_the_modules_need_remove() {
       echo "$moduleTrackBase"
       echo "$moduleTrackBase"
     done
-    find "$HCM_INSTALLED_MODULES_ROOT" -maxdepth 1 -mindepth 1 -type d 2> /dev/null
+    [ ! -d "$HCM_INSTALLED_MODULES_ROOT" ] || find "$HCM_INSTALLED_MODULES_ROOT" -maxdepth 1 -mindepth 1 -type d
   } | tools::sort | uniq -u
 }
 
@@ -133,7 +133,7 @@ sync::prepare_before_install() {
 sync::uninstall() {
   local moduleTrackBase="$1"
   local linkLog="$(config::link_log_path_for "$moduleTrackBase")"
-  cat "$linkLog" 2> /dev/null | while read linkTarget; do
+  [ ! -r "$linkLog" ] || cat "$linkLog" | while read linkTarget; do
     dryrun::action unlink "$HOME/$linkTarget"
     # rmdir still might fail when it doesn't have permission to remove the
     # directory, so ignore the error here.

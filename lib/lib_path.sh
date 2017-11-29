@@ -13,7 +13,7 @@ INIT_PATH=true
 path::relative_to() {
   local a="$1"
   local b="$2"
-  local prefix="$3"
+  local prefix="${3:-}"
 
   # Ensure $a ends with '/'
   if [[ ! "$a" = *"/" ]]; then

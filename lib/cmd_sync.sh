@@ -125,5 +125,5 @@ main() {
 }
 
 [[ "$DEBUG" != "" ]] && set -x
-set -e
+set -euf -o pipefail
 main "$@"
