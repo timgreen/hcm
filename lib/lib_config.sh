@@ -1,17 +1,13 @@
 INIT_CONFIG=true
 
+[ -z "$INIT_FUNC" ]        && source "$(dirname "${BASH_SOURCE[0]}")"/lib_func.sh
 [ -z "$INIT_MSG" ]         && source "$(dirname "${BASH_SOURCE[0]}")"/lib_msg.sh
 [ -z "$INIT_PATH" ]        && source "$(dirname "${BASH_SOURCE[0]}")"/lib_path.sh
 [ -z "$INIT_PATH_CONSTS" ] && source "$(dirname "${BASH_SOURCE[0]}")"/lib_path_consts.sh
 [ -z "$INIT_TOOLS" ]       && source "$(dirname "${BASH_SOURCE[0]}")"/lib_tools.sh
 
-CACHED_SHELL="-"
 config::get_main_shell() {
-  [[ "$CACHED_SHELL" == "-" ]] && {
-    CACHED_SHELL="$(config::_get_shell "$MAIN_CONFIG_FILE")"
-    readonly CACHED_SHELL
-  }
-  echo "$CACHED_SHELL"
+  config::_get_shell "$MAIN_CONFIG_FILE"
 }
 
 config::_get_shell() {
@@ -31,37 +27,30 @@ config::_get_shell() {
   esac
 }
 
-CACHED_MODULE_LIST="-"
 # Returns the abs path for modules.
 config::get_module_list() {
-  [[ "$CACHED_MODULE_LIST" == "-" ]] && {
-    CACHED_MODULE_LIST="$(
-      {
-        # Output modules
-        cat "$MAIN_CONFIG_FILE" | tools::yq -r '.modules[]?' | while read modulePath; do
-          path::abs_path_for --relative-base-file "$MAIN_CONFIG_REAL_PATH" "$modulePath"
-        done
-        # Output modules in the lists
-        cat "$MAIN_CONFIG_FILE" | tools::yq -r '.lists[]?' | while read listPath; do
-          path::abs_path_for --relative-base-file "$MAIN_CONFIG_REAL_PATH" "$listPath"
-        done | while read absListPath; do
-          [ -r "$absListPath" ] || {
-            msg::error "Cannot read list config: '$absListPath'."
-            exit 1
-          }
-          [[ "$(config::get_main_shell)" == "$(config::_get_shell "$absListPath")" ]] || {
-            msg::error "Cannot include list with different 'shell' settings: '$absListPath'."
-            exit 1
-          }
-          cat "$absListPath" | tools::yq -r '.modules[]?' | while read modulePath; do
-            path::abs_path_for --relative-base-file "$absListPath" "$modulePath"
-          done
-        done
-      } | tools::sort -u
-    )"
-    readonly CACHED_MODULE_LIST
-  }
-  echo "$CACHED_MODULE_LIST" | sed '/^$/d'
+  {
+    # Output modules
+    cat "$MAIN_CONFIG_FILE" | tools::yq -r '.modules[]?' | while read modulePath; do
+      path::abs_path_for --relative-base-file "$MAIN_CONFIG_REAL_PATH" "$modulePath"
+    done
+    # Output modules in the lists
+    cat "$MAIN_CONFIG_FILE" | tools::yq -r '.lists[]?' | while read listPath; do
+      path::abs_path_for --relative-base-file "$MAIN_CONFIG_REAL_PATH" "$listPath"
+    done | while read absListPath; do
+      [ -r "$absListPath" ] || {
+        msg::error "Cannot read list config: '$absListPath'."
+        exit 1
+      }
+      [[ "$(config::get_main_shell)" == "$(config::_get_shell "$absListPath")" ]] || {
+        msg::error "Cannot include list with different 'shell' settings: '$absListPath'."
+        exit 1
+      }
+      cat "$absListPath" | tools::yq -r '.modules[]?' | while read modulePath; do
+        path::abs_path_for --relative-base-file "$absListPath" "$modulePath"
+      done
+    done
+  } | tools::sort -u
 }
 
 config::_ensure_string_array_for_field() {
@@ -133,12 +122,7 @@ config::verify() {
     exit 1
   }
 
-  # load and cache.
-  {
-    config::get_main_shell
-    config::get_module_list
-  } > /dev/null
-
+  config::_load_and_cache
   config::verify::_main
   config::get_module_list | while read absModulePath; do
     config::verify::_module "$absModulePath"
@@ -188,4 +172,29 @@ config::get_module_hook() {
   local hook="$2"
   local absModuleConfigPath="$absModulePath/$MODULE_CONFIG"
   cat "$absModuleConfigPath" | tools::yq -r ".\"$hook\"?"
+}
+
+config::_load_and_cache() {
+  {
+    func::cache_nullary CACHED_SHELL config::get_main_shell
+    config::get_main_shell
+    readonly CACHED_SHELL
+
+    func::cache_nullary CACHED_MODULE_LIST config::get_module_list
+    config::get_module_list
+    readonly CACHED_MODULE_LIST
+
+    func::cache_unary CACHED_MODULE_AFTER_LIST config::get_module_after_list
+    func::cache_unary CACHED_MODULE_REQUIRES_LIST config::get_module_requires_list
+    func::cache_unary CACHED_MODULE_TRACK_BASE config::to_module_track_base
+    local absModulePath
+    while read absModulePath; do
+      config::get_module_after_list "$absModulePath"
+      config::get_module_requires_list "$absModulePath"
+      config::to_module_track_base "$absModulePath"
+    done < <(config::get_module_list)
+    readonly CACHED_MODULE_AFTER_LIST
+    readonly CACHED_MODULE_REQUIRES_LIST
+    readonly CACHED_MODULE_TRACK_BASE
+  } > /dev/null
 }
