@@ -1,0 +1,4 @@
+pre-install
+post-install
+pre-uninstall
+post-uninstall

@@ -1,0 +1,9 @@
+pre-install: |
+  echo "pre-install" >> "$HOME/log"
+  exit 1
+post-install: |
+  echo "post-install" >> "$HOME/log"
+pre-uninstall: |
+  echo "pre-uninstall" >> "$HOME/log"
+post-uninstall: |
+  echo "post-uninstall" >> "$HOME/log"
