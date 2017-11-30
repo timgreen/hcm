@@ -269,3 +269,12 @@ teardown() {
   diff_home_status "$fixture"
 }
 
+@test "sync: no error if same link target already exist" {
+  fixture="./fixtures/sync/same_link_already_exist"
+  use_fixture "$fixture"
+
+  hcm sync -f
+
+  diff_home_status "$fixture"
+}
+

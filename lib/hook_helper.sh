@@ -24,8 +24,12 @@ link() {
   local hcmModuleTrackBase="$(config::to_module_track_base "$HCM_ABS_MODULE_PATH")"
   local hcmModuleLinkLog="$(config::link_log_path_for "$hcmModuleTrackBase")"
 
+  local relativeFrom="$(path::relative_to "$(dirname "$to")/" "$from")"
+
   mkdir -p "$(dirname "$to")"
-  ln -s "$(path::relative_to "$(dirname "$to")/" "$from")" "$to"
+  if [ ! -l "$to" ] || [[ "$(readlink "$to")" != "$relativeFrom" ]]; then
+    ln -s "$relativeFrom" "$to"
+  fi
 
   mkdir -p "$(dirname "$hcmModuleLinkLog")"
   path::relative_to "$HOME" "$to" >> "$hcmModuleLinkLog"
