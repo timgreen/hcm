@@ -16,13 +16,13 @@ paths mentioned in config.
 ```yaml
 # Optional, specify the shell used to run the scripts, zsh | bash, defaults to bash.
 shell: zsh
-# List of module path.
+# Optional, list of module path.
 # There should be a file name "module.yml" in the root of the module directory.
 modules:
   - /abs_path/module_a
   - ./relative_path/module_b
   - relative_path/dir/module_c
-# List of module list to merge.
+# Optional, list of module list to merge.
 lists:
   - /abs_path/list_a.yml
   - ./relative_path/list_b.yml
