@@ -55,6 +55,9 @@ modules:
   - relative_path/dir/module_c
 ```
 
+NOTE, list config is a valid main config (without *lists* support). If needed, it can be link to `$HOME/.hcm/hcm.yml`
+and use it as main config without any problem.
+
 ## Module Config Format
 
 The module config is the `module.yml` file under the root of each module directory. Everything is *optional* in the
