@@ -278,3 +278,33 @@ teardown() {
   diff_home_status "$fixture"
 }
 
+@test "sync: error if conflict link target already exist: file" {
+  fixture="./fixtures/sync/link_target_already_exist_file"
+  use_fixture "$fixture"
+
+  run hcm sync -f
+  [ "$status" -eq 1 ]
+
+  diff_home_status "$fixture"
+}
+
+@test "sync: error if conflict link target already exist: dir" {
+  fixture="./fixtures/sync/link_target_already_exist_dir"
+  use_fixture "$fixture"
+
+  run hcm sync -f
+  [ "$status" -eq 1 ]
+
+  diff_home_status "$fixture"
+}
+
+@test "sync: error if conflict link target already exist: different source" {
+  fixture="./fixtures/sync/link_target_already_exist_diff"
+  use_fixture "$fixture"
+
+  run hcm sync -f
+  [ "$status" -eq 1 ]
+
+  diff_home_status "$fixture"
+}
+

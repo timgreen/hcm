@@ -27,8 +27,8 @@ link() {
   local relativeFrom="$(path::relative_to "$(dirname "$to")/" "$from")"
 
   mkdir -p "$(dirname "$to")"
-  if [ ! -l "$to" ] || [[ "$(readlink "$to")" != "$relativeFrom" ]]; then
-    ln -s "$relativeFrom" "$to"
+  if [ ! -L "$to" ] || [[ "$(readlink "$to")" != "$relativeFrom" ]]; then
+    ln -s -T "$relativeFrom" "$to" || return 1
   fi
 
   mkdir -p "$(dirname "$hcmModuleLinkLog")"

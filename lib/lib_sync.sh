@@ -72,7 +72,7 @@ sync::install() {
   local absModulePath="$1"
   IFS=$'\n'
   for file in $(sync::install::_list "$absModulePath"); do
-    dryrun::action link "$absModulePath/$file" "$HOME/$file"
+    dryrun::action link "$absModulePath/$file" "$HOME/$file" || return 1
   done
 }
 
