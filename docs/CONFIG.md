@@ -75,7 +75,6 @@ module config. You just need a empty file if you only want to link dotfiles. (Em
 
       * Use `type -t` for bash
       * Use `whence -w` for zsh
-      * Use `which` for others
 
       to check existence of the cmd.
 
