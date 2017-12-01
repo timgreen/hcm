@@ -19,9 +19,9 @@ uninstall_module() {
   msg::highlight "Uninstall $(basename $moduleTrackBase)"
   (
     export HCM_MODULE_BACKUP_PATH="$moduleBackupPath"
-    dryrun::internal_action hook::run_hook "$moduleBackupPath" pre-uninstall
+    dryrun::internal_action hook::run_hook "$moduleBackupPath" pre-uninstall || :
     sync::uninstall "$moduleTrackBase"
-    dryrun::internal_action hook::run_hook "$moduleBackupPath" post-uninstall
+    dryrun::internal_action hook::run_hook "$moduleBackupPath" post-uninstall || :
     dryrun::internal_action sync::cleanup_after_uninstall "$moduleTrackBase"
   )
 }
@@ -55,13 +55,13 @@ recover_error() {
     # try to revert the failed install
     export HCM_MODULE_BACKUP_PATH="$moduleBackupPath"
     if [[ "$lastStage" == "post-install" ]]; then
-      dryrun::internal_action hook::run_hook "$moduleBackupPath" pre-uninstall
+      dryrun::internal_action hook::run_hook "$moduleBackupPath" pre-uninstall || :
     fi
     if [[ "$lastStage" == "post-install" ]] || [[ "$lastStage" == "install" ]]; then
       sync::uninstall "$moduleTrackBase"
     fi
     if [[ "$lastStage" == "post-install" ]] || [[ "$lastStage" == "install" ]] || [[ "$lastStage" == "pre-install" ]]; then
-      dryrun::internal_action hook::run_hook "$moduleBackupPath" post-uninstall
+      dryrun::internal_action hook::run_hook "$moduleBackupPath" post-uninstall || :
     fi
     dryrun::internal_action sync::cleanup_after_uninstall "$moduleTrackBase"
   )
