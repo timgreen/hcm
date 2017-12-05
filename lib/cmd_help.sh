@@ -13,6 +13,7 @@ Available commands:
 
    sync           Sync config module(s) to HOME directory
    housekeeping   Remove the dead links the HOME directory
+   doctor         Check your system for potential problems.
    help           Show this doc
 
 See 'hcm help <command>' to read about a specific subcommand.
@@ -50,6 +51,16 @@ OPTIONS
 
 EOF
 }
+
+usage_doctor() {
+  cat << EOF
+usage: hcm doctor
+
+Check your system for potential problems. Doctor exits with a non-zero status
+if any problems are found.
+EOF
+}
+
 
 print_usage() {
   local cmd="${1:-help}"
