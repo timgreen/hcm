@@ -117,12 +117,6 @@ config::verify::_dependencies() {
 }
 
 config::verify() {
-  [ -r "$MAIN_CONFIG_FILE" ] || {
-    msg::error 'Cannot read main config "$HOME/.hcm/hcm.yml".'
-    exit 1
-  }
-
-  config::_load_and_cache
   config::verify::_main
   config::get_module_list | while read absModulePath; do
     config::verify::_module "$absModulePath"
@@ -174,7 +168,7 @@ config::get_module_hook() {
   cat "$absModuleConfigPath" | tools::yq -r ".\"$hook\"?"
 }
 
-config::_load_and_cache() {
+config::load_and_cache() {
   {
     func::cache_nullary CACHED_SHELL config::get_main_shell
     config::get_main_shell
@@ -197,4 +191,9 @@ config::_load_and_cache() {
     readonly CACHED_MODULE_REQUIRES_LIST
     readonly CACHED_MODULE_TRACK_BASE
   } > /dev/null
+}
+
+[ -r "$MAIN_CONFIG_FILE" ] || {
+  msg::error 'Cannot read main config "$HOME/.hcm/hcm.yml".'
+  exit 1
 }
