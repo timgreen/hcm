@@ -115,7 +115,6 @@ install_modules() {
 
 main() {
   config::load_and_cache
-  config::verify
   uninstall_modules
   install_modules
 }
