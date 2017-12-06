@@ -11,7 +11,7 @@ teardown() {
 }
 
 @test "config: error when home config not found" {
-  run hcm sync
+  run hcm doctor
   [ "$status" -eq 1 ]
 }
 
@@ -20,7 +20,7 @@ teardown() {
   touch test_home/.hcm/hcm.yml
   chmod a-r test_home/.hcm/hcm.yml
 
-  run hcm sync
+  run hcm doctor
   [ "$status" -eq 1 ]
 }
 
@@ -28,7 +28,7 @@ teardown() {
   mkdir test_home/.hcm
   touch test_home/.hcm/hcm.yml
 
-  run hcm sync
+  run hcm doctor
   [ "$status" -eq 0 ]
 }
 
@@ -36,7 +36,7 @@ teardown() {
   mkdir test_home/.hcm
   echo 'shell: zsh' > test_home/.hcm/hcm.yml
 
-  run hcm sync
+  run hcm doctor
   [ "$status" -eq 0 ]
 }
 
@@ -45,7 +45,7 @@ teardown() {
   echo 'shell: zsh' > test_home/.hcm/hcm.yml
   echo 'module:' > test_home/.hcm/hcm.yml
 
-  run hcm sync
+  run hcm doctor
   [ "$status" -eq 0 ]
 }
 
@@ -53,7 +53,7 @@ teardown() {
   mkdir test_home/.hcm
   echo 'module:' > test_home/.hcm/hcm.yml
 
-  run hcm sync
+  run hcm doctor
   [ "$status" -eq 0 ]
 }
 
@@ -61,16 +61,16 @@ teardown() {
   mkdir test_home/.hcm
 
   echo 'modules: a' > test_home/.hcm/hcm.yml
-  run hcm sync
+  run hcm doctor
   [ "$status" -eq 1 ]
 
   echo 'modules: 1' > test_home/.hcm/hcm.yml
-  run hcm sync
+  run hcm doctor
   [ "$status" -eq 1 ]
 
   echo 'modules: ' > test_home/.hcm/hcm.yml
   echo '  a: b'  >> test_home/.hcm/hcm.yml
-  run hcm sync
+  run hcm doctor
   [ "$status" -eq 1 ]
 }
 
@@ -81,7 +81,7 @@ teardown() {
 modules:
   - a: b
 EOF
-  run hcm sync
+  run hcm doctor
   [ "$status" -eq 1 ]
 }
 
@@ -92,7 +92,7 @@ EOF
 modules:
   - a
 EOF
-  run hcm sync
+  run hcm doctor
   [ "$status" -eq 1 ]
 }
 
@@ -104,7 +104,7 @@ EOF
   echo "after:" >> test_home/repo/module_a/module.yml
   echo "  - ../module_b" >> test_home/repo/module_a/module.yml
 
-  run hcm sync
+  run hcm doctor
   [ "$status" -eq 1 ]
 }
 
@@ -115,7 +115,7 @@ EOF
   echo "after:" >> test_home/repo/module_a/module.yml
   echo "  - ../module_c" >> test_home/repo/module_a/module.yml
 
-  run hcm sync
+  run hcm doctor
   [ "$status" -eq 1 ]
 }
 
@@ -123,7 +123,7 @@ EOF
   fixture="./fixtures/config/circular_dependency"
   use_fixture "$fixture"
 
-  run hcm sync
+  run hcm doctor
   [ "$status" -eq 1 ]
 }
 
@@ -131,7 +131,7 @@ EOF
   fixture="./fixtures/config/invalid_requires"
   use_fixture "$fixture"
 
-  run hcm sync
+  run hcm doctor
   [ "$status" -eq 1 ]
 }
 
@@ -140,7 +140,7 @@ EOF
   echo 'lists:' > test_home/.hcm/hcm.yml
   echo '  - list_config_not_found.yml' >> test_home/.hcm/hcm.yml
 
-  run hcm sync
+  run hcm doctor
   [ "$status" -eq 1 ]
 }
 
