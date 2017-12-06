@@ -11,6 +11,7 @@ hook::run_hook() {
   if [ -z "$hookCmd" ] || [[ "$hookCmd" == "null" ]]; then
     return
   fi
+  hookCmd="cd \"$absModulePath\"; $hookCmd"
 
   (
     case "$(config::get_main_shell)" in
