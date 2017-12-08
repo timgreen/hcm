@@ -117,7 +117,9 @@ install_modules() {
 }
 
 main() {
+  msg::info "Loading config ..."
   config::load_and_cache
+  msg::info "Took $SECONDS seconds"
   uninstall_modules
   install_modules
 }
