@@ -146,6 +146,11 @@ config::metadata_file_for() {
   echo "$moduleTrackBase/metadata.yml"
 }
 
+config::metadata::get_path() {
+  local metadataFile="$1"
+  cat "$metadataFile" | tools::yq -r '.path'
+}
+
 config::get_module_after_list() {
   local absModulePath="$1"
   local absModuleConfigPath="$absModulePath/$MODULE_CONFIG"

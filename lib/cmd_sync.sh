@@ -16,7 +16,8 @@ DRY_RUN=true
 uninstall_module() {
   local moduleTrackBase="$1"
   local moduleBackupPath="$(config::backup_path_for "$moduleTrackBase")"
-  msg::highlight "Uninstall $(basename $moduleTrackBase)"
+  local metadataFile="$(config::metadata_file_for "$moduleTrackBase")"
+  msg::highlight "Uninstall $(config::metadata::get_path "$metadataFile")"
   (
     export HCM_MODULE_BACKUP_PATH="$moduleBackupPath"
     dryrun::internal_action hook::run_hook "$moduleBackupPath" pre-uninstall || :
@@ -34,7 +35,7 @@ uninstall_modules() {
 
 install_module() {
   local absModulePath="$1"
-  msg::highlight "Install $(basename $absModulePath)"
+  msg::highlight "Install $absModulePath"
   (
     # try to install
     export HCM_ABS_MODULE_PATH="$absModulePath"
@@ -79,12 +80,14 @@ install_modules() {
     case "$(sync::check_module_status "$absModulePath")" in
       $STATUS_UP_TO_DATE)
         # Skip the already installed module that has no update.
+        msg::highlight "Up-to-date $absModulePath"
         continue
         ;;
       $STATUS_NEW)
         pendingAbsModulePaths+=("$absModulePath")
         ;;
       $STATUS_UPDATED|*)
+        msg::highlight "Updated, uninstall first $absModulePath"
         uninstall_module "$(config::to_module_track_base "$absModulePath")"
         pendingAbsModulePaths+=("$absModulePath")
         ;;
