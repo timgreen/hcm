@@ -23,6 +23,7 @@ Commands/tools should already available in most of systems.
    * grep
    * jq
    * tput
+   * tmux
 
 Tools might need installation.
 
