@@ -19,7 +19,9 @@ Commands/tools should already available in most of systems.
       * nl
    * bash
    * find
+   * curl
    * grep
+   * jq
    * tput
 
 Tools might need installation.
@@ -49,7 +51,7 @@ Or manually clone this repo and run hcm in the root directory.
 
 ## Quick Start
 
-Copy the example `hcm.yml` to `$HOME/.hcm/hcm.yml` and run `hcm install`.
+Copy the example `hcm.yml` to `$HOME/.hcm/hcm.yml` and run `hcm sync -f`.
 
 for more information
 
