@@ -308,3 +308,22 @@ teardown() {
   diff_home_status "$fixture"
 }
 
+@test "sync: error if module failed to provide that it declared (bash)" {
+  fixture="./fixtures/sync/provides_error_bash"
+  use_fixture "$fixture"
+
+  run hcm sync -f
+  [ "$status" -eq 1 ]
+
+  diff_home_status "$fixture"
+}
+
+@test "sync: error if module failed to provide that it declared (zsh)" {
+  fixture="./fixtures/sync/provides_error_zsh"
+  use_fixture "$fixture"
+
+  run hcm sync -f
+  [ "$status" -eq 1 ]
+
+  diff_home_status "$fixture"
+}
