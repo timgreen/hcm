@@ -43,6 +43,7 @@ install_module() {
     dryrun::internal_action hook::run_hook "$absModulePath" pre-install  || recover_error "$absModulePath" pre-install $?
     sync::install "$absModulePath"                                       || recover_error "$absModulePath" install $?
     dryrun::internal_action hook::run_hook "$absModulePath" post-install || recover_error "$absModulePath" post-install $?
+    sync::verify_provided_cmds "$absModulePath"                          || recover_error "$absModulePath" post-install $?
   )
 }
 

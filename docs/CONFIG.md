@@ -80,6 +80,11 @@ module config. You just need a empty file if you only want to link dotfiles. (Em
 
       NOTE, only bash and zsh will reflect up-to-date *.bashrc* or *.zshrc* settings.
 
+   * `provides`
+
+     A list of cmd that will be provided by this module. After installed the module, `hcm` will check the existence of
+     the cmd against the up-to-date *.bashrc* or *.zshrc* settings. (same as `requires`)
+
 For hooks, please check [Life Cycle][Life Cycle] for details.
 
 ```yaml

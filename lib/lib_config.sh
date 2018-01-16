@@ -166,6 +166,12 @@ config::get_module_requires_list() {
   cat "$absModuleConfigPath" | tools::yq -r '.requires[]?'
 }
 
+config::get_module_provides_list() {
+  local absModulePath="$1"
+  local absModuleConfigPath="$absModulePath/$MODULE_CONFIG"
+  cat "$absModuleConfigPath" | tools::yq -r '.provides[]?'
+}
+
 config::get_module_hook() {
   local absModulePath="$1"
   local hook="$2"
@@ -185,15 +191,18 @@ config::load_and_cache() {
 
     func::cache_unary CACHED_MODULE_AFTER_LIST config::get_module_after_list
     func::cache_unary CACHED_MODULE_REQUIRES_LIST config::get_module_requires_list
+    func::cache_unary CACHED_MODULE_PROVIDES_LIST config::get_module_provides_list
     func::cache_unary CACHED_MODULE_TRACK_BASE config::to_module_track_base
     local absModulePath
     while read absModulePath; do
       config::get_module_after_list "$absModulePath"
       config::get_module_requires_list "$absModulePath"
+      config::get_module_provides_list "$absModulePath"
       config::to_module_track_base "$absModulePath"
     done < <(config::get_module_list)
     readonly CACHED_MODULE_AFTER_LIST
     readonly CACHED_MODULE_REQUIRES_LIST
+    readonly CACHED_MODULE_PROVIDES_LIST
     readonly CACHED_MODULE_TRACK_BASE
   } > /dev/null
 }

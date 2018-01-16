@@ -146,3 +146,12 @@ sync::cleanup_after_uninstall() {
   local moduleTrackBase="$1"
   rm -fr "$moduleTrackBase"
 }
+
+# Ensure all the cmd listed in '.provides' can be found.
+sync::verify_provided_cmds() {
+  local absModulePath="$1"
+  while read providedCmd; do
+    [ -z "$providedCmd" ] && continue
+    sync::is_cmd_available "$providedCmd" || return 1
+  done < <(config::get_module_provides_list "$absModulePath")
+}
