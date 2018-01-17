@@ -56,13 +56,13 @@ sync::ready_to_install() {
 # Returns true if the given module is ready to install in the virual environment.
 sync::ready_to_install_virtual() {
   local absModulePath="$1"
-  eval "declare -A installedModules="${2#*=}
-  eval "declare -A installedProvides="${3#*=}
+  local -n virtualInstalledModules="$2"
+  local -n virtualInstalledProvides="$3"
 
   # Ensure all the modules listed in '.after' have been installed.
   while read absAfterModulePath; do
     [ -z "$absAfterModulePath" ] && continue
-    [ ${installedModules["$absAfterModulePath"]+_} ] && continue
+    [ ${virtualInstalledModules["$absAfterModulePath"]+_} ] && continue
     if [[ "$(sync::check_module_status "$absAfterModulePath")" != "$STATUS_UP_TO_DATE" ]]; then
       return 1
     fi
@@ -70,7 +70,7 @@ sync::ready_to_install_virtual() {
   # Ensure all the cmd listed in '.requires' can be found.
   while read requiredCmd; do
     [ -z "$requiredCmd" ] && continue
-    [ ${installedProvides["$requiredCmd"]+_} ] && continue
+    [ ${virtualInstalledProvides["$requiredCmd"]+_} ] && continue
     sync::is_cmd_available "$requiredCmd" || return 1
   done < <(config::get_module_requires_list "$absModulePath")
 }

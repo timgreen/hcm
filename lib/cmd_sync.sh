@@ -96,7 +96,9 @@ install_modules() {
   done < <(config::get_module_list)
 
   # Go through 'requires' list for each module, report any missing cmds.
-  reportMissingRequires "$(declare -p pendingAbsModulePaths)"
+  if (( ${#pendingAbsModulePaths[@]} > 0 )); then
+    reportMissingRequires "$(declare -p pendingAbsModulePaths)"
+  fi
 
   # Install pending modules.
   # Only install the first module with no unresolved dependencies in each
@@ -121,14 +123,15 @@ install_modules() {
 }
 
 reportMissingRequires() {
-  eval "declare -A pendingAbsModulePaths="${1#*=}
+  # Get a copy of pendingAbsModulePaths
+  eval "declare -a pendingAbsModulePaths="${1#*=}
   declare -A installedProvides
   declare -A installedModules
   while (( ${#pendingAbsModulePaths[@]} > 0 )); do
     local installedOneModule=false
     for i in "${!pendingAbsModulePaths[@]}"; do
       local absModulePath="${pendingAbsModulePaths[$i]}"
-      if sync::ready_to_install_virtual "$absModulePath" "$(declare -p installedModules)" "$(declare -p installedProvides)"; then
+      if sync::ready_to_install_virtual "$absModulePath" installedModules installedProvides; then
         installedModules["$absModulePath"]=true
         while read providedCmd; do
           [ -z "$providedCmd" ] && continue
@@ -141,10 +144,61 @@ reportMissingRequires() {
     done
     if ! $installedOneModule; then
       msg::error "Cannot install following modules:"
-      printf '%s\n' "${pendingAbsModulePaths[@]}"
+      for i in "${!pendingAbsModulePaths[@]}"; do
+        local absModulePath="${pendingAbsModulePaths[$i]}"
+        reportUnmetRequirements "$absModulePath" installedModules installedProvides
+      done
+
       exit 1
     fi
   done
+}
+
+# report unmet requirements for each module in follow format
+#
+# <module_name>
+#   requires:
+#     ✔ <cmd_a>
+#     ✘ <cmd_b>
+#   after:
+#     ✔ <module_a>
+#     ✘ <module_b>
+reportUnmetRequirements() {
+  local absModulePath="$1"
+  local -n virtualInstalledModules="$2"
+  local -n virtualInstalledProvides="$3"
+
+  msg::highlight "$absModulePath"
+
+  msg::info "  afters:"
+  while read absAfterModulePath; do
+    [ -z "$absAfterModulePath" ] && continue
+    if [ ${virtualInstalledModules["$absAfterModulePath"]+_} ] || [[ "$(sync::check_module_status "$absAfterModulePath")" == "$STATUS_UP_TO_DATE" ]]; then
+      echo "${indent}✔ $absAfterModulePath"
+    fi
+  done < <(config::get_module_after_list "$absModulePath")
+  while read absAfterModulePath; do
+    [ -z "$absAfterModulePath" ] && continue
+    [ ${virtualInstalledModules["$absAfterModulePath"]+_} ] && continue
+    [[ "$(sync::check_module_status "$absAfterModulePath")" == "$STATUS_UP_TO_DATE" ]] && continue
+    echo "${indent}✘ $absAfterModulePath"
+  done < <(config::get_module_after_list "$absModulePath")
+
+  msg::info "  requires:"
+  local indent="    "
+  while read requiredCmd; do
+    [ -z "$requiredCmd" ] && continue
+    if [ ${virtualInstalledProvides["$requiredCmd"]+_} ] || sync::is_cmd_available "$requiredCmd"; then
+      echo "${indent}✔ $requiredCmd"
+    fi
+  done < <(config::get_module_requires_list "$absModulePath")
+  while read requiredCmd; do
+    [ -z "$requiredCmd" ] && continue
+    if [ ${virtualInstalledProvides["$requiredCmd"]+_} ] || sync::is_cmd_available "$requiredCmd"; then
+      continue
+    fi
+    echo "${indent}✘ $requiredCmd"
+  done < <(config::get_module_requires_list "$absModulePath")
 }
 
 main() {
