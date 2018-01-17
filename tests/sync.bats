@@ -56,8 +56,8 @@ teardown() {
   diff_home_status "$fixture"
 }
 
-@test "sync: partial install, stop on error" {
-  fixture="./fixtures/sync/partial_install"
+@test "sync: no more partial install, noop on error" {
+  fixture="./fixtures/sync/no_more_partial_install"
   use_fixture "$fixture"
 
   run hcm sync -f

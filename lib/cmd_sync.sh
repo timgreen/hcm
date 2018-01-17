@@ -95,6 +95,9 @@ install_modules() {
     esac
   done < <(config::get_module_list)
 
+  # Go through 'requires' list for each module, report any missing cmds.
+  reportMissingRequires "$(declare -p pendingAbsModulePaths)"
+
   # Install pending modules.
   # Only install the first module with no unresolved dependencies in each
   # interation.
@@ -111,6 +114,33 @@ install_modules() {
     done
     if ! $installedOneModule; then
       msg::error "Cannot resolve following modules:"
+      printf '%s\n' "${pendingAbsModulePaths[@]}"
+      exit 1
+    fi
+  done
+}
+
+reportMissingRequires() {
+  eval "declare -A pendingAbsModulePaths="${1#*=}
+  declare -A installedProvides
+  declare -A installedModules
+  while (( ${#pendingAbsModulePaths[@]} > 0 )); do
+    local installedOneModule=false
+    for i in "${!pendingAbsModulePaths[@]}"; do
+      local absModulePath="${pendingAbsModulePaths[$i]}"
+      if sync::ready_to_install_virtual "$absModulePath" "$(declare -p installedModules)" "$(declare -p installedProvides)"; then
+        installedModules["$absModulePath"]=true
+        while read providedCmd; do
+          [ -z "$providedCmd" ] && continue
+          installedProvides["$providedCmd"]=true
+        done < <(config::get_module_provides_list "$absModulePath")
+        unset -v "pendingAbsModulePaths[$i]"
+        installedOneModule=true
+        break
+      fi
+    done
+    if ! $installedOneModule; then
+      msg::error "Cannot install following modules:"
       printf '%s\n' "${pendingAbsModulePaths[@]}"
       exit 1
     fi
