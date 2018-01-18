@@ -105,7 +105,7 @@ install_modules() {
 
   # Go through 'requires' list for each module, report any missing cmds.
   if (( ${#pendingAbsModulePaths[@]} > 0 )); then
-    reportMissingRequires "$(declare -p pendingAbsModulePaths)"
+    report_missing_requires "$(declare -p pendingAbsModulePaths)"
   fi
 
   # Install pending modules.
@@ -130,7 +130,7 @@ install_modules() {
   done
 }
 
-reportMissingRequires() {
+report_missing_requires() {
   # Get a copy of pendingAbsModulePaths
   eval "declare -a pendingAbsModulePaths="${1#*=}
   declare -A installedProvides
@@ -154,7 +154,7 @@ reportMissingRequires() {
       msg::error "Cannot install following modules:"
       for i in "${!pendingAbsModulePaths[@]}"; do
         local absModulePath="${pendingAbsModulePaths[$i]}"
-        reportUnmetRequirements "$absModulePath" installedModules installedProvides
+        report_unmet_requirements "$absModulePath" installedModules installedProvides
       done
 
       exit 1
@@ -171,7 +171,7 @@ reportMissingRequires() {
 #   after:
 #     ✔ <module_a>
 #     ✘ <module_b>
-reportUnmetRequirements() {
+report_unmet_requirements() {
   local absModulePath="$1"
   local -n virtualInstalledModules="$2"
   local -n virtualInstalledProvides="$3"
