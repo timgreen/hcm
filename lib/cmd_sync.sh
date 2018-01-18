@@ -40,19 +40,24 @@ install_module() {
     # try to install
     export HCM_ABS_MODULE_PATH="$absModulePath"
     dryrun::internal_action sync::prepare_before_install "$absModulePath"
-    dryrun::internal_action hook::run_hook "$absModulePath" pre-install  || recover_error "$absModulePath" pre-install $?
-    sync::install "$absModulePath"                                       || recover_error "$absModulePath" install $?
-    dryrun::internal_action hook::run_hook "$absModulePath" post-install || recover_error "$absModulePath" post-install $?
-    sync::verify_provided_cmds "$absModulePath"                          || recover_error "$absModulePath" verify-provides $?
+    dryrun::internal_action hook::run_hook "$absModulePath" pre-install  || fallback_failed_install "$absModulePath" pre-install $?
+    sync::install "$absModulePath"                                       || fallback_failed_install "$absModulePath" install $?
+    dryrun::internal_action hook::run_hook "$absModulePath" post-install || fallback_failed_install "$absModulePath" post-install $?
+    sync::verify_provided_cmds "$absModulePath"                          || fallback_failed_install "$absModulePath" verify-provides $?
   )
 }
 
-recover_error() {
+fallback_failed_install() {
   local absModulePath="$1"
   local lastStage="$2"
   local exitCode=$3
   local moduleTrackBase="$(config::to_module_track_base "$absModulePath")"
   local moduleBackupPath="$(config::backup_path_for "$moduleTrackBase")"
+
+  msg::error "Can not install module $absModulePath"
+  msg::info "failed on stage $lastStage with exit code $exitCode"
+  msg::info "cleanup ..."
+
   (
     # try to revert the failed install
     export HCM_MODULE_BACKUP_PATH="$moduleBackupPath"
