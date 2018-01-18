@@ -43,7 +43,7 @@ install_module() {
     dryrun::internal_action hook::run_hook "$absModulePath" pre-install  || recover_error "$absModulePath" pre-install $?
     sync::install "$absModulePath"                                       || recover_error "$absModulePath" install $?
     dryrun::internal_action hook::run_hook "$absModulePath" post-install || recover_error "$absModulePath" post-install $?
-    sync::verify_provided_cmds "$absModulePath"                          || recover_error "$absModulePath" post-install $?
+    sync::verify_provided_cmds "$absModulePath"                          || recover_error "$absModulePath" verify-provides $?
   )
 }
 
@@ -56,15 +56,18 @@ recover_error() {
   (
     # try to revert the failed install
     export HCM_MODULE_BACKUP_PATH="$moduleBackupPath"
-    if [[ "$lastStage" == "post-install" ]]; then
-      dryrun::internal_action hook::run_hook "$moduleBackupPath" pre-uninstall || :
-    fi
-    if [[ "$lastStage" == "post-install" ]] || [[ "$lastStage" == "install" ]]; then
-      sync::uninstall "$moduleTrackBase"
-    fi
-    if [[ "$lastStage" == "post-install" ]] || [[ "$lastStage" == "install" ]] || [[ "$lastStage" == "pre-install" ]]; then
-      dryrun::internal_action hook::run_hook "$moduleBackupPath" post-uninstall || :
-    fi
+    case "$lastStage" in
+      verify-provides)
+        ;&
+      post-install)
+        dryrun::internal_action hook::run_hook "$moduleBackupPath" pre-uninstall || :
+        ;&
+      install)
+        sync::uninstall "$moduleTrackBase"
+        ;&
+      pre-install)
+        dryrun::internal_action hook::run_hook "$moduleBackupPath" post-uninstall || :
+    esac
     dryrun::internal_action sync::cleanup_after_uninstall "$moduleTrackBase"
   )
   exit $exitCode
