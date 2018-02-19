@@ -177,6 +177,7 @@ report_unmet_requirements() {
   local -n virtualInstalledProvides="$3"
 
   msg::highlight "$absModulePath"
+  local indent="    "
 
   msg::info "  afters:"
   while read absAfterModulePath; do
@@ -193,7 +194,6 @@ report_unmet_requirements() {
   done < <(config::get_module_after_list "$absModulePath")
 
   msg::info "  requires:"
-  local indent="    "
   while read requiredCmd; do
     [ -z "$requiredCmd" ] && continue
     if [ ${virtualInstalledProvides["$requiredCmd"]+_} ] || sync::is_cmd_available "$requiredCmd"; then
