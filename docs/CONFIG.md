@@ -35,7 +35,7 @@ lists:
 > have different $PATH settings. User should set the shell to their daily shell and write the script in that shell's
 > schema.
 >
-> When module provides tools (declared as `provides`), will need to update shell's $PATH or make sure the new tool is
+> When module provides tools (declared as `provides`), will need to update shell's \$PATH or make sure the new tool is
 > installed in one of the $PATH. see [Shell Skeleton][Shell Skeleton] for more details.
 
 ## List Config Format
@@ -78,7 +78,15 @@ module config. You just need a empty file if you only want to link dotfiles. (Em
 
       to check existence of the cmd.
 
-      NOTE, only bash and zsh will reflect up-to-date *.bashrc* or *.zshrc* settings.
+      > NOTE, only bash and zsh will reflect up-to-date *.bashrc* or *.zshrc* settings.
+
+      If the cmd is specified as key value form `cmd: snap_package`. Then `cmd` is the command required, `snap_package` is the [snap](https://snapcraft.io) package `hcm` will try to install if `cmd` is not available. via
+
+      ~~~bash
+      snap install <snap_package>
+      ~~~ 
+
+      > NOTE, the whitespace after `:` is required, otherwise yaml will treated it as string instead of key value pair.
 
    * `provides`
 
@@ -92,6 +100,7 @@ For hooks, please check [Life Cycle][Life Cycle] for details.
 # hcm will proceed to install this module iff all the requires command if avaiable in $PATH, check with `which`.
 requires:
   - git
+  - yq: yq
 # List of module path.
 # hcm will make sure all the listed modules is installed before install this module.
 # the relative path is resolved based on this file.
